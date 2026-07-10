@@ -10,7 +10,7 @@ portfolio. Reads theme + translations from the shared `@dloizides/ui-feedback` U
 | `StatCard` | ✅ Available — labelled metric tile (label + locale-formatted value). |
 | `DataTable` | ✅ Available — the shared, tokenized RN-web grid (the `GRID.md` contract): `columns + rows` API, sticky header, zebra striping, per-row tint, pressable rows, per-row `testID` + a11y, and a responsive label:value **card-stack** below `stackBreakpoint`. |
 | `FilterBar` | ✅ Available — the `.ui-filters` shell: wrapping field row + live results count + actions slot. |
-| `Pager` | ✅ Available — the `.ui-pager` control: `from–to of N` page-info + rows-per-page pills + Prev/Next. |
+| `Pager` | ✅ Available — the `.ui-pager` control: `from–to of N` page-info + rows-per-page pills + Prev/Next. Pass an optional, already-translated `unitLabel` (e.g. `"leadership terms"`) to render `1–50 of 3,023 leadership terms`. |
 | `StatGrid` | ⏳ Deferred — exists only in kefi-web (n=1); moves in when a 2nd consumer appears. |
 
 ### DataTable / FilterBar / Pager

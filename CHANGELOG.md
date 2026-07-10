@@ -1,6 +1,18 @@
 # Changelog
 
-## 1.1.0 (unreleased)
+## 1.2.0
+
+- `Pager` — new optional `unitLabel?: string` prop. When supplied it appends an
+  already-translated unit noun to the count line, e.g. `unitLabel="leadership terms"`
+  renders `1–50 of 3,023 leadership terms` (v1 parity). Backward-compatible: when the
+  prop is omitted (or empty) the count line stays the generic `from–to of N`,
+  byte-identical to prior behaviour.
+- Test tooling — added `src/jest-dom.d.ts` so ts-jest picks up the
+  `@testing-library/jest-dom` matcher types (`toBeDisabled`, …) when type-checking each
+  test file (`jest.setup.ts` sits outside the `src/**` include). Fixes the `Pager` suite
+  failing to compile under the isolated ts-jest type-check.
+
+## 1.1.0
 
 - `DataTable` — promoted from the `/coverage` RN-web POC and hardened into the shared,
   tokenized grid (the `wwwroot/shared/GRID.md` contract):

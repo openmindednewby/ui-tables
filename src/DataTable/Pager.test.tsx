@@ -31,6 +31,21 @@ describe('Pager', () => {
     expect(screen.getByTestId(TABLE_TEST_IDS.pagerInfo).textContent).toContain('1–50 of 128');
   });
 
+  it('leaves the count line generic when no unitLabel is supplied', () => {
+    renderPager(<Pager page={1} pageSize={50} total={3023} onPageChange={noop} onPageSizeChange={noop} />);
+    expect(screen.getByTestId(TABLE_TEST_IDS.pagerInfo).textContent).toBe('1–50 of 3,023');
+  });
+
+  it('appends the unitLabel suffix to the count line when supplied', () => {
+    renderPager(<Pager page={1} pageSize={50} total={3023} unitLabel="leadership terms" onPageChange={noop} onPageSizeChange={noop} />);
+    expect(screen.getByTestId(TABLE_TEST_IDS.pagerInfo).textContent).toBe('1–50 of 3,023 leadership terms');
+  });
+
+  it('ignores an empty unitLabel (stays byte-identical to the generic line)', () => {
+    renderPager(<Pager page={1} pageSize={50} total={3023} unitLabel="" onPageChange={noop} onPageSizeChange={noop} />);
+    expect(screen.getByTestId(TABLE_TEST_IDS.pagerInfo).textContent).toBe('1–50 of 3,023');
+  });
+
   it('disables Prev on the first page and Next on the last', () => {
     const { rerender } = renderPager(<Pager page={1} pageSize={50} total={128} onPageChange={noop} onPageSizeChange={noop} />);
     expect(screen.getByTestId(TABLE_TEST_IDS.pagerPrev)).toBeDisabled();

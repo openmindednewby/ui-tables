@@ -27,6 +27,12 @@ export interface PagerProps {
   onPageSizeChange: (pageSize: number) => void;
   /** Rows-per-page choices. Default 25 / 50 / 100 / 200. */
   pageSizeOptions?: readonly number[];
+  /**
+   * Optional, already-translated unit noun appended to the count line, e.g.
+   * `"leadership terms"` renders `1–50 of 3,023 leadership terms`. When omitted the
+   * count line stays the generic `from–to of N` (byte-identical to prior behaviour).
+   */
+  unitLabel?: string;
   testID?: string;
 }
 
@@ -65,6 +71,7 @@ export function Pager({
   onPageChange,
   onPageSizeChange,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
+  unitLabel,
   testID = TABLE_TEST_IDS.pager,
 }: PagerProps): React.ReactElement {
   const { theme, t } = useUi();
@@ -75,7 +82,9 @@ export function Pager({
   const safePage = Math.min(Math.max(page, FIRST_PAGE), lastPage);
   const from = total === 0 ? 0 : (safePage - 1) * pageSize + 1;
   const to = Math.min(safePage * pageSize, total);
-  const info = `${from.toLocaleString()}${EN_DASH}${to.toLocaleString()} ${t(TABLE_I18N.pagerInfo)} ${total.toLocaleString()}`;
+  const count = `${from.toLocaleString()}${EN_DASH}${to.toLocaleString()} ${t(TABLE_I18N.pagerInfo)} ${total.toLocaleString()}`;
+  const hasUnit = unitLabel !== undefined && unitLabel !== '';
+  const info = hasUnit ? `${count} ${unitLabel}` : count;
 
   return (
     <View style={c.pager} testID={testID}>
