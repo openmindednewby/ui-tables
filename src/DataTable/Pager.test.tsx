@@ -81,4 +81,36 @@ describe('Pager', () => {
     fireEvent.click(screen.getByTestId(`${TABLE_TEST_IDS.pager}-size-100`));
     expect(onPageSizeChange).toHaveBeenCalledWith(100);
   });
+
+  it('defaults to the pills variant (no dropdown trigger, options rendered inline)', () => {
+    renderPager(<Pager page={1} pageSize={50} total={128} onPageChange={noop} onPageSizeChange={noop} />);
+    expect(screen.queryByTestId(`${TABLE_TEST_IDS.pager}-size-trigger`)).toBeNull();
+    expect(screen.getByTestId(`${TABLE_TEST_IDS.pager}-size-100`)).not.toBeNull();
+  });
+
+  it('rowsVariant="dropdown" renders a compact trigger and hides options until opened', () => {
+    renderPager(<Pager page={1} pageSize={50} total={128} rowsVariant="dropdown" onPageChange={noop} onPageSizeChange={noop} />);
+    const trigger = screen.getByTestId(`${TABLE_TEST_IDS.pager}-size-trigger`);
+    expect(trigger.textContent).toContain('50');
+    expect(screen.queryByTestId(`${TABLE_TEST_IDS.pager}-size-menu`)).toBeNull();
+    expect(screen.queryByTestId(`${TABLE_TEST_IDS.pager}-size-100`)).toBeNull();
+  });
+
+  it('rowsVariant="dropdown" opens the menu with the size options on trigger press', () => {
+    renderPager(<Pager page={1} pageSize={50} total={128} rowsVariant="dropdown" onPageChange={noop} onPageSizeChange={noop} />);
+    fireEvent.click(screen.getByTestId(`${TABLE_TEST_IDS.pager}-size-trigger`));
+    expect(screen.getByTestId(`${TABLE_TEST_IDS.pager}-size-menu`)).not.toBeNull();
+    for (const size of [25, 50, 100, 200]) {
+      expect(screen.getByTestId(`${TABLE_TEST_IDS.pager}-size-${size}`)).not.toBeNull();
+    }
+  });
+
+  it('rowsVariant="dropdown" emits the chosen size and closes the menu on select', () => {
+    const onPageSizeChange = jest.fn();
+    renderPager(<Pager page={1} pageSize={50} total={128} rowsVariant="dropdown" onPageChange={noop} onPageSizeChange={onPageSizeChange} />);
+    fireEvent.click(screen.getByTestId(`${TABLE_TEST_IDS.pager}-size-trigger`));
+    fireEvent.click(screen.getByTestId(`${TABLE_TEST_IDS.pager}-size-100`));
+    expect(onPageSizeChange).toHaveBeenCalledWith(100);
+    expect(screen.queryByTestId(`${TABLE_TEST_IDS.pager}-size-menu`)).toBeNull();
+  });
 });

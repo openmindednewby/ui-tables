@@ -11,6 +11,7 @@ import { Pressable, Text, View, type StyleProp, type TextStyle, type ViewStyle }
 import { useUi } from '@dloizides/ui-feedback';
 
 import { DEFAULT_PAGE_SIZE_OPTIONS, TABLE_I18N, TABLE_TEST_IDS } from './constants';
+import { SizeDropdown } from './SizeDropdown';
 import { chromeStyles as c } from './styles';
 
 const FIRST_PAGE = 1;
@@ -63,6 +64,14 @@ export interface PagerProps {
   onPageSizeChange: (pageSize: number) => void;
   /** Rows-per-page choices. Default 25 / 50 / 100 / 200. */
   pageSizeOptions?: readonly number[];
+  /**
+   * How the rows-per-page control renders. `'pills'` (default) keeps the RN-idiom row of
+   * pressable size pills — byte-identical for every existing consumer. `'dropdown'` swaps in
+   * a compact `<select>`-like anchored dropdown matching the v1 console's "Rows" select
+   * (compact trigger + chevron, popover of options, close on outside-click / Escape) and a
+   * mixed-case "Rows" caption.
+   */
+  rowsVariant?: 'pills' | 'dropdown';
   /**
    * Optional, already-translated unit noun appended to the count line, e.g.
    * `"leadership terms"` renders `1–50 of 3,023 leadership terms`. When omitted the
@@ -125,6 +134,7 @@ export function Pager({
   onPageChange,
   onPageSizeChange,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
+  rowsVariant = 'pills',
   unitLabel,
   infoPrefix,
   boldNumbers = false,
@@ -134,6 +144,7 @@ export function Pager({
   const { theme, t } = useUi();
   const { colors, palette } = theme;
   const brand = palette.primary['500'];
+  const isDropdown = rowsVariant === 'dropdown';
 
   const lastPage = Math.max(FIRST_PAGE, Math.ceil(total / pageSize));
   const safePage = Math.min(Math.max(page, FIRST_PAGE), lastPage);
@@ -166,27 +177,49 @@ export function Pager({
         )}
       </Text>
       <View style={[c.pagerNav, o?.pagerNav]}>
-        <Text style={[c.pagerRowsLabel, { color: colors.textSecondary }, o?.pagerRowsLabel]}>{t(TABLE_I18N.pagerRows)}</Text>
-        <View style={[c.sizeGroup, o?.sizeGroup]}>
-          {pageSizeOptions.map((size) => {
-            const active = size === pageSize;
-            return (
-              <Pressable
-                key={size}
-                testID={`${testID}-size-${size}`}
-                accessibilityRole="button"
-                accessibilityLabel={String(size)}
-                accessibilityHint={t(TABLE_I18N.pagerRowsOptionHint)}
-                accessibilityState={{ selected: active }}
-                hitSlop={PAGER_HIT_SLOP}
-                onPress={() => onPageSizeChange(size)}
-                style={[c.sizePill, { borderColor: active ? brand : colors.border, backgroundColor: active ? brand : TRANSPARENT }, o?.sizePill]}
-              >
-                <Text style={[c.sizePillText, { color: active ? colors.surface : colors.textSecondary }, o?.sizePillText]}>{size}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        <Text
+          style={[isDropdown ? c.pagerRowsLabelPlain : c.pagerRowsLabel, { color: colors.textSecondary }, o?.pagerRowsLabel]}
+        >
+          {t(TABLE_I18N.pagerRows)}
+        </Text>
+        {isDropdown ? (
+          <SizeDropdown
+            pageSize={pageSize}
+            pageSizeOptions={pageSizeOptions}
+            onPageSizeChange={onPageSizeChange}
+            testID={testID}
+            triggerHint={t(TABLE_I18N.pagerRowsTriggerHint)}
+            optionHint={t(TABLE_I18N.pagerRowsOptionHint)}
+            textColor={colors.text}
+            mutedColor={colors.textSecondary}
+            borderColor={colors.border}
+            surfaceColor={colors.surface}
+            brandColor={brand}
+            triggerStyle={o?.sizePill}
+            triggerTextStyle={o?.sizePillText}
+          />
+        ) : (
+          <View style={[c.sizeGroup, o?.sizeGroup]}>
+            {pageSizeOptions.map((size) => {
+              const active = size === pageSize;
+              return (
+                <Pressable
+                  key={size}
+                  testID={`${testID}-size-${size}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={String(size)}
+                  accessibilityHint={t(TABLE_I18N.pagerRowsOptionHint)}
+                  accessibilityState={{ selected: active }}
+                  hitSlop={PAGER_HIT_SLOP}
+                  onPress={() => onPageSizeChange(size)}
+                  style={[c.sizePill, { borderColor: active ? brand : colors.border, backgroundColor: active ? brand : TRANSPARENT }, o?.sizePill]}
+                >
+                  <Text style={[c.sizePillText, { color: active ? colors.surface : colors.textSecondary }, o?.sizePillText]}>{size}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
         <NavButton
           label={t(TABLE_I18N.pagerPrev)}
           hint={t(TABLE_I18N.pagerPrevHint)}

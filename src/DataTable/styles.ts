@@ -22,6 +22,15 @@ const PAGER_SIZE_GAP = 6;
 const CONTROL_PAD_H = 12;
 const CONTROL_PAD_V = 6;
 const CONTROL_FONT = 13;
+const CHEVRON_FONT = 10;
+const MENU_TOP_GAP = 4;
+const MENU_PAD_V = 4;
+const MENU_MIN_WIDTH = 80;
+const MENU_OPT_PAD_V = 7;
+const MENU_Z_INDEX = 1000;
+const MENU_ELEVATION = 8;
+/** Soft drop shadow so the rows-per-page popover reads as floating above the page (mirrors ui-layout's InlineMenu). */
+const MENU_BOX_SHADOW = '0px 2px 8px rgba(0, 0, 0, 0.15)';
 const RESULTS_FONT = 13;
 const HEAD_LETTER_SPACING = 0.4;
 const LABEL_LETTER_SPACING = 0.3;
@@ -97,9 +106,21 @@ export const chromeStyles = StyleSheet.create({
   pagerInfo: { fontSize: CONTROL_FONT, fontVariant: ['tabular-nums'] },
   pagerNav: { flexDirection: 'row', alignItems: 'center', gap: PAGER_SIZE_GAP, flexWrap: 'wrap' },
   pagerRowsLabel: { fontSize: HEAD_FONT, textTransform: 'uppercase', letterSpacing: LABEL_LETTER_SPACING },
+  /** Mixed-case "Rows" caption for the dropdown variant (v1's muted `.hint` label — no uppercase transform). */
+  pagerRowsLabelPlain: { fontSize: HEAD_FONT, letterSpacing: LABEL_LETTER_SPACING },
   sizeGroup: { flexDirection: 'row', gap: PAGER_SIZE_GAP, alignItems: 'center' },
   control: { paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: BORDER_RADIUS, borderWidth: BORDER_WIDTH },
   controlText: { fontSize: CONTROL_FONT, fontWeight: '600' },
   sizePill: { paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: PILL_RADIUS, borderWidth: BORDER_WIDTH },
   sizePillText: { fontSize: HEAD_FONT, fontWeight: '600', fontVariant: ['tabular-nums'] },
+  /** Dropdown variant: relatively-positioned wrapper holding the trigger + the anchored popover. */
+  sizeAnchor: { position: 'relative' },
+  /** Dropdown variant: the compact `<select>`-like trigger (bordered ghost look, height-matched to Prev/Next) + chevron. */
+  sizeTrigger: { flexDirection: 'row', alignItems: 'center', gap: PAGER_SIZE_GAP, paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: BORDER_RADIUS, borderWidth: BORDER_WIDTH },
+  sizeTriggerText: { fontSize: CONTROL_FONT, fontWeight: '600', fontVariant: ['tabular-nums'] },
+  sizeChevron: { fontSize: CHEVRON_FONT },
+  /** Dropdown variant: the anchored popover listing the rows-per-page options. */
+  sizeMenu: { position: 'absolute', top: '100%', right: 0, marginTop: MENU_TOP_GAP, minWidth: MENU_MIN_WIDTH, borderWidth: BORDER_WIDTH, borderRadius: BORDER_RADIUS, paddingVertical: MENU_PAD_V, zIndex: MENU_Z_INDEX, boxShadow: MENU_BOX_SHADOW, elevation: MENU_ELEVATION },
+  sizeOption: { paddingHorizontal: CONTROL_PAD_H, paddingVertical: MENU_OPT_PAD_V },
+  sizeOptionText: { fontSize: CONTROL_FONT, fontVariant: ['tabular-nums'] },
 });

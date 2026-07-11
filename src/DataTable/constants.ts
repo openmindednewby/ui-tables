@@ -58,4 +58,6 @@ export const TABLE_I18N = {
   pagerNextHint: 'uiTables.pager.nextHint',
   pagerRows: 'uiTables.pager.rows',
   pagerRowsOptionHint: 'uiTables.pager.rowsOptionHint',
+  /** Accessible hint for the dropdown-variant rows-per-page trigger button. */
+  pagerRowsTriggerHint: 'uiTables.pager.rowsTriggerHint',
 } as const;

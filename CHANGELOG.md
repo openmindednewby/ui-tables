@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.8.0
+
+- `Pager` gains an additive, **default-off** `rowsVariant?: 'pills' | 'dropdown'` prop.
+  - `'pills'` (default) is unchanged — the RN-idiom row of pressable size pills. Every existing
+    consumer (erevna / katalogos / kefi / coverage) renders byte-identically.
+  - `'dropdown'` swaps the size pills for a compact `<select>`-like anchored dropdown matching
+    the v1 console's "Rows" select: a bordered trigger (height-matched to the Prev/Next ghost
+    buttons) showing the current size + a chevron, opening a popover of the `pageSizeOptions`
+    that fires `onPageSizeChange` and closes on select / outside-click / Escape. The "Rows"
+    caption is mixed-case (not uppercase) in this variant, matching v1's muted `.hint` label.
+  - Self-contained: the anchored dropdown is implemented inside ui-tables (new `SizeDropdown`),
+    reusing ui-layout's InlineMenu click-outside/Escape pattern WITHOUT taking a hard dependency
+    on `@dloizides/ui-layout` — its ModalDropdown trigger has fixed chunky padding and no chevron,
+    so it cannot match v1's compact select, and a low-level table primitive should not depend on
+    a higher-level layout package. New option/trigger test ids: `${testID}-size-trigger`,
+    `${testID}-size-menu`, and the existing `${testID}-size-${size}` per option.
+
 ## 1.7.0
 
 - **Accessibility (WCAG 2.1 AA) hardening — additive + backward-compatible.**
