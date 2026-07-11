@@ -57,6 +57,38 @@ with the exported `rowDetailTestID(tableTestID, key)` (rows: `rowTestID(tableTes
 exposed to assistive tech as a labelled region (provide the `uiTables.rowDetail` key), and the row
 reports `aria-expanded`. Omit both props and nothing about the table changes.
 
+#### Pixel-perfect overrides (optional)
+
+**The defaults are opinionated but never mandatory.** When a surface must match an existing
+look exactly, pass `styleOverrides` — a per-slot map that is merged **LAST** into each slot's
+style array, so it beats both the base StyleSheet **and** the inline theme colours (this kit
+keeps colours out of the StyleSheet and applies them from `useUi().theme` at render time, so
+an override that only beat the base would still lose to the theme).
+
+```tsx
+import type { DataTableStyleOverrides } from '@dloizides/ui-tables';
+
+const overrides: DataTableStyleOverrides = {
+  wrap: { borderRadius: 10 },                       // beats the kit's 12 (base StyleSheet)
+  headRow: { backgroundColor: theme.surfaceMuted }, // beats theme.colors.background (INLINE colour)
+};
+
+<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id}
+  stackBreakpoint={0}          // ← keeps the desktop grid at EVERY width (no card-stack)
+  styleOverrides={overrides} />
+```
+
+| Component | Type | Slots |
+|-----------|------|-------|
+| `DataTable` | `DataTableStyleOverrides` | `wrap`, `headRow`, `headCell`, `row`, `cell`, `numCell`, `state`, `stateText`, `rowDetail`, `card`, `cardLine`, `cardLabel`, `cardValue` |
+| `Pager` | `PagerStyleOverrides` | `pager`, `pagerInfo`, `pagerNav`, `pagerRowsLabel`, `sizeGroup`, `control`, `controlText`, `sizePill`, `sizePillText` |
+| `FilterBar` | `FilterBarStyleOverrides` | `filters`, `filtersSpacer`, `results`, `filtersActions` |
+
+**Disabling the card-stack**: the label:value card-stack renders when `width < stackBreakpoint`,
+so `stackBreakpoint={0}` (never true) keeps the desktop grid at every width — the opt-out for a
+consumer whose table never had a card-stack. Omit `styleOverrides` entirely and every component
+renders exactly as it always has.
+
 Colours come entirely from `useUi().theme` (drive it with `@dloizides/design-tokens` via `tokensToUiTheme`), so the grid re-themes per tenant. Every component-authored string is routed through the UiProvider `t` — provide the `uiTables.*` keys (see `TABLE_I18N`) in your locale files; a caller may also pass already-translated `loadingLabel` / `emptyLabel` / `resultsLabel` directly.
 
 ## Install

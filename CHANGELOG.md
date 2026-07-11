@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+- **Pixel-perfect overrides** (additive, backward-compatible). The kit's defaults are
+  opinionated but never mandatory — a consumer that must match an existing look can now
+  do so without forking:
+  - `DataTable` gains `styleOverrides?: DataTableStyleOverrides` (slots: `wrap`, `headRow`,
+    `headCell`, `row`, `cell`, `numCell`, `state`, `stateText`, `rowDetail`, `card`,
+    `cardLine`, `cardLabel`, `cardValue`).
+  - `Pager` gains `styleOverrides?: PagerStyleOverrides` (slots: `pager`, `pagerInfo`,
+    `pagerNav`, `pagerRowsLabel`, `sizeGroup`, `control`, `controlText`, `sizePill`,
+    `sizePillText`).
+  - `FilterBar` gains `styleOverrides?: FilterBarStyleOverrides` (slots: `filters`,
+    `filtersSpacer`, `results`, `filtersActions`).
+  - Each slot is merged **LAST** into its style array, so an override beats the base
+    StyleSheet **and** the inline colour the component applies from `useUi().theme`
+    (colours are never in the StyleSheet in this kit).
+  - Documented: `stackBreakpoint={0}` disables the responsive card-stack (`width < 0` is
+    never true), for surfaces that never had one.
+  - Omit `styleOverrides` and every render is byte-identical to before (verified by test).
+
 - `DataTable` — **expandable rows** (additive, backward-compatible). Two new optional props:
   - `renderRowDetail?: (row: T) => React.ReactNode` — renders a full-width detail panel
     (spanning every column) directly beneath a row, between it and the next row. Works in

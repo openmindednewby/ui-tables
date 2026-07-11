@@ -6,12 +6,30 @@
  * ui-forms), keeping this reusable across every grid rather than coverage-specific.
  */
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
 import { TABLE_I18N, TABLE_TEST_IDS } from './constants';
 import { chromeStyles as c } from './styles';
+
+const RESULTS_COUNT_WEIGHT = '700' as const;
+
+/**
+ * Per-slot style overrides for the FilterBar, merged **LAST** into each slot's style
+ * array so the consumer always wins — over the base StyleSheet AND over the inline
+ * colours taken from `useUi().theme`. Omit for the shared defaults (nothing changes).
+ */
+export interface FilterBarStyleOverrides {
+  /** The bordered, rounded filter shell. */
+  filters?: StyleProp<ViewStyle>;
+  /** The flex spacer that pushes the count + actions right. */
+  filtersSpacer?: StyleProp<ViewStyle>;
+  /** The `<b>N</b> results` count line. */
+  results?: StyleProp<TextStyle>;
+  /** The right-aligned actions cluster. */
+  filtersActions?: StyleProp<ViewStyle>;
+}
 
 export interface FilterBarProps {
   /** The filter fields (labels + inputs), supplied by the app / ui-forms. */
@@ -22,6 +40,11 @@ export interface FilterBarProps {
   resultsLabel?: string;
   /** Right-aligned action buttons (Apply, Export CSV, …). */
   actions?: React.ReactNode;
+  /**
+   * Per-slot style overrides, merged LAST so the consumer always wins — including over
+   * the inline theme colours. Omit for the shared defaults.
+   */
+  styleOverrides?: FilterBarStyleOverrides;
   testID?: string;
 }
 
@@ -30,6 +53,7 @@ export function FilterBar({
   resultsCount,
   resultsLabel,
   actions,
+  styleOverrides: o,
   testID = TABLE_TEST_IDS.filterBar,
 }: FilterBarProps): React.ReactElement {
   const { theme, t } = useUi();
@@ -37,16 +61,16 @@ export function FilterBar({
   const word = resultsLabel ?? t(TABLE_I18N.results);
 
   return (
-    <View style={[c.filters, { backgroundColor: colors.surface, borderColor: colors.border }]} testID={testID}>
+    <View style={[c.filters, { backgroundColor: colors.surface, borderColor: colors.border }, o?.filters]} testID={testID}>
       {children}
-      <View style={c.filtersSpacer} />
+      <View style={[c.filtersSpacer, o?.filtersSpacer]} />
       {typeof resultsCount === 'number' && (
-        <Text style={[c.results, { color: colors.textSecondary }]} testID={TABLE_TEST_IDS.results}>
-          <Text style={{ color: colors.text, fontWeight: '700' }}>{resultsCount.toLocaleString()}</Text>
+        <Text style={[c.results, { color: colors.textSecondary }, o?.results]} testID={TABLE_TEST_IDS.results}>
+          <Text style={{ color: colors.text, fontWeight: RESULTS_COUNT_WEIGHT }}>{resultsCount.toLocaleString()}</Text>
           {` ${word}`}
         </Text>
       )}
-      {!!actions && <View style={c.filtersActions}>{actions}</View>}
+      {!!actions && <View style={[c.filtersActions, o?.filtersActions]}>{actions}</View>}
     </View>
   );
 }

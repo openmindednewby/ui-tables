@@ -7,11 +7,15 @@
  * - sticky header (`stickyHeader`), zebra striping (`zebra`), per-row tint.
  * - a responsive label:value **card-stack** below `stackBreakpoint` via
  *   `useWindowDimensions` (the CSS `data-label` card-stack does not port).
+ *   Pass `stackBreakpoint={0}` to keep the desktop grid at every width.
  * - per-row `testID` + `accessibilityLabel`/`accessibilityHint` (kit standard).
  * - optional CONTROLLED expandable rows: `renderRowDetail` + `expandedRowKeys`
  *   render a full-width detail panel between an expanded row and the next
  *   (desktop and card-stack alike). Omit both and the table renders exactly as
  *   it did before the feature existed.
+ * - optional per-slot `styleOverrides`, merged LAST so a consumer that needs to be
+ *   pixel-perfect beats both the base StyleSheet and the inline theme colour. The
+ *   shared defaults never change for anyone who does not opt in.
  * - every colour from `useUi().theme`; every component-authored string via `t`.
  */
 import React, { useCallback } from 'react';
@@ -19,9 +23,10 @@ import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
+import { DesktopCell, cellContent } from './cells';
 import { CARD_STACK_BREAKPOINT, TABLE_I18N, TABLE_TEST_IDS, rowDetailTestID, rowTestID } from './constants';
 import { STICKY_HEADER_STYLE, tableStyles as s } from './styles';
-import type { DataTableColumn, DataTableProps } from './types';
+import type { DataTableProps } from './types';
 
 const FIRST_ROW_INDEX = 0;
 
@@ -38,38 +43,11 @@ interface RowA11y {
   'aria-expanded'?: boolean;
 }
 
-/**
- * A column's rendered content, safe to place inside a `<View>`.
- *
- * A bare string/number child of a `<View>` warns on RN-web ("Unexpected text node")
- * and THROWS on real React Native — and these apps ship as native, so raw text must
- * always be wrapped in `<Text>`. Used by BOTH the desktop cell and the card-stack
- * value (the stacked branch previously rendered `col.render(row)` unwrapped).
- */
-function cellContent<T>(column: DataTableColumn<T>, row: T, textColor: string): React.ReactNode {
-  const content = column.render(row);
-  if (typeof content === 'string' || typeof content === 'number') {
-    return (
-      <Text style={[s.cell, column.numeric ? s.numCell : null, { color: textColor }]}>{content}</Text>
-    );
-  }
-  return content;
-}
-
-/** A single desktop cell — renders `col.render(row)` exactly ONCE (POC bug fix). */
-function DesktopCell<T>({ column, row, textColor, testID }: { column: DataTableColumn<T>; row: T; textColor: string; testID: string }): React.ReactElement {
-  return (
-    <View style={{ flex: column.weight ?? 1, alignItems: column.numeric ? 'flex-end' : 'flex-start' }} testID={testID}>
-      {cellContent(column, row, textColor)}
-    </View>
-  );
-}
-
 export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const {
     columns, rows, keyExtractor, rowTint, zebra, stickyHeader, onRowPress,
     getRowAccessibilityLabel, loading, loadingLabel, emptyLabel,
-    renderRowDetail, expandedRowKeys,
+    renderRowDetail, expandedRowKeys, styleOverrides: o,
     stackBreakpoint = CARD_STACK_BREAKPOINT, testID = TABLE_TEST_IDS.root,
   } = props;
 
@@ -88,24 +66,17 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     [rowTint, zebra, colors.background],
   );
 
-  if (loading) {
-    return (
-      <View style={[s.wrap, frame]} testID={testID}>
-        <View style={s.state}>
-          <Text style={[s.stateText, { color: colors.textSecondary }]}>{loadingLabel ?? t(TABLE_I18N.loading)}</Text>
-        </View>
+  /** Loading / empty share the frame + centred state block. */
+  const stateView = (label: string): React.ReactElement => (
+    <View style={[s.wrap, frame, o?.wrap]} testID={testID}>
+      <View style={[s.state, o?.state]}>
+        <Text style={[s.stateText, { color: colors.textSecondary }, o?.stateText]}>{label}</Text>
       </View>
-    );
-  }
-  if (rows.length === 0) {
-    return (
-      <View style={[s.wrap, frame]} testID={testID}>
-        <View style={s.state}>
-          <Text style={[s.stateText, { color: colors.textSecondary }]}>{emptyLabel ?? t(TABLE_I18N.empty)}</Text>
-        </View>
-      </View>
-    );
-  }
+    </View>
+  );
+
+  if (loading) return stateView(loadingLabel ?? t(TABLE_I18N.loading));
+  if (rows.length === 0) return stateView(emptyLabel ?? t(TABLE_I18N.empty));
 
   const rowID = (key: string): string => rowTestID(testID, key);
   const isExpandable = renderRowDetail !== undefined;
@@ -133,7 +104,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
         <View
           accessibilityLabel={t(TABLE_I18N.rowDetail)}
           accessibilityRole="summary"
-          style={[s.rowDetail, { borderTopColor: colors.border, backgroundColor: colors.background }]}
+          style={[s.rowDetail, { borderTopColor: colors.border, backgroundColor: colors.background }, o?.rowDetail]}
           testID={rowDetailTestID(testID, key)}
         >
           {renderRowDetail(row)}
@@ -142,10 +113,10 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     );
   };
 
-  // --- mobile: label:value card-stack (GRID.md) ---
+  // --- mobile: label:value card-stack (GRID.md). Disabled by `stackBreakpoint={0}`. ---
   if (stacked) {
     return (
-      <View style={[s.wrap, frame]} testID={testID}>
+      <View style={[s.wrap, frame, o?.wrap]} testID={testID}>
         {rows.map((row, i) => {
           const key = keyExtractor(row);
           const bg = rowBackground(row, i);
@@ -156,12 +127,12 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
               disabled={!onRowPress}
               onPress={onRowPress ? () => onRowPress(row) : undefined}
               {...rowA11y(row, key)}
-              style={[s.card, { borderTopColor: colors.border }, i === FIRST_ROW_INDEX ? { borderTopWidth: 0 } : null, bg ? { backgroundColor: bg } : null]}
+              style={[s.card, { borderTopColor: colors.border }, i === FIRST_ROW_INDEX ? { borderTopWidth: 0 } : null, bg ? { backgroundColor: bg } : null, o?.card]}
             >
               {columns.map((col) => (
-                <View key={col.key} style={s.cardLine}>
-                  <Text style={[s.cardLabel, { color: colors.textSecondary }]}>{col.header}</Text>
-                  <View style={s.cardValue}>{cellContent(col, row, colors.text)}</View>
+                <View key={col.key} style={[s.cardLine, o?.cardLine]}>
+                  <Text style={[s.cardLabel, { color: colors.textSecondary }, o?.cardLabel]}>{col.header}</Text>
+                  <View style={[s.cardValue, o?.cardValue]}>{cellContent(col, row, colors.text, o)}</View>
                 </View>
               ))}
             </Pressable>,
@@ -175,15 +146,15 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
 
   // --- desktop: header + rows ---
   return (
-    <View style={[s.wrap, frame]} testID={testID}>
+    <View style={[s.wrap, frame, o?.wrap]} testID={testID}>
       <View
         testID={TABLE_TEST_IDS.head}
-        style={[s.headRow, { backgroundColor: colors.background }, stickyHeader ? STICKY_HEADER_STYLE : null]}
+        style={[s.headRow, { backgroundColor: colors.background }, stickyHeader ? STICKY_HEADER_STYLE : null, o?.headRow]}
       >
         {columns.map((col) => (
           <Text
             key={col.key}
-            style={[s.headCell, { color: colors.textSecondary, flex: col.weight ?? 1, textAlign: col.numeric ? 'right' : 'left' }]}
+            style={[s.headCell, { color: colors.textSecondary, flex: col.weight ?? 1, textAlign: col.numeric ? 'right' : 'left' }, o?.headCell]}
           >
             {col.header}
           </Text>
@@ -199,10 +170,10 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
             disabled={!onRowPress}
             onPress={onRowPress ? () => onRowPress(row) : undefined}
             {...rowA11y(row, key)}
-            style={[s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null]}
+            style={[s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]}
           >
             {columns.map((col) => (
-              <DesktopCell key={col.key} column={col} row={row} textColor={colors.text} testID={`${rowID(key)}-${col.key}`} />
+              <DesktopCell key={col.key} column={col} row={row} textColor={colors.text} testID={`${rowID(key)}-${col.key}`} styleOverrides={o} />
             ))}
           </Pressable>,
           row,

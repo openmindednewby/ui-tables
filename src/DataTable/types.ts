@@ -5,6 +5,45 @@
  * UiProvider `t` inside the components — no literals baked into the render.
  */
 import type React from 'react';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+
+/**
+ * Per-slot style overrides for the DataTable, merged **LAST** into each slot's style
+ * array so the consumer always wins — over the base StyleSheet AND over the inline
+ * colour the component applies from `useUi().theme` (the kit keeps colours out of the
+ * StyleSheet, so an override that only beat the base would still lose to the theme).
+ *
+ * The shared defaults are opinionated but never mandatory: omit `styleOverrides` and
+ * the table renders exactly as it always has.
+ */
+export interface DataTableStyleOverrides {
+  /** The bordered, rounded table frame (border radius / border colour / surface). */
+  wrap?: StyleProp<ViewStyle>;
+  /** The desktop header row (its background comes from `theme.colors.background`). */
+  headRow?: StyleProp<ViewStyle>;
+  /** A desktop header cell. */
+  headCell?: StyleProp<TextStyle>;
+  /** A desktop body row. */
+  row?: StyleProp<ViewStyle>;
+  /** The `<Text>` of a cell whose column renders a string/number (both branches). */
+  cell?: StyleProp<TextStyle>;
+  /** Extra layer applied to numeric cells, after `cell`. */
+  numCell?: StyleProp<TextStyle>;
+  /** The loading / empty state container. */
+  state?: StyleProp<ViewStyle>;
+  /** The loading / empty state text. */
+  stateText?: StyleProp<TextStyle>;
+  /** The full-width detail panel under an expanded row. */
+  rowDetail?: StyleProp<ViewStyle>;
+  /** A card in the responsive card-stack (below `stackBreakpoint`). */
+  card?: StyleProp<ViewStyle>;
+  /** One label:value line inside a card. */
+  cardLine?: StyleProp<ViewStyle>;
+  /** The label of a card line. */
+  cardLabel?: StyleProp<TextStyle>;
+  /** The value container of a card line. */
+  cardValue?: StyleProp<ViewStyle>;
+}
 
 export interface DataTableColumn<T> {
   /** Stable column id (used for React keys + per-cell test ids). */
@@ -51,7 +90,18 @@ export interface DataTableProps<T> {
   loadingLabel?: string;
   /** Empty text (already translated). Falls back to the kit's `empty` translation. */
   emptyLabel?: string;
-  /** Below this width (px) rows collapse to a label:value card. Default 640. */
+  /**
+   * Below this width (px) rows collapse to a label:value card. Default 640.
+   *
+   * **Opt out of the card-stack entirely with `stackBreakpoint={0}`**: the stack is
+   * chosen by `width < stackBreakpoint`, which is never true for 0, so the desktop
+   * grid renders at every width. Use it when your surface never had a card-stack.
+   */
   stackBreakpoint?: number;
+  /**
+   * Per-slot style overrides, merged LAST so the consumer always wins — including over
+   * the inline colours taken from `useUi().theme`. Omit for the shared defaults.
+   */
+  styleOverrides?: DataTableStyleOverrides;
   testID?: string;
 }
