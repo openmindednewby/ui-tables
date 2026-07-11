@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.6.0
+
+- `DataTable` gains a **web row-hover highlight** on clickable rows, matching the v1 console's
+  `.ui-table tr.clickable:hover` rule. Only interactive rows (those with an `onRowPress`) tint
+  on hover — static rows never light up. The tint is the theme's soft brand fill
+  (`palette.primary['500']` at low alpha via the new `softBrandTint` helper), so it re-themes
+  per tenant, falling back to a subtle surface tint when `primary` is not a plain `#rrggbb`.
+  The hover tint wins over zebra/`rowTint` while hovered (mirroring v1's `:hover td { background }`).
+- **Native-safe + backward-compatible**: hover is driven by `Pressable`'s `onHoverIn`/`onHoverOut`,
+  which are no-ops on iOS/Android, and the handlers are wired only for interactive tables — a
+  non-interactive table renders byte-identically to before. Benefits every consumer
+  (erevna/katalogos/kefi/aml-v2) with clickable rows.
+
 ## 1.5.0
 
 - `Pager` gains two additive, **default-off** props so a paged grid can read exactly like the

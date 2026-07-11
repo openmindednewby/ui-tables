@@ -9,7 +9,7 @@
  * The Jest suite runs on react-native-web (`Platform.OS === 'web'`), so the
  * native branch is exercised through the injectable `resolveStickyHeaderStyle`.
  */
-import { STICKY_HEADER_STYLE, resolveStickyHeaderStyle } from './styles';
+import { STICKY_HEADER_STYLE, resolveStickyHeaderStyle, softBrandTint } from './styles';
 
 describe('resolveStickyHeaderStyle', () => {
   it('emits the web-only sticky block on web (unchanged web rendering)', () => {
@@ -26,5 +26,18 @@ describe('resolveStickyHeaderStyle', () => {
 
   it('resolves the web block under the test platform (react-native-web)', () => {
     expect(STICKY_HEADER_STYLE).toEqual({ position: 'sticky', top: 0, zIndex: 2 });
+  });
+});
+
+describe('softBrandTint (row-hover highlight fill)', () => {
+  it('appends a low-alpha suffix to a #rrggbb brand colour (re-themes per tenant)', () => {
+    expect(softBrandTint('#4f46e5')).toBe('#4f46e51f');
+    expect(softBrandTint('#005F73')).toBe('#005F731f');
+  });
+
+  it('returns undefined for a non #rrggbb colour so the caller falls back to a surface tint', () => {
+    expect(softBrandTint('rgb(79,70,229)')).toBeUndefined();
+    expect(softBrandTint('#fff')).toBeUndefined();
+    expect(softBrandTint('rebeccapurple')).toBeUndefined();
   });
 });

@@ -57,6 +57,20 @@ export function resolveStickyHeaderStyle(platformOs: string): ViewStyle | null {
 
 export const STICKY_HEADER_STYLE: ViewStyle | null = resolveStickyHeaderStyle(Platform.OS);
 
+/** Alpha suffix (~12%) for the soft brand row-hover tint, mirroring the v1 `--brand-soft` fill. */
+const HOVER_TINT_ALPHA = '1f';
+const HEX_RGB = /^#[0-9a-f]{6}$/i;
+
+/**
+ * The soft brand tint used for the web row-hover highlight on clickable rows — the
+ * theme's `palette.primary['500']` at low alpha, so it re-themes per tenant (v1's
+ * `.ui-table--zebra tbody tr.clickable:hover` used `--brand-soft`). Returns `undefined`
+ * when `primary` is not a plain `#rrggbb` so the caller can fall back to a surface tint.
+ */
+export function softBrandTint(primary: string): string | undefined {
+  return HEX_RGB.test(primary) ? `${primary}${HOVER_TINT_ALPHA}` : undefined;
+}
+
 export const tableStyles = StyleSheet.create({
   wrap: { borderWidth: BORDER_WIDTH, borderRadius: BORDER_RADIUS, overflow: 'hidden' },
   headRow: { flexDirection: 'row', columnGap: COLUMN_GAP, paddingHorizontal: ROW_PAD_H, paddingVertical: HEAD_PAD_V },

@@ -18,14 +18,14 @@
  *   shared defaults never change for anyone who does not opt in.
  * - every colour from `useUi().theme`; every component-authored string via `t`.
  */
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
 import { DesktopCell, cellContent } from './cells';
 import { CARD_STACK_BREAKPOINT, TABLE_I18N, TABLE_TEST_IDS, rowDetailTestID, rowTestID } from './constants';
-import { STICKY_HEADER_STYLE, tableStyles as s } from './styles';
+import { STICKY_HEADER_STYLE, softBrandTint, tableStyles as s } from './styles';
 import type { DataTableProps } from './types';
 
 const FIRST_ROW_INDEX = 0;
@@ -57,6 +57,14 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const stacked = width < stackBreakpoint;
   const frame = { backgroundColor: colors.surface, borderColor: colors.border };
 
+  // Web row-hover highlight (v1 `.ui-table tr.clickable:hover`): only interactive rows
+  // (those with `onRowPress`) tint on hover, so static rows never light up. The tint is
+  // the theme's soft brand fill (re-themes per tenant), falling back to a subtle surface
+  // tint. `onHoverIn`/`onHoverOut` are no-ops on native, so this is native-safe.
+  const interactive = onRowPress !== undefined;
+  const [hoveredKey, setHoveredKey] = useState<string | undefined>(undefined);
+  const hoverTint = softBrandTint(theme.palette.primary['500']) ?? colors.background;
+
   const rowBackground = useCallback(
     (row: T, index: number): string | undefined => {
       const tint = rowTint?.(row);
@@ -65,6 +73,22 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     },
     [rowTint, zebra, colors.background],
   );
+
+  /**
+   * A row's background: the hover tint when this interactive row is hovered (wins over
+   * zebra/rowTint, matching v1's `:hover td { background }`), otherwise the base tint.
+   */
+  const rowBg = (row: T, index: number, key: string): string | undefined =>
+    interactive && hoveredKey === key ? hoverTint : rowBackground(row, index);
+
+  /** Hover handlers for a row — wired only for interactive tables (no-op on native). */
+  const hoverHandlers = (key: string): { onHoverIn: () => void; onHoverOut: () => void } | undefined =>
+    interactive
+      ? {
+          onHoverIn: () => setHoveredKey(key),
+          onHoverOut: () => setHoveredKey((current) => (current === key ? undefined : current)),
+        }
+      : undefined;
 
   /** Loading / empty share the frame + centred state block. */
   const stateView = (label: string): React.ReactElement => (
@@ -119,13 +143,14 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
       <View style={[s.wrap, frame, o?.wrap]} testID={testID}>
         {rows.map((row, i) => {
           const key = keyExtractor(row);
-          const bg = rowBackground(row, i);
+          const bg = rowBg(row, i, key);
           return withRowDetail(
             <Pressable
               key={key}
               testID={rowID(key)}
               disabled={!onRowPress}
               onPress={onRowPress ? () => onRowPress(row) : undefined}
+              {...hoverHandlers(key)}
               {...rowA11y(row, key)}
               style={[s.card, { borderTopColor: colors.border }, i === FIRST_ROW_INDEX ? { borderTopWidth: 0 } : null, bg ? { backgroundColor: bg } : null, o?.card]}
             >
@@ -162,13 +187,14 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
       </View>
       {rows.map((row, i) => {
         const key = keyExtractor(row);
-        const bg = rowBackground(row, i);
+        const bg = rowBg(row, i, key);
         return withRowDetail(
           <Pressable
             key={key}
             testID={rowID(key)}
             disabled={!onRowPress}
             onPress={onRowPress ? () => onRowPress(row) : undefined}
+            {...hoverHandlers(key)}
             {...rowA11y(row, key)}
             style={[s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]}
           >

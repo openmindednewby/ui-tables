@@ -97,6 +97,36 @@ describe('DataTable', () => {
   });
 });
 
+describe('DataTable — row-hover highlight (v1 `.clickable:hover`)', () => {
+  it('tints an interactive row on hover-in and reverts on hover-out', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={jest.fn()} stackBreakpoint={0} testID="grid" />);
+    const row = screen.getByTestId('grid-row-a');
+    const before = row.getAttribute('style');
+    fireEvent.mouseEnter(row);
+    const hovered = row.getAttribute('style');
+    expect(hovered).not.toBe(before);
+    fireEvent.mouseLeave(row);
+    expect(row.getAttribute('style')).toBe(before);
+  });
+
+  it('does NOT tint a static (non-interactive) row on hover — only clickable rows highlight', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
+    const row = screen.getByTestId('grid-row-a');
+    const before = row.getAttribute('style');
+    fireEvent.mouseEnter(row);
+    expect(row.getAttribute('style')).toBe(before);
+  });
+
+  it('highlights only the hovered row, not its siblings', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={jest.fn()} zebra stackBreakpoint={0} testID="grid" />);
+    const rowA = screen.getByTestId('grid-row-a');
+    const rowB = screen.getByTestId('grid-row-b');
+    const beforeB = rowB.getAttribute('style');
+    fireEvent.mouseEnter(rowA);
+    expect(rowB.getAttribute('style')).toBe(beforeB);
+  });
+});
+
 describe('DataTable — raw text is always wrapped (native-safe)', () => {
   /**
    * A bare string/number child of a `<View>` warns on RN-web and THROWS on real
