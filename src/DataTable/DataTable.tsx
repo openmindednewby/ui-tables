@@ -38,16 +38,29 @@ interface RowA11y {
   'aria-expanded'?: boolean;
 }
 
+/**
+ * A column's rendered content, safe to place inside a `<View>`.
+ *
+ * A bare string/number child of a `<View>` warns on RN-web ("Unexpected text node")
+ * and THROWS on real React Native — and these apps ship as native, so raw text must
+ * always be wrapped in `<Text>`. Used by BOTH the desktop cell and the card-stack
+ * value (the stacked branch previously rendered `col.render(row)` unwrapped).
+ */
+function cellContent<T>(column: DataTableColumn<T>, row: T, textColor: string): React.ReactNode {
+  const content = column.render(row);
+  if (typeof content === 'string' || typeof content === 'number') {
+    return (
+      <Text style={[s.cell, column.numeric ? s.numCell : null, { color: textColor }]}>{content}</Text>
+    );
+  }
+  return content;
+}
+
 /** A single desktop cell — renders `col.render(row)` exactly ONCE (POC bug fix). */
 function DesktopCell<T>({ column, row, textColor, testID }: { column: DataTableColumn<T>; row: T; textColor: string; testID: string }): React.ReactElement {
-  const content = column.render(row);
   return (
     <View style={{ flex: column.weight ?? 1, alignItems: column.numeric ? 'flex-end' : 'flex-start' }} testID={testID}>
-      {typeof content === 'string' ? (
-        <Text style={[s.cell, column.numeric ? s.numCell : null, { color: textColor }]}>{content}</Text>
-      ) : (
-        content
-      )}
+      {cellContent(column, row, textColor)}
     </View>
   );
 }
@@ -148,7 +161,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
               {columns.map((col) => (
                 <View key={col.key} style={s.cardLine}>
                   <Text style={[s.cardLabel, { color: colors.textSecondary }]}>{col.header}</Text>
-                  <View style={s.cardValue}>{col.render(row)}</View>
+                  <View style={s.cardValue}>{cellContent(col, row, colors.text)}</View>
                 </View>
               ))}
             </Pressable>,

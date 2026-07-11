@@ -97,6 +97,55 @@ describe('DataTable', () => {
   });
 });
 
+describe('DataTable — raw text is always wrapped (native-safe)', () => {
+  /**
+   * A bare string/number child of a `<View>` warns on RN-web and THROWS on real
+   * React Native. The card-stack branch used to render `col.render(row)` unwrapped.
+   * These apps ship as native, so guard both branches — including a column whose
+   * `render` returns a NUMBER (the desktop cell previously only guarded strings).
+   */
+  const HUGE_WIDTH = 100_000;
+  const rawColumns: ReadonlyArray<DataTableColumn<Person>> = [
+    { key: 'name', header: 'Name', render: (r) => r.name }, // string
+    { key: 'score', header: 'Score', numeric: true, render: (r) => r.score }, // number
+  ];
+
+  it.each([
+    ['card-stack', HUGE_WIDTH],
+    ['desktop grid', 0],
+  ])('emits no unexpected-text-node error in %s mode', (_mode, stackBreakpoint) => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    renderTable(
+      <DataTable
+        columns={rawColumns}
+        rows={rows}
+        keyExtractor={(r) => r.id}
+        stackBreakpoint={stackBreakpoint}
+        testID="grid"
+      />,
+    );
+    const complaints = spy.mock.calls
+      .map((c) => String(c[0]))
+      .filter((m) => /unexpected text node/i.test(m));
+    expect(complaints).toEqual([]);
+    spy.mockRestore();
+  });
+
+  it('still renders the string and numeric values in card-stack mode', () => {
+    renderTable(
+      <DataTable
+        columns={rawColumns}
+        rows={rows}
+        keyExtractor={(r) => r.id}
+        stackBreakpoint={HUGE_WIDTH}
+        testID="grid"
+      />,
+    );
+    expect(screen.getByText('Ada')).toBeTruthy();
+    expect(screen.getByText('10')).toBeTruthy();
+  });
+});
+
 describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', () => {
   const renderDetail = (r: Person): React.ReactElement => <span>{`detail:${r.name}`}</span>;
 
