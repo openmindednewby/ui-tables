@@ -2,7 +2,7 @@
  * Shared StyleSheet for the DataTable family. All colours are applied inline from
  * `useUi().theme` at render time — nothing here carries a colour literal.
  */
-import { StyleSheet, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, type ViewStyle } from 'react-native';
 
 const BORDER_WIDTH = 1;
 const BORDER_RADIUS = 12;
@@ -32,12 +32,30 @@ const FULL_WIDTH = '100%' as const;
  * `position: 'sticky'` is a react-native-web-only value that RN's `ViewStyle`
  * type does not enumerate. Cast through `unknown` (never `any`) so the sticky
  * header stays typed without an eslint `no-explicit-any` violation.
+ *
+ * This is a KNOWN, deliberate web-only escape hatch — but it must never reach a
+ * native renderer: RN's style parser maps `position` onto a Yoga enum and an
+ * unrecognised value is a hard error on the native side (it is NOT silently
+ * ignored the way an unknown web CSS value is). So we emit it on web ONLY and
+ * degrade to a normal, non-sticky header on iOS/Android.
  */
-export const STICKY_HEADER_STYLE = {
+const STICKY_WEB_STYLE = {
   position: 'sticky',
   top: 0,
   zIndex: STICKY_Z,
 } as unknown as ViewStyle;
+
+/**
+ * The sticky-header style for a platform: the web-only `position: 'sticky'`
+ * block on web, `null` (no sticky, no invalid enum) everywhere else.
+ * `platformOs` is injectable purely so both branches are unit-testable — the
+ * Jest suite runs on react-native-web, where `Platform.OS` is always `'web'`.
+ */
+export function resolveStickyHeaderStyle(platformOs: string): ViewStyle | null {
+  return platformOs === 'web' ? STICKY_WEB_STYLE : null;
+}
+
+export const STICKY_HEADER_STYLE: ViewStyle | null = resolveStickyHeaderStyle(Platform.OS);
 
 export const tableStyles = StyleSheet.create({
   wrap: { borderWidth: BORDER_WIDTH, borderRadius: BORDER_RADIUS, overflow: 'hidden' },
