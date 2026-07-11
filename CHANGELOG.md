@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.9.0
+
+- **`Pager` dropdown-variant rows menu now escapes ancestor stacking contexts (web).** The
+  `rowsVariant="dropdown"` `SizeDropdown` menu opened but painted UNDER the results table on wide
+  web: react-native-web renders every `View` as `position: relative; z-index: 0`, so the in-tree
+  `position: absolute; zIndex: 1000` menu was trapped inside its anchor's stacking context and lost
+  to later-painting siblings (the table / cards below).
+  - On **web** the open menu now renders in a PORTAL to `document.body` with `position: fixed` at the
+    trigger's measured viewport rect (right-aligned, recomputed on scroll/resize) and a high `zIndex`
+    — clipped by nothing, above everything. Mirrors `@dloizides/ui-layout`'s InlineMenu fix.
+  - On **native** the menu is unchanged (in-tree `position: absolute` + `elevation`). All web-only code
+    (portal, `document`/`window` listeners, `position: fixed`) is guarded behind `Platform.OS === 'web'`.
+  - Outside-click dismissal now consults BOTH the anchor and the portalled menu node.
+  - `react-dom` is added as an **optional** peer dependency (only touched on web; every RN-web consumer
+    already has it). No API change: the `rowsVariant="dropdown"` contract, all test ids, the compact v1
+    look and a11y (role/aria/keyboard) are unchanged.
+
 ## 1.8.0
 
 - `Pager` gains an additive, **default-off** `rowsVariant?: 'pills' | 'dropdown'` prop.
