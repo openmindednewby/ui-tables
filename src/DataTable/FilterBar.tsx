@@ -65,7 +65,13 @@ export function FilterBar({
       {children}
       <View style={[c.filtersSpacer, o?.filtersSpacer]} />
       {typeof resultsCount === 'number' && (
-        <Text style={[c.results, { color: colors.textSecondary }, o?.results]} testID={TABLE_TEST_IDS.results}>
+        // Live region: announce the new count when filters change the result set (WCAG 4.1.3).
+        <Text
+          accessibilityLiveRegion="polite"
+          role="status"
+          style={[c.results, { color: colors.textSecondary }, o?.results]}
+          testID={TABLE_TEST_IDS.results}
+        >
           <Text style={{ color: colors.text, fontWeight: RESULTS_COUNT_WEIGHT }}>{resultsCount.toLocaleString()}</Text>
           {` ${word}`}
         </Text>

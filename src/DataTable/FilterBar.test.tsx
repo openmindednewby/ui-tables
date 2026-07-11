@@ -37,6 +37,13 @@ describe('FilterBar', () => {
     expect(results.textContent).toContain('results');
   });
 
+  it('exposes the results count as a polite status live region', () => {
+    renderBar(<FilterBar resultsCount={5} />);
+    const results = screen.getByTestId(TABLE_TEST_IDS.results);
+    expect(results.getAttribute('role')).toBe('status');
+    expect(results.getAttribute('aria-live')).toBe('polite');
+  });
+
   it('hides the results count when none is given', () => {
     renderBar(<FilterBar />);
     expect(screen.queryByTestId(TABLE_TEST_IDS.results)).toBeNull();

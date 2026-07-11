@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.7.0
+
+- **Accessibility (WCAG 2.1 AA) hardening — additive + backward-compatible.**
+  - `FilterBar`: the results-count line is now a `role="status"` / `aria-live="polite"` live
+    region, so a screen reader announces the new count when filters change the result set
+    (WCAG 4.1.3).
+  - `Pager`: the Prev/Next controls and the rows-per-page pills gain a vertical `hitSlop` so the
+    touch target reaches ~44px WITHOUT changing the rendered size (adjacent pills never overlap).
+
 ## 1.6.0
 
 - `DataTable` gains a **web row-hover highlight** on clickable rows, matching the v1 console's

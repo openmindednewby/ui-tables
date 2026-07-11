@@ -19,6 +19,12 @@ const DISABLED_OPACITY = 0.4;
 const FULL_OPACITY = 1;
 const TRANSPARENT = 'transparent';
 const BOLD = '700' as const;
+/**
+ * Pager controls are compact (~24–26px tall). `hitSlop` expands the TOUCH target toward the
+ * WCAG ≥44px minimum WITHOUT changing the rendered size, so the layout is byte-identical while
+ * taps/clicks get an easier target. Vertical only, so adjacent pills never overlap horizontally.
+ */
+const PAGER_HIT_SLOP = { top: 10, bottom: 10 } as const;
 
 /**
  * Per-slot style overrides for the Pager, merged **LAST** into each slot's style array
@@ -103,6 +109,7 @@ function NavButton({ label, hint, disabled, onPress, color, border, testID, styl
       accessibilityHint={hint}
       accessibilityState={{ disabled }}
       disabled={disabled}
+      hitSlop={PAGER_HIT_SLOP}
       onPress={onPress}
       style={[c.control, { borderColor: border, opacity: disabled ? DISABLED_OPACITY : FULL_OPACITY }, o?.control]}
     >
@@ -171,6 +178,7 @@ export function Pager({
                 accessibilityLabel={String(size)}
                 accessibilityHint={t(TABLE_I18N.pagerRowsOptionHint)}
                 accessibilityState={{ selected: active }}
+                hitSlop={PAGER_HIT_SLOP}
                 onPress={() => onPageSizeChange(size)}
                 style={[c.sizePill, { borderColor: active ? brand : colors.border, backgroundColor: active ? brand : TRANSPARENT }, o?.sizePill]}
               >
