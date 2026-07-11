@@ -12,7 +12,7 @@ import { tableStyles as s } from './styles';
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
 
 /** The subset of the override slots a cell can consume. */
-export type CellStyleOverrides = Pick<DataTableStyleOverrides, 'cell' | 'numCell'>;
+export type CellStyleOverrides = Pick<DataTableStyleOverrides, 'cell' | 'numCell' | 'cellWrap'>;
 
 /**
  * A column's rendered content, safe to place inside a `<View>`.
@@ -55,10 +55,23 @@ interface DesktopCellProps<T> {
   styleOverrides?: CellStyleOverrides;
 }
 
-/** A single desktop cell — renders `col.render(row)` exactly ONCE (POC bug fix). */
+/**
+ * A single desktop cell — renders `col.render(row)` exactly ONCE (POC bug fix).
+ *
+ * The cell's wrapping `View` is overridable via the `cellWrap` slot. That matters:
+ * `cell` is a TextStyle and so only reaches cells whose `render` returns a string —
+ * `cellWrap` reaches EVERY cell, including ones rendering a custom node (a badge, a
+ * link, an action menu), which is what a consumer needs for true pixel-parity.
+ */
 export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides }: DesktopCellProps<T>): React.ReactElement {
   return (
-    <View style={{ flex: column.weight ?? 1, alignItems: column.numeric ? 'flex-end' : 'flex-start' }} testID={testID}>
+    <View
+      style={[
+        { flex: column.weight ?? 1, alignItems: column.numeric ? 'flex-end' : 'flex-start' },
+        styleOverrides?.cellWrap,
+      ]}
+      testID={testID}
+    >
       {cellContent(column, row, textColor, styleOverrides)}
     </View>
   );

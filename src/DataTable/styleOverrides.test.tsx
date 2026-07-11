@@ -11,7 +11,7 @@
  */
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import { UiProvider, type UiTheme, type UiValue } from '@dloizides/ui-feedback';
 
@@ -22,6 +22,11 @@ import { TABLE_TEST_IDS } from './constants';
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
 
 const THEME_BACKGROUND = '#f4f6fb';
+/** A cell rendering a custom NODE (not a string) — only `cellWrap` can style its box. */
+function BadgeNode(): React.ReactElement {
+  return <Text testID="badge-node">badge</Text>;
+}
+
 const KEFI_RADIUS = 10;
 const DEFAULT_RADIUS = 12; // the kit's `tableStyles.wrap` borderRadius — must not change
 const KEFI_SURFACE_MUTED = '#eef1f6';
@@ -92,6 +97,41 @@ function resolvedRadius(el: HTMLElement): string {
   }
   return '';
 }
+
+describe('DataTable — cellWrap reaches EVERY cell (incl. custom nodes)', () => {
+  const CELL_PAD = 8;
+  /** A column whose render returns a NODE, not a string — `cell` (TextStyle) cannot reach it. */
+  const nodeColumns: ReadonlyArray<DataTableColumn<Person>> = [
+    { key: 'name', header: 'Name', render: (r) => r.name }, // string cell
+    { key: 'badge', header: 'Badge', render: () => <BadgeNode /> }, // custom-node cell
+  ];
+
+  it('applies to a string cell AND a custom-node cell', () => {
+    renderUi(
+      <DataTable
+        columns={nodeColumns}
+        rows={rows}
+        keyExtractor={(r) => r.id}
+        stackBreakpoint={NO_STACK}
+        styleOverrides={{ cellWrap: { paddingHorizontal: CELL_PAD } }}
+        testID="grid"
+      />,
+    );
+    // Both cells' wrapping Views carry the override — this is the slot `cell` cannot serve.
+    for (const colKey of ['name', 'badge']) {
+      const cell = screen.getByTestId(`grid-row-a-${colKey}`);
+      expect(cell.style.paddingLeft).toBe(`${CELL_PAD}px`);
+      expect(cell.style.paddingRight).toBe(`${CELL_PAD}px`);
+    }
+  });
+
+  it('adds no cell padding when the override is omitted (default unchanged)', () => {
+    renderUi(
+      <DataTable columns={nodeColumns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />,
+    );
+    expect(screen.getByTestId('grid-row-a-name').style.paddingLeft).toBe('');
+  });
+});
 
 describe('DataTable — an override beats the BASE style', () => {
   it('wrap: a consumer borderRadius (10) overrides the kit default (12)', () => {

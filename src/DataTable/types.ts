@@ -25,6 +25,13 @@ export interface DataTableStyleOverrides {
   headCell?: StyleProp<TextStyle>;
   /** A desktop body row. */
   row?: StyleProp<ViewStyle>;
+  /**
+   * The wrapping `View` of a desktop cell. Unlike `cell` (a TextStyle, which only
+   * reaches cells rendering a string/number), this reaches EVERY cell — including
+   * ones rendering a custom node (badge, link, action menu) — so it is the slot to
+   * use for cell padding/alignment when you need true pixel-parity.
+   */
+  cellWrap?: StyleProp<ViewStyle>;
   /** The `<Text>` of a cell whose column renders a string/number (both branches). */
   cell?: StyleProp<TextStyle>;
   /** Extra layer applied to numeric cells, after `cell`. */
