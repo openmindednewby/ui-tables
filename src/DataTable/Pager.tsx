@@ -18,6 +18,7 @@ const EN_DASH = '–';
 const DISABLED_OPACITY = 0.4;
 const FULL_OPACITY = 1;
 const TRANSPARENT = 'transparent';
+const BOLD = '700' as const;
 
 /**
  * Per-slot style overrides for the Pager, merged **LAST** into each slot's style array
@@ -63,6 +64,18 @@ export interface PagerProps {
    */
   unitLabel?: string;
   /**
+   * Optional, already-translated word prefixed to the count line, e.g. `"Showing"` renders
+   * `Showing 1–50 of 3,023 leadership terms`. Omit for the bare `from–to of N` line
+   * (byte-identical to prior behaviour).
+   */
+  infoPrefix?: string;
+  /**
+   * Render the three counts (from / to / total) in bold `colors.text` — matching the v1
+   * console's `.ui-pager__info b`. Off by default (the whole line stays `textSecondary`,
+   * byte-identical to prior behaviour); the concatenated text is unchanged either way.
+   */
+  boldNumbers?: boolean;
+  /**
    * Per-slot style overrides, merged LAST so the consumer always wins — including over
    * the inline theme colours. Omit for the shared defaults.
    */
@@ -106,6 +119,8 @@ export function Pager({
   onPageSizeChange,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   unitLabel,
+  infoPrefix,
+  boldNumbers = false,
   styleOverrides: o,
   testID = TABLE_TEST_IDS.pager,
 }: PagerProps): React.ReactElement {
@@ -117,13 +132,32 @@ export function Pager({
   const safePage = Math.min(Math.max(page, FIRST_PAGE), lastPage);
   const from = total === 0 ? 0 : (safePage - 1) * pageSize + 1;
   const to = Math.min(safePage * pageSize, total);
-  const count = `${from.toLocaleString()}${EN_DASH}${to.toLocaleString()} ${t(TABLE_I18N.pagerInfo)} ${total.toLocaleString()}`;
   const hasUnit = unitLabel !== undefined && unitLabel !== '';
-  const info = hasUnit ? `${count} ${unitLabel}` : count;
+  const hasPrefix = infoPrefix !== undefined && infoPrefix !== '';
+  const prefix = hasPrefix ? `${infoPrefix} ` : '';
+  const ofWord = t(TABLE_I18N.pagerInfo);
+  const unitSuffix = hasUnit ? ` ${unitLabel}` : '';
+  const count = `${from.toLocaleString()}${EN_DASH}${to.toLocaleString()} ${ofWord} ${total.toLocaleString()}`;
+  const info = `${prefix}${count}${unitSuffix}`;
+  const boldStyle = { color: colors.text, fontWeight: BOLD };
 
   return (
     <View style={[c.pager, o?.pager]} testID={testID}>
-      <Text style={[c.pagerInfo, { color: colors.textSecondary }, o?.pagerInfo]} testID={TABLE_TEST_IDS.pagerInfo}>{info}</Text>
+      <Text style={[c.pagerInfo, { color: colors.textSecondary }, o?.pagerInfo]} testID={TABLE_TEST_IDS.pagerInfo}>
+        {boldNumbers ? (
+          <>
+            {prefix}
+            <Text style={boldStyle}>{from.toLocaleString()}</Text>
+            {EN_DASH}
+            <Text style={boldStyle}>{to.toLocaleString()}</Text>
+            {` ${ofWord} `}
+            <Text style={boldStyle}>{total.toLocaleString()}</Text>
+            {unitSuffix}
+          </>
+        ) : (
+          info
+        )}
+      </Text>
       <View style={[c.pagerNav, o?.pagerNav]}>
         <Text style={[c.pagerRowsLabel, { color: colors.textSecondary }, o?.pagerRowsLabel]}>{t(TABLE_I18N.pagerRows)}</Text>
         <View style={[c.sizeGroup, o?.sizeGroup]}>

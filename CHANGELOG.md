@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.5.0
+
+- `Pager` gains two additive, **default-off** props so a paged grid can read exactly like the
+  v1 AML console's `.ui-pager__info` line:
+  - `infoPrefix?: string` — an already-translated word prefixed to the count
+    (e.g. `"Showing"` → `Showing 1–50 of 3,023 leadership terms`).
+  - `boldNumbers?: boolean` — renders the three counts (from / to / total) in bold
+    `colors.text`, matching v1's `.ui-pager__info b`.
+- **Backward-compatible**: with both props omitted the count line is byte-identical to before
+  (the concatenated text is unchanged even with `boldNumbers` on — bold is styling only), so
+  existing consumers (`/coverage`, aml-v2) are unaffected.
+
 ## Unreleased
 
 - **Pixel-perfect overrides** (additive, backward-compatible). The kit's defaults are

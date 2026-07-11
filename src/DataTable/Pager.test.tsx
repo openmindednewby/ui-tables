@@ -46,6 +46,21 @@ describe('Pager', () => {
     expect(screen.getByTestId(TABLE_TEST_IDS.pagerInfo).textContent).toBe('1–50 of 3,023');
   });
 
+  it('prepends the infoPrefix word to the count line when supplied', () => {
+    renderPager(<Pager page={1} pageSize={50} total={3023} infoPrefix="Showing" unitLabel="leadership terms" onPageChange={noop} onPageSizeChange={noop} />);
+    expect(screen.getByTestId(TABLE_TEST_IDS.pagerInfo).textContent).toBe('Showing 1–50 of 3,023 leadership terms');
+  });
+
+  it('keeps the same concatenated text when boldNumbers is on (bold is styling only)', () => {
+    renderPager(<Pager page={1} pageSize={50} total={3023} infoPrefix="Showing" boldNumbers unitLabel="PEPs" onPageChange={noop} onPageSizeChange={noop} />);
+    expect(screen.getByTestId(TABLE_TEST_IDS.pagerInfo).textContent).toBe('Showing 1–50 of 3,023 PEPs');
+  });
+
+  it('ignores an empty infoPrefix (stays byte-identical to the generic line)', () => {
+    renderPager(<Pager page={1} pageSize={50} total={3023} infoPrefix="" onPageChange={noop} onPageSizeChange={noop} />);
+    expect(screen.getByTestId(TABLE_TEST_IDS.pagerInfo).textContent).toBe('1–50 of 3,023');
+  });
+
   it('disables Prev on the first page and Next on the last', () => {
     const { rerender } = renderPager(<Pager page={1} pageSize={50} total={128} onPageChange={noop} onPageSizeChange={noop} />);
     expect(screen.getByTestId(TABLE_TEST_IDS.pagerPrev)).toBeDisabled();
