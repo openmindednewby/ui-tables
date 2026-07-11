@@ -32,6 +32,20 @@ export interface DataTableProps<T> {
   onRowPress?: (row: T) => void;
   /** Per-row accessibility label. Falls back to the kit's `rowLabel` translation. */
   getRowAccessibilityLabel?: (row: T) => string;
+  /**
+   * Render a full-width detail panel beneath a row (spanning every column), for
+   * expandable-row surfaces (e.g. an audit log's before/after snapshots). The
+   * panel renders only for rows whose `keyExtractor` key is in `expandedRowKeys`,
+   * and sits between that row and the next — in the card-stack mode too.
+   * Omit for a plain table (nothing about the row rendering changes).
+   */
+  renderRowDetail?: (row: T) => React.ReactNode;
+  /**
+   * Keys (as produced by `keyExtractor`) of the rows currently expanded. Expansion
+   * is CONTROLLED by the caller: own the state, toggle it from `onRowPress`. The
+   * table adds no chevron and keeps no internal expand state.
+   */
+  expandedRowKeys?: readonly string[];
   loading?: boolean;
   /** Loading text (already translated). Falls back to the kit's `loading` translation. */
   loadingLabel?: string;

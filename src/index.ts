@@ -11,4 +11,6 @@ export {
   TABLE_I18N,
   CARD_STACK_BREAKPOINT,
   DEFAULT_PAGE_SIZE_OPTIONS,
+  rowTestID,
+  rowDetailTestID,
 } from './DataTable';

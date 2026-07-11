@@ -8,6 +8,10 @@
  * - a responsive label:value **card-stack** below `stackBreakpoint` via
  *   `useWindowDimensions` (the CSS `data-label` card-stack does not port).
  * - per-row `testID` + `accessibilityLabel`/`accessibilityHint` (kit standard).
+ * - optional CONTROLLED expandable rows: `renderRowDetail` + `expandedRowKeys`
+ *   render a full-width detail panel between an expanded row and the next
+ *   (desktop and card-stack alike). Omit both and the table renders exactly as
+ *   it did before the feature existed.
  * - every colour from `useUi().theme`; every component-authored string via `t`.
  */
 import React, { useCallback } from 'react';
@@ -15,11 +19,24 @@ import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
-import { CARD_STACK_BREAKPOINT, TABLE_I18N, TABLE_TEST_IDS } from './constants';
+import { CARD_STACK_BREAKPOINT, TABLE_I18N, TABLE_TEST_IDS, rowDetailTestID, rowTestID } from './constants';
 import { STICKY_HEADER_STYLE, tableStyles as s } from './styles';
 import type { DataTableColumn, DataTableProps } from './types';
 
 const FIRST_ROW_INDEX = 0;
+
+/**
+ * The a11y props spread onto a row. The expanded state is emitted only when the
+ * table is expandable, and via BOTH spellings: `accessibilityState` (RN native)
+ * and `aria-expanded` (react-native-web ≥ 0.19 no longer maps the legacy prop).
+ */
+interface RowA11y {
+  accessibilityLabel: string;
+  accessibilityHint: string;
+  accessibilityRole: 'button' | 'text';
+  accessibilityState?: { expanded: boolean };
+  'aria-expanded'?: boolean;
+}
 
 /** A single desktop cell — renders `col.render(row)` exactly ONCE (POC bug fix). */
 function DesktopCell<T>({ column, row, textColor, testID }: { column: DataTableColumn<T>; row: T; textColor: string; testID: string }): React.ReactElement {
@@ -39,6 +56,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const {
     columns, rows, keyExtractor, rowTint, zebra, stickyHeader, onRowPress,
     getRowAccessibilityLabel, loading, loadingLabel, emptyLabel,
+    renderRowDetail, expandedRowKeys,
     stackBreakpoint = CARD_STACK_BREAKPOINT, testID = TABLE_TEST_IDS.root,
   } = props;
 
@@ -76,12 +94,40 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     );
   }
 
-  const rowTestID = (key: string): string => `${testID}-row-${key}`;
-  const rowA11y = (row: T): { accessibilityLabel: string; accessibilityHint: string; accessibilityRole: 'button' | 'text' } => ({
+  const rowID = (key: string): string => rowTestID(testID, key);
+  const isExpandable = renderRowDetail !== undefined;
+  const isExpanded = (key: string): boolean => isExpandable && (expandedRowKeys?.includes(key) ?? false);
+
+  const rowA11y = (row: T, key: string): RowA11y => ({
     accessibilityLabel: getRowAccessibilityLabel?.(row) ?? t(TABLE_I18N.rowLabel),
     accessibilityHint: t(TABLE_I18N.rowHint),
     accessibilityRole: onRowPress ? 'button' : 'text',
+    // Only an expandable table announces expanded/collapsed — a plain table's rows
+    // keep exactly the props they had before this feature existed.
+    ...(isExpandable ? { accessibilityState: { expanded: isExpanded(key) }, 'aria-expanded': isExpanded(key) } : null),
   });
+
+  /**
+   * Pairs a rendered row with its detail panel when that row is expanded. When
+   * `renderRowDetail` is omitted the row element is returned untouched (no extra
+   * wrapper, no extra node) — omitting the props is a no-op on the output.
+   */
+  const withRowDetail = (rowNode: React.ReactElement, row: T, key: string): React.ReactElement => {
+    if (!isExpandable || !isExpanded(key)) return rowNode;
+    return (
+      <React.Fragment key={key}>
+        {rowNode}
+        <View
+          accessibilityLabel={t(TABLE_I18N.rowDetail)}
+          accessibilityRole="summary"
+          style={[s.rowDetail, { borderTopColor: colors.border, backgroundColor: colors.background }]}
+          testID={rowDetailTestID(testID, key)}
+        >
+          {renderRowDetail(row)}
+        </View>
+      </React.Fragment>
+    );
+  };
 
   // --- mobile: label:value card-stack (GRID.md) ---
   if (stacked) {
@@ -90,13 +136,13 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
         {rows.map((row, i) => {
           const key = keyExtractor(row);
           const bg = rowBackground(row, i);
-          return (
+          return withRowDetail(
             <Pressable
               key={key}
-              testID={rowTestID(key)}
+              testID={rowID(key)}
               disabled={!onRowPress}
               onPress={onRowPress ? () => onRowPress(row) : undefined}
-              {...rowA11y(row)}
+              {...rowA11y(row, key)}
               style={[s.card, { borderTopColor: colors.border }, i === FIRST_ROW_INDEX ? { borderTopWidth: 0 } : null, bg ? { backgroundColor: bg } : null]}
             >
               {columns.map((col) => (
@@ -105,7 +151,9 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
                   <View style={s.cardValue}>{col.render(row)}</View>
                 </View>
               ))}
-            </Pressable>
+            </Pressable>,
+            row,
+            key,
           );
         })}
       </View>
@@ -131,19 +179,21 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
       {rows.map((row, i) => {
         const key = keyExtractor(row);
         const bg = rowBackground(row, i);
-        return (
+        return withRowDetail(
           <Pressable
             key={key}
-            testID={rowTestID(key)}
+            testID={rowID(key)}
             disabled={!onRowPress}
             onPress={onRowPress ? () => onRowPress(row) : undefined}
-            {...rowA11y(row)}
+            {...rowA11y(row, key)}
             style={[s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null]}
           >
             {columns.map((col) => (
-              <DesktopCell key={col.key} column={col} row={row} textColor={colors.text} testID={`${rowTestID(key)}-${col.key}`} />
+              <DesktopCell key={col.key} column={col} row={row} textColor={colors.text} testID={`${rowID(key)}-${col.key}`} />
             ))}
-          </Pressable>
+          </Pressable>,
+          row,
+          key,
         );
       })}
     </View>

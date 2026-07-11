@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+- `DataTable` — **expandable rows** (additive, backward-compatible). Two new optional props:
+  - `renderRowDetail?: (row: T) => React.ReactNode` — renders a full-width detail panel
+    (spanning every column) directly beneath a row, between it and the next row. Works in
+    the desktop grid *and* in the responsive card-stack.
+  - `expandedRowKeys?: readonly string[]` — the `keyExtractor` keys of the rows currently
+    expanded. Expansion is **controlled by the caller** (own the state, toggle from
+    `onRowPress`); the table keeps no internal expand state and adds no chevron.
+  - The panel gets a stable test id `${testID}-row-detail-${key}` (new helpers
+    `rowDetailTestID(tableTestID, key)` / `rowTestID(tableTestID, key)`), is exposed to
+    assistive tech as a labelled region (`accessibilityRole="summary"` +
+    the new `uiTables.rowDetail` translation key), and the row it belongs to reports
+    `aria-expanded` / `accessibilityState.expanded`.
+  - Omit both props and the table renders exactly as before: no extra DOM node, no extra
+    row props, no behaviour change for existing consumers.
+  - Unblocks kefi-web's audit log (before/after JSON snapshot panel) adopting `DataTable`.
+
 ## 1.2.0
 
 - `Pager` — new optional `unitLabel?: string` prop. When supplied it appends an

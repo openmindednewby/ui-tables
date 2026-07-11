@@ -8,7 +8,7 @@ portfolio. Reads theme + translations from the shared `@dloizides/ui-feedback` U
 | Component | Status |
 |-----------|--------|
 | `StatCard` | ✅ Available — labelled metric tile (label + locale-formatted value). |
-| `DataTable` | ✅ Available — the shared, tokenized RN-web grid (the `GRID.md` contract): `columns + rows` API, sticky header, zebra striping, per-row tint, pressable rows, per-row `testID` + a11y, and a responsive label:value **card-stack** below `stackBreakpoint`. |
+| `DataTable` | ✅ Available — the shared, tokenized RN-web grid (the `GRID.md` contract): `columns + rows` API, sticky header, zebra striping, per-row tint, pressable rows, per-row `testID` + a11y, optional **expandable rows**, and a responsive label:value **card-stack** below `stackBreakpoint`. |
 | `FilterBar` | ✅ Available — the `.ui-filters` shell: wrapping field row + live results count + actions slot. |
 | `Pager` | ✅ Available — the `.ui-pager` control: `from–to of N` page-info + rows-per-page pills + Prev/Next. Pass an optional, already-translated `unitLabel` (e.g. `"leadership terms"`) to render `1–50 of 3,023 leadership terms`. |
 | `StatGrid` | ⏳ Deferred — exists only in kefi-web (n=1); moves in when a 2nd consumer appears. |
@@ -27,6 +27,35 @@ const columns: DataTableColumn<Row>[] = [
 <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} zebra stickyHeader testID="grid" />
 <Pager page={page} pageSize={size} total={total} onPageChange={setPage} onPageSizeChange={setSize} />
 ```
+
+#### Expandable rows (optional)
+
+For surfaces that open a full-width detail panel under a row (e.g. an audit log's
+before/after JSON snapshots), pass `renderRowDetail` + `expandedRowKeys`. The panel renders
+between that row and the next — spanning all columns on desktop, and full-width beneath the
+card in the card-stack mode. **Expansion is controlled by you**: the table keeps no internal
+expand state and renders no chevron; toggle from the existing `onRowPress`.
+
+```tsx
+const [expanded, setExpanded] = useState<readonly string[]>([]);
+const toggle = (r: Row) =>
+  setExpanded((keys) => (keys.includes(r.id) ? keys.filter((k) => k !== r.id) : [...keys, r.id]));
+
+<DataTable
+  columns={columns}
+  rows={rows}
+  keyExtractor={(r) => r.id}       // the SAME key is matched against expandedRowKeys
+  onRowPress={toggle}
+  expandedRowKeys={expanded}
+  renderRowDetail={(r) => <AuditDetail entry={r} />}
+  testID="audit"
+/>
+```
+
+The panel's test id is `` `${testID}-row-detail-${key}` `` (e.g. `audit-row-detail-42`) — build it
+with the exported `rowDetailTestID(tableTestID, key)` (rows: `rowTestID(tableTestID, key)`). It is
+exposed to assistive tech as a labelled region (provide the `uiTables.rowDetail` key), and the row
+reports `aria-expanded`. Omit both props and nothing about the table changes.
 
 Colours come entirely from `useUi().theme` (drive it with `@dloizides/design-tokens` via `tokensToUiTheme`), so the grid re-themes per tenant. Every component-authored string is routed through the UiProvider `t` — provide the `uiTables.*` keys (see `TABLE_I18N`) in your locale files; a caller may also pass already-translated `loadingLabel` / `emptyLabel` / `resultsLabel` directly.
 

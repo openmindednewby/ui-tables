@@ -26,6 +26,7 @@ const RESULTS_FONT = 13;
 const HEAD_LETTER_SPACING = 0.4;
 const LABEL_LETTER_SPACING = 0.3;
 const STICKY_Z = 2;
+const FULL_WIDTH = '100%' as const;
 
 /**
  * `position: 'sticky'` is a react-native-web-only value that RN's `ViewStyle`
@@ -47,6 +48,8 @@ export const tableStyles = StyleSheet.create({
   numCell: { fontVariant: ['tabular-nums'], textAlign: 'right' },
   state: { paddingVertical: STATE_PAD_V, alignItems: 'center' },
   stateText: { fontSize: STATE_FONT },
+  /** Full-width panel under an expanded row — spans every column (the wrap is a column flexbox). */
+  rowDetail: { width: FULL_WIDTH, paddingHorizontal: ROW_PAD_H, paddingVertical: ROW_PAD_V, borderTopWidth: BORDER_WIDTH },
   card: { paddingHorizontal: ROW_PAD_H, paddingVertical: ROW_PAD_V, borderTopWidth: BORDER_WIDTH },
   cardLine: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', paddingVertical: CARD_LINE_PAD_V, gap: CARD_LINE_GAP },
   cardLabel: { fontSize: HEAD_FONT, fontWeight: '600', textTransform: 'uppercase', letterSpacing: LABEL_LETTER_SPACING },

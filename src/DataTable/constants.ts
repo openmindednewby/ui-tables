@@ -14,6 +14,10 @@ export const DEFAULT_PAGE_SIZE_OPTIONS: readonly number[] = [25, 50, 100, 200];
 export const TABLE_TEST_IDS = {
   root: 'ui-data-table',
   head: 'ui-data-table-head',
+  /** Infix of a row's test id: `${tableTestID}-row-${key}`. */
+  rowInfix: 'row',
+  /** Infix of an expanded row's detail panel: `${tableTestID}-row-detail-${key}`. */
+  rowDetailInfix: 'row-detail',
   filterBar: 'ui-filters',
   results: 'ui-results',
   pager: 'ui-pager',
@@ -21,6 +25,18 @@ export const TABLE_TEST_IDS = {
   pagerPrev: 'ui-pager-prev',
   pagerNext: 'ui-pager-next',
 } as const;
+
+/** The test id of a row: `${tableTestID}-row-${key}` (key from `keyExtractor`). */
+export const rowTestID = (tableTestID: string, key: string): string =>
+  `${tableTestID}-${TABLE_TEST_IDS.rowInfix}-${key}`;
+
+/**
+ * The test id of an expanded row's full-width detail panel:
+ * `${tableTestID}-row-detail-${key}` (key from `keyExtractor`). Exported so
+ * consumers and e2e specs target the panel without re-deriving the shape.
+ */
+export const rowDetailTestID = (tableTestID: string, key: string): string =>
+  `${tableTestID}-${TABLE_TEST_IDS.rowDetailInfix}-${key}`;
 
 /**
  * Translation keys for every component-authored, user-facing string. Apps map
@@ -32,6 +48,8 @@ export const TABLE_I18N = {
   empty: 'uiTables.empty',
   rowLabel: 'uiTables.rowLabel',
   rowHint: 'uiTables.rowHint',
+  /** Accessible name of the full-width detail panel under an expanded row. */
+  rowDetail: 'uiTables.rowDetail',
   results: 'uiTables.results',
   pagerInfo: 'uiTables.pager.info',
   pagerPrev: 'uiTables.pager.prev',

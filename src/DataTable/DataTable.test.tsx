@@ -4,7 +4,7 @@ import React from 'react';
 import { UiProvider, type UiTheme, type UiValue } from '@dloizides/ui-feedback';
 
 import { DataTable } from './DataTable';
-import { TABLE_I18N, TABLE_TEST_IDS } from './constants';
+import { TABLE_I18N, TABLE_TEST_IDS, rowDetailTestID, rowTestID } from './constants';
 import type { DataTableColumn } from './types';
 
 const theme: UiTheme = {
@@ -20,6 +20,7 @@ const T_MAP: Record<string, string> = {
   [TABLE_I18N.empty]: 'No rows',
   [TABLE_I18N.rowLabel]: 'Row',
   [TABLE_I18N.rowHint]: 'Row hint',
+  [TABLE_I18N.rowDetail]: 'Row detail',
 };
 const t: UiValue['t'] = (key) => T_MAP[key] ?? key;
 
@@ -93,5 +94,107 @@ describe('DataTable', () => {
   it('renders the desktop sticky header region when stickyHeader is set', () => {
     renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stickyHeader stackBreakpoint={0} testID="grid" />);
     expect(screen.getByTestId(TABLE_TEST_IDS.head)).toBeTruthy();
+  });
+});
+
+describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', () => {
+  const renderDetail = (r: Person): React.ReactElement => <span>{`detail:${r.name}`}</span>;
+
+  it('renders NO detail panel when renderRowDetail is omitted (backward compatible)', () => {
+    // Even with expandedRowKeys set, no renderRowDetail means a plain table.
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+    );
+    expect(screen.queryByTestId('grid-row-detail-a')).toBeNull();
+    expect(screen.getByTestId('grid-row-a')).toBeTruthy();
+  });
+
+  it('adds no expanded accessibilityState to rows of a plain (non-expandable) table', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
+    expect(screen.getByTestId('grid-row-a').getAttribute('aria-expanded')).toBeNull();
+  });
+
+  it('renders NO detail panel for rows whose key is not in expandedRowKeys', () => {
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+    );
+    expect(screen.queryByTestId('grid-row-detail-b')).toBeNull();
+    expect(screen.queryByText('detail:Bo')).toBeNull();
+  });
+
+  it('renders NO detail panel when expandedRowKeys is empty or omitted', () => {
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} stackBreakpoint={0} testID="grid" />,
+    );
+    expect(screen.queryByTestId('grid-row-detail-a')).toBeNull();
+    expect(screen.queryByTestId('grid-row-detail-b')).toBeNull();
+  });
+
+  it('renders the detail panel for an expanded row, with the derived testID and the a11y label', () => {
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+    );
+    const panel = screen.getByTestId('grid-row-detail-a');
+    expect(panel).toBeTruthy();
+    expect(screen.getByText('detail:Ada')).toBeTruthy();
+    expect(panel.getAttribute('aria-label')).toBe('Row detail');
+    expect(screen.getByTestId('grid-row-a').getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByTestId('grid-row-b').getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('renders the panel DIRECTLY beneath its own row (between it and the next row)', () => {
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+    );
+    const rowA = screen.getByTestId('grid-row-a');
+    const panel = screen.getByTestId('grid-row-detail-a');
+    const rowB = screen.getByTestId('grid-row-b');
+    expect(rowA.nextElementSibling).toBe(panel);
+    expect(panel.nextElementSibling).toBe(rowB);
+    expect(rowA.parentElement).toBe(panel.parentElement); // same table body, i.e. full-width sibling
+  });
+
+  it('supports multiple expanded rows at once, each panel under its own row', () => {
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a', 'b']} stackBreakpoint={0} testID="grid" />,
+    );
+    expect(screen.getByTestId('grid-row-a').nextElementSibling).toBe(screen.getByTestId('grid-row-detail-a'));
+    expect(screen.getByTestId('grid-row-b').nextElementSibling).toBe(screen.getByTestId('grid-row-detail-b'));
+    expect(screen.getByText('detail:Ada')).toBeTruthy();
+    expect(screen.getByText('detail:Bo')).toBeTruthy();
+  });
+
+  it('renders the panel beneath the card in the responsive card-stack mode too', () => {
+    const HUGE = 5000;
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['b']} stackBreakpoint={HUGE} testID="grid" />,
+    );
+    expect(screen.queryByTestId(TABLE_TEST_IDS.head)).toBeNull(); // stacked branch
+    expect(screen.getByTestId('grid-row-b').nextElementSibling).toBe(screen.getByTestId('grid-row-detail-b'));
+    expect(screen.queryByTestId('grid-row-detail-a')).toBeNull();
+  });
+
+  it('leaves expansion to the caller — pressing a row does not open a panel by itself', () => {
+    const onRowPress = jest.fn();
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={[]} onRowPress={onRowPress} stackBreakpoint={0} testID="grid" />,
+    );
+    fireEvent.click(screen.getByTestId('grid-row-a'));
+    expect(onRowPress).toHaveBeenCalledWith(rows[0]);
+    expect(screen.queryByTestId('grid-row-detail-a')).toBeNull(); // no internal expand state
+  });
+
+  it('calls renderRowDetail only for expanded rows', () => {
+    const spy = jest.fn(renderDetail);
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={spy} expandedRowKeys={['b']} stackBreakpoint={0} testID="grid" />,
+    );
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(rows[1]);
+  });
+
+  it('exposes the panel test id shape through rowDetailTestID', () => {
+    expect(rowDetailTestID('grid', 'a')).toBe('grid-row-detail-a');
+    expect(rowTestID('grid', 'a')).toBe('grid-row-a');
   });
 });
