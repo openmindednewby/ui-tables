@@ -148,7 +148,19 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
             <Pressable
               key={key}
               testID={rowID(key)}
-              disabled={!onRowPress}
+              // 🔴 Do NOT set `disabled` when the row is merely non-pressable.
+              //
+              // On RN Web a Pressable with `disabled` renders `aria-disabled="true"` AND
+              // `pointer-events: none` on the row container — which also kills every
+              // interactive child INSIDE the row. Any table that puts controls in its cells
+              // (Edit/Delete buttons, an inline stock input, a toggle) and does not pass
+              // `onRowPress` therefore renders a row whose controls are all visibly present,
+              // correctly styled, and completely un-clickable. Agora's products and coupons
+              // grids hit exactly this: a merchant could not edit or delete ANY product.
+              //
+              // A Pressable with no `onPress` is already not pressable; `disabled` bought
+              // nothing and broke the children. Consumers that DO pass `onRowPress` are
+              // unaffected (for them this prop was always `false`).
               onPress={onRowPress ? () => onRowPress(row) : undefined}
               {...hoverHandlers(key)}
               {...rowA11y(row, key)}
@@ -192,7 +204,8 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
           <Pressable
             key={key}
             testID={rowID(key)}
-            disabled={!onRowPress}
+            // See the identical note on the stacked-layout row above: `disabled` on a
+            // non-pressable row sets pointer-events:none and kills the row's own controls.
             onPress={onRowPress ? () => onRowPress(row) : undefined}
             {...hoverHandlers(key)}
             {...rowA11y(row, key)}
