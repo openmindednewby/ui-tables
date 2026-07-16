@@ -57,6 +57,76 @@ with the exported `rowDetailTestID(tableTestID, key)` (rows: `rowTestID(tableTes
 exposed to assistive tech as a labelled region (provide the `uiTables.rowDetail` key), and the row
 reports `aria-expanded`. Omit both props and nothing about the table changes.
 
+#### Bulk-select (optional)
+
+Pass `onSelectionChange` to add a checkbox gutter (header + every row). **Selection is
+controlled by you**, exactly like `expandedRowKeys`: the table keeps no internal selection
+state. The header checkbox is tri-state and reports `aria-checked="mixed"` when only part of
+the page is ticked.
+
+```tsx
+const [selected, setSelected] = useState<readonly string[]>([]);
+
+<DataTable
+  columns={columns}
+  rows={rows}
+  keyExtractor={(r) => r.id}      // the SAME key is matched against selectedRowKeys
+  selectedRowKeys={selected}
+  onSelectionChange={setSelected}
+  testID="grid"
+/>
+```
+
+The header only ever adds or removes **this page's** keys — any off-page keys you hold are
+preserved, because the table cannot see the rows they belong to. Test ids:
+`rowSelectTestID(tableTestID, key)` and `selectAllTestID(tableTestID)`.
+
+#### Select all matching the filter — a flag, not ids (optional)
+
+This table is **server-paged and deliberately not virtualized** (see the ZY-02 grid spike:
+render cost is linear at ~2–3 ms and ~16 DOM nodes per row, so a huge page is
+indistinguishable from an outage). "Select all 3,023 matching" therefore **cannot** and
+**must not** be an id list — the other pages were never fetched.
+
+Add `matchingCount` (the server's total) + `onSelectAllMatchingChange` and, once the whole
+page is ticked and more rows match, a banner offers the flag:
+
+```tsx
+<DataTable
+  /* …selection props… */
+  matchingCount={total}                       // same number your Pager shows
+  allMatchingSelected={allMatching}           // controlled FLAG
+  onSelectAllMatchingChange={setAllMatching}  // emits `true` / `false` — never ids
+/>
+```
+
+Resolve the flag **server-side against the same filter your list endpoint took**. That is a
+better design anyway: the work survives the operator closing the tab. While the flag is set
+every row reads as selected with an empty `selectedRowKeys`; toggling any single row drops
+the flag (the operator is no longer acting on *the filter*).
+
+#### Keyboard navigation (optional)
+
+`keyboardNavigation` turns the table into a real ARIA grid using the **roving tabindex**
+pattern — exactly one row is tabbable, so Tab crosses the grid in one hop instead of 100.
+
+| Key | Action |
+|---|---|
+| ↑ / ↓ | Move the focused row (clamped — never wraps) |
+| Home / End | First / last row on the page |
+| Space | Toggle selection (when selectable) |
+| Enter | Activate the row, via the existing `onRowPress` |
+
+```tsx
+<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} keyboardNavigation onRowPress={open} />
+```
+
+**Off by default**, because adding `tabIndex` to rows changes a page's tab order. Web-only in
+effect (focus movement and key events are DOM concerns); inert on native. Keys the table does
+not handle are never `preventDefault`ed, so Tab and browser shortcuts keep working. When the
+page changes underneath it, the tab stop re-homes onto the new first row rather than
+disappearing.
+
 #### Pixel-perfect overrides (optional)
 
 **The defaults are opinionated but never mandatory.** When a surface must match an existing

@@ -1,5 +1,50 @@
 # Changelog
 
+## 1.10.0
+
+Additive: **bulk-select** + **keyboard navigation** on `DataTable` (ZY-08). Every new prop is
+optional and CONTROLLED — omit them all and the table renders exactly as it did on 1.9.2, so
+erevna / katalogos / kefi / agora are unaffected. Hence a MINOR bump.
+
+- **Bulk-select** — `selectedRowKeys` + `onSelectionChange` add a checkbox gutter to the
+  header and every row. Controlled, following the `expandedRowKeys` precedent exactly: the
+  table keeps no internal selection state, and `onSelectionChange` is the enabler (as
+  `renderRowDetail` is for expansion). The header checkbox is genuinely tri-state
+  (`accessibilityState.checked: 'mixed'` + `aria-checked="mixed"`), and only ever adds or
+  removes keys belonging to the CURRENT page — off-page keys the caller holds are preserved,
+  because the table must not drop a selection it cannot see.
+- **Select all matching the filter — a FLAG, never an id list.** `matchingCount` +
+  `onSelectAllMatchingChange` add a banner once the page is fully selected and more rows
+  match. It emits `true`/`false`; the table never enumerates the matching rows (they are on
+  pages it never fetched, and the ZY-02 spike measured ~2–3 ms and ~16 DOM nodes per row, so
+  materialising thousands of them is indistinguishable from an outage). Toggling a single row
+  under the flag drops it — the operator is no longer acting on *the filter*.
+- **Keyboard navigation** — `keyboardNavigation` (default **off**, because giving rows a
+  `tabIndex` changes a page's tab order) implements the ARIA grid **roving tabindex**: one tab
+  stop for the whole grid, ↑/↓ to move (clamped, never wrapping), Home/End, Space to toggle
+  selection, Enter to activate via the existing `onRowPress`. Keys the table does not handle
+  are never `preventDefault`ed, so Tab and browser shortcuts keep working. When the page
+  changes underneath it the tab stop re-homes onto the new first row rather than vanishing —
+  without that guard the grid would become keyboard-unreachable the moment an operator paged.
+  Web-only in effect (focus movement and key events are DOM concerns); inert on native, via
+  the same deliberate split as the `position: 'sticky'` header.
+- **a11y** — `role="grid"` / `row` / `columnheader` / `cell` when navigable; `aria-selected`
+  on rows when selectable; row checkboxes are labelled with the ROW's name, so they announce
+  as "Instruction ABC, checkbox" rather than an anonymous "checkbox" repeated down the page.
+- **🔴 A selectable row's checkbox sits OUTSIDE its pressable area** — a sibling, never a
+  descendant. A checkbox nested inside an interactive row's `Pressable` is precisely the shape
+  the 1.9.2 fix identified as broken: the row's pointer responders CAPTURE the gesture and
+  cancel the child's press, so the checkbox would pass a synthetic `element.click()` test and
+  silently do nothing under a real mouse, touch or Playwright click. A selectable row is now a
+  plain `<View>` frame holding the checkbox and a separate pressable content area.
+- New exports: `rowSelectTestID(tableTestID, key)`, `selectAllTestID(tableTestID)`, the
+  `uiTables.select.*` keys on `TABLE_I18N`, and the `selectCell` / `selectBanner`
+  `styleOverrides` slots. No existing export changed.
+- Internals split for clarity as the row grew three shapes: `DataTableRow`, `TableRow`,
+  `TableHeader`, `RowCells`, plus pure `selection.ts` / `rowNav.ts` rule modules and the
+  `useTableSelection` / `useRovingFocus` hooks. No behaviour change for existing consumers
+  (the full 1.9.2 suite passes untouched).
+
 ## 1.9.2
 
 - **🔴 In-cell action buttons (Edit/Delete/Stop) now fire on a real pointer gesture, not just a bare

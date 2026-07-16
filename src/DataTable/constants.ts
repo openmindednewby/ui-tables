@@ -18,6 +18,14 @@ export const TABLE_TEST_IDS = {
   rowInfix: 'row',
   /** Infix of an expanded row's detail panel: `${tableTestID}-row-detail-${key}`. */
   rowDetailInfix: 'row-detail',
+  /** Infix of a row's select checkbox: `${tableTestID}-select-${key}`. */
+  rowSelectInfix: 'select',
+  /** Suffix of the header (select-all-on-page) checkbox: `${tableTestID}-select-all`. */
+  selectAllSuffix: 'select-all',
+  /** Suffix of the select-all-matching banner: `${tableTestID}-select-banner`. */
+  selectBannerSuffix: 'select-banner',
+  /** Suffix of the banner's action: `${tableTestID}-select-banner-action`. */
+  selectBannerActionSuffix: 'select-banner-action',
   filterBar: 'ui-filters',
   results: 'ui-results',
   pager: 'ui-pager',
@@ -39,6 +47,18 @@ export const rowDetailTestID = (tableTestID: string, key: string): string =>
   `${tableTestID}-${TABLE_TEST_IDS.rowDetailInfix}-${key}`;
 
 /**
+ * The test id of a row's select checkbox: `${tableTestID}-select-${key}` (key from
+ * `keyExtractor`). Exported so consumers and e2e specs target a row's checkbox without
+ * re-deriving the shape.
+ */
+export const rowSelectTestID = (tableTestID: string, key: string): string =>
+  `${tableTestID}-${TABLE_TEST_IDS.rowSelectInfix}-${key}`;
+
+/** The test id of the header (select-all-on-page) checkbox: `${tableTestID}-select-all`. */
+export const selectAllTestID = (tableTestID: string): string =>
+  `${tableTestID}-${TABLE_TEST_IDS.selectAllSuffix}`;
+
+/**
  * Translation keys for every component-authored, user-facing string. Apps map
  * these in their UiProvider `t` (FM); the neutral default `t` returns the key, so
  * a host that forgets a key degrades to the key rather than a hardcoded literal.
@@ -50,6 +70,22 @@ export const TABLE_I18N = {
   rowHint: 'uiTables.rowHint',
   /** Accessible name of the full-width detail panel under an expanded row. */
   rowDetail: 'uiTables.rowDetail',
+  /** Accessible name of a row's select checkbox. */
+  selectRow: 'uiTables.select.row',
+  selectRowHint: 'uiTables.select.rowHint',
+  /** Accessible name of the header (select-all-on-page) checkbox. */
+  selectAll: 'uiTables.select.all',
+  selectAllHint: 'uiTables.select.allHint',
+  /** Banner, offer state: "All {{p1}} rows on this page are selected." */
+  selectPageSelected: 'uiTables.select.pageSelected',
+  /** Banner, offer action: "Select all {{p1}} matching this filter". */
+  selectAllMatching: 'uiTables.select.allMatching',
+  selectAllMatchingHint: 'uiTables.select.allMatchingHint',
+  /** Banner, active state: "All {{p1}} rows matching this filter are selected." */
+  selectMatchingSelected: 'uiTables.select.matchingSelected',
+  /** Banner, active action: "Clear selection". */
+  selectClear: 'uiTables.select.clear',
+  selectClearHint: 'uiTables.select.clearHint',
   results: 'uiTables.results',
   pagerInfo: 'uiTables.pager.info',
   pagerPrev: 'uiTables.pager.prev',

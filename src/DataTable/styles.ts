@@ -36,6 +36,15 @@ const HEAD_LETTER_SPACING = 0.4;
 const LABEL_LETTER_SPACING = 0.3;
 const STICKY_Z = 2;
 const FULL_WIDTH = '100%' as const;
+/** The checkbox column's width — a fixed gutter, so header and rows line up exactly. */
+const SELECT_COL_WIDTH = 20;
+const CHECKBOX_SIZE = 18;
+const CHECKBOX_RADIUS = 4;
+const CHECKBOX_GLYPH_FONT = 11;
+const CHECKBOX_GLYPH_LINE = 13;
+const BANNER_PAD_V = 8;
+const BANNER_FONT = 13;
+const BANNER_GAP = 6;
 
 /**
  * `position: 'sticky'` is a react-native-web-only value that RN's `ViewStyle`
@@ -95,6 +104,46 @@ export const tableStyles = StyleSheet.create({
   cardLine: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', paddingVertical: CARD_LINE_PAD_V, gap: CARD_LINE_GAP },
   cardLabel: { fontSize: HEAD_FONT, fontWeight: '600', textTransform: 'uppercase', letterSpacing: LABEL_LETTER_SPACING },
   cardValue: { flexShrink: 1, alignItems: 'flex-end' },
+});
+
+/**
+ * Bulk-select slots. Separate from `tableStyles` so a consumer that never selects anything
+ * pays for none of it, and so the checkbox gutter's width lives in exactly one place —
+ * header and body read the SAME `selectCell`, which is what keeps the columns aligned.
+ */
+export const selectionStyles = StyleSheet.create({
+  /** The fixed-width gutter holding the checkbox, in both the header and every row. */
+  selectCell: { width: SELECT_COL_WIDTH, alignItems: 'flex-start', justifyContent: 'center' },
+  /** The checkbox's pressable area (the hit target is grown further with `hitSlop`). */
+  checkboxHit: { alignItems: 'center', justifyContent: 'center' },
+  checkbox: {
+    width: CHECKBOX_SIZE,
+    height: CHECKBOX_SIZE,
+    borderRadius: CHECKBOX_RADIUS,
+    borderWidth: BORDER_WIDTH,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxGlyph: { fontSize: CHECKBOX_GLYPH_FONT, lineHeight: CHECKBOX_GLYPH_LINE, fontWeight: '700' },
+  /**
+   * The cells of a SELECTABLE row, wrapped so the checkbox can sit OUTSIDE the pressable
+   * area. `flex: 1` so the cells still claim the row minus the checkbox gutter.
+   */
+  rowContent: { flex: 1, flexDirection: 'row', columnGap: COLUMN_GAP, alignItems: 'center' },
+  /** The same, for the card-stack: a card's lines are a column, not a row. */
+  cardContent: { flex: 1 },
+  /** The select-all-matching banner, spanning the table above the header. */
+  banner: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: BANNER_GAP,
+    paddingHorizontal: ROW_PAD_H,
+    paddingVertical: BANNER_PAD_V,
+  },
+  bannerText: { fontSize: BANNER_FONT },
+  bannerAction: { fontSize: BANNER_FONT, fontWeight: '700', textDecorationLine: 'underline' },
 });
 
 export const chromeStyles = StyleSheet.create({

@@ -42,6 +42,10 @@ export interface DataTableStyleOverrides {
   stateText?: StyleProp<TextStyle>;
   /** The full-width detail panel under an expanded row. */
   rowDetail?: StyleProp<ViewStyle>;
+  /** The fixed-width checkbox gutter, in the header and in every row. */
+  selectCell?: StyleProp<ViewStyle>;
+  /** The select-all-matching banner above the header. */
+  selectBanner?: StyleProp<ViewStyle>;
   /** A card in the responsive card-stack (below `stackBreakpoint`). */
   card?: StyleProp<ViewStyle>;
   /** One label:value line inside a card. */
@@ -92,6 +96,59 @@ export interface DataTableProps<T> {
    * table adds no chevron and keeps no internal expand state.
    */
   expandedRowKeys?: readonly string[];
+  /**
+   * Keys (as produced by `keyExtractor`) of the rows currently selected. Selection is
+   * CONTROLLED by the caller — the same contract as `expandedRowKeys`: own the state,
+   * update it from `onSelectionChange`. The table keeps no internal selection state.
+   *
+   * Keys the table cannot see (rows on other pages) are preserved, never dropped: the
+   * header checkbox only ever adds or removes keys belonging to the CURRENT page.
+   */
+  selectedRowKeys?: readonly string[];
+  /**
+   * **Enables bulk-select** (the way `renderRowDetail` enables expansion): a checkbox
+   * gutter appears in the header and in every row. Emits the NEXT selection whenever a row
+   * or the header checkbox is toggled. Omit and nothing about the table changes.
+   */
+  onSelectionChange?: (selectedRowKeys: readonly string[]) => void;
+  /**
+   * Total rows matching the CURRENT filter across EVERY page, as reported by the server
+   * (the same number the `Pager`'s `total` shows). Enables the "select all N matching this
+   * filter" affordance once the whole page is selected and more rows match than fit on it.
+   *
+   * Omit and bulk-select stays page-scoped.
+   */
+  matchingCount?: number;
+  /**
+   * Whether "every row matching the filter" is selected — **a FLAG, not a set of ids.**
+   * CONTROLLED, like `selectedRowKeys`.
+   *
+   * While set, every row reads as selected without the caller enumerating anything.
+   */
+  allMatchingSelected?: boolean;
+  /**
+   * Emits the select-all-matching **FLAG** (`true` to select all matching, `false` to
+   * clear). Enables the banner, together with `matchingCount`.
+   *
+   * 🔴 The table will NEVER hand you an id list for this. It cannot — the matching rows are
+   * on pages it never fetched — and it must not: the ZY-02 spike measured this grid at
+   * ~2–3 ms and ~16 DOM nodes per row, so materialising 5,000 selected rows is
+   * indistinguishable from an outage. Resolve the flag server-side against the same filter
+   * your list endpoint took; the work then survives the operator closing the tab.
+   */
+  onSelectAllMatchingChange?: (allMatching: boolean) => void;
+  /**
+   * Enables keyboard navigation across rows (the ARIA grid roving-tabindex pattern):
+   * ArrowUp/ArrowDown move the focused row (clamped — never wrapping), Home/End jump to the
+   * first/last row on the page, Space toggles selection (when selectable), and Enter
+   * activates the row via the existing `onRowPress`.
+   *
+   * Default **off**: switching it on gives rows a `tabIndex`, which changes a page's tab
+   * order — so an existing table must opt in rather than silently shift under its users.
+   *
+   * Web-only in effect (focus movement and key events are DOM concerns); inert on native.
+   */
+  keyboardNavigation?: boolean;
   loading?: boolean;
   /** Loading text (already translated). Falls back to the kit's `loading` translation. */
   loadingLabel?: string;

@@ -53,6 +53,20 @@ interface DesktopCellProps<T> {
   textColor: string;
   testID: string;
   styleOverrides?: CellStyleOverrides;
+  /**
+   * Give the cell its ARIA `cell` role. Set only when the table opted into keyboard
+   * navigation, where it really is a grid: a `role="row"` with structureless children is a
+   * broken grid, and promising a structure you do not deliver is worse for a screen-reader
+   * user than claiming none. A plain table keeps the roles it has always had.
+   *
+   * `cell` rather than `gridcell` on purpose. `gridcell` advertises a cell that
+   * participates in grid navigation, and these do not: focus roves at the ROW level (see
+   * `useRovingFocus`), so a gridcell would promise a tab stop that does not exist. ARIA 1.2
+   * lists `cell` among `row`'s required owned elements, so this is a valid grid — and it is
+   * also the only one of the two that React Native types (`Role` has `cell`, not
+   * `gridcell`), which keeps this off the web-only escape hatch entirely.
+   */
+  inGrid?: boolean;
 }
 
 /**
@@ -63,7 +77,7 @@ interface DesktopCellProps<T> {
  * `cellWrap` reaches EVERY cell, including ones rendering a custom node (a badge, a
  * link, an action menu), which is what a consumer needs for true pixel-parity.
  */
-export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides }: DesktopCellProps<T>): React.ReactElement {
+export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides, inGrid }: DesktopCellProps<T>): React.ReactElement {
   return (
     <View
       style={[
@@ -71,6 +85,7 @@ export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides 
         styleOverrides?.cellWrap,
       ]}
       testID={testID}
+      {...(inGrid === true ? { role: 'cell' as const } : null)}
     >
       {cellContent(column, row, textColor, styleOverrides)}
     </View>

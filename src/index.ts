@@ -16,4 +16,6 @@ export {
   DEFAULT_PAGE_SIZE_OPTIONS,
   rowTestID,
   rowDetailTestID,
+  rowSelectTestID,
+  selectAllTestID,
 } from './DataTable';
