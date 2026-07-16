@@ -19,7 +19,7 @@
  * - every colour from `useUi().theme`; every component-authored string via `t`.
  */
 import React, { useCallback, useState } from 'react';
-import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
@@ -116,6 +116,38 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   });
 
   /**
+   * The row container. An INTERACTIVE table (`onRowPress` set) needs a `Pressable` so the whole
+   * row is a button. A NON-interactive table must NOT be a Pressable: on RN Web a Pressable installs
+   * pointer responders (pointerdown/up/cancel) on the row container that CAPTURE a real pointer
+   * gesture and cancel the press of any interactive child in a cell — so an Edit/Delete/Stop button
+   * inside a static row fires on a bare synthetic `click` but NOT on a real mouse/touch (or a
+   * Playwright) pointer sequence: the button looks clickable and silently does nothing. (A bare
+   * `<View>` has no responders, so its children receive the full gesture and their `onPress` fires.)
+   * This is the same class of bug the `disabled`→`pointer-events:none` note above warned about — a
+   * non-pressable row must be an inert container, not a Pressable.
+   */
+  // NB: a plain function that RETURNS the element (inlined into the row map), NOT a `<Component/>`.
+  // Defining a component inside this render body would give it a new identity every render and force
+  // React to remount the whole row subtree on each hover/state change.
+  const rowContainer = (row: T, rowKey: string, style: StyleProp<ViewStyle>, children: React.ReactNode): React.ReactElement =>
+    interactive ? (
+      <Pressable
+        key={rowKey}
+        testID={rowID(rowKey)}
+        onPress={() => onRowPress?.(row)}
+        {...hoverHandlers(rowKey)}
+        {...rowA11y(row, rowKey)}
+        style={style}
+      >
+        {children}
+      </Pressable>
+    ) : (
+      <View key={rowKey} testID={rowID(rowKey)} {...rowA11y(row, rowKey)} style={style}>
+        {children}
+      </View>
+    );
+
+  /**
    * Pairs a rendered row with its detail panel when that row is expanded. When
    * `renderRowDetail` is omitted the row element is returned untouched (no extra
    * wrapper, no extra node) — omitting the props is a no-op on the output.
@@ -145,34 +177,19 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
           const key = keyExtractor(row);
           const bg = rowBg(row, i, key);
           return withRowDetail(
-            <Pressable
-              key={key}
-              testID={rowID(key)}
-              // 🔴 Do NOT set `disabled` when the row is merely non-pressable.
-              //
-              // On RN Web a Pressable with `disabled` renders `aria-disabled="true"` AND
-              // `pointer-events: none` on the row container — which also kills every
-              // interactive child INSIDE the row. Any table that puts controls in its cells
-              // (Edit/Delete buttons, an inline stock input, a toggle) and does not pass
-              // `onRowPress` therefore renders a row whose controls are all visibly present,
-              // correctly styled, and completely un-clickable. Agora's products and coupons
-              // grids hit exactly this: a merchant could not edit or delete ANY product.
-              //
-              // A Pressable with no `onPress` is already not pressable; `disabled` bought
-              // nothing and broke the children. Consumers that DO pass `onRowPress` are
-              // unaffected (for them this prop was always `false`).
-              onPress={onRowPress ? () => onRowPress(row) : undefined}
-              {...hoverHandlers(key)}
-              {...rowA11y(row, key)}
-              style={[s.card, { borderTopColor: colors.border }, i === FIRST_ROW_INDEX ? { borderTopWidth: 0 } : null, bg ? { backgroundColor: bg } : null, o?.card]}
-            >
-              {columns.map((col) => (
+            // Row container is a Pressable only when the table is interactive (`onRowPress`); a
+            // static row is a plain View so its in-cell controls stay clickable — see rowContainer.
+            rowContainer(
+              row,
+              key,
+              [s.card, { borderTopColor: colors.border }, i === FIRST_ROW_INDEX ? { borderTopWidth: 0 } : null, bg ? { backgroundColor: bg } : null, o?.card],
+              columns.map((col) => (
                 <View key={col.key} style={[s.cardLine, o?.cardLine]}>
                   <Text style={[s.cardLabel, { color: colors.textSecondary }, o?.cardLabel]}>{col.header}</Text>
                   <View style={[s.cardValue, o?.cardValue]}>{cellContent(col, row, colors.text, o)}</View>
                 </View>
-              ))}
-            </Pressable>,
+              )),
+            ),
             row,
             key,
           );
@@ -201,20 +218,16 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
         const key = keyExtractor(row);
         const bg = rowBg(row, i, key);
         return withRowDetail(
-          <Pressable
-            key={key}
-            testID={rowID(key)}
-            // See the identical note on the stacked-layout row above: `disabled` on a
-            // non-pressable row sets pointer-events:none and kills the row's own controls.
-            onPress={onRowPress ? () => onRowPress(row) : undefined}
-            {...hoverHandlers(key)}
-            {...rowA11y(row, key)}
-            style={[s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]}
-          >
-            {columns.map((col) => (
+          // Pressable only for interactive tables; a static row is a plain View so its in-cell
+          // Edit/Delete/Stop controls receive the full pointer gesture — see rowContainer.
+          rowContainer(
+            row,
+            key,
+            [s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row],
+            columns.map((col) => (
               <DesktopCell key={col.key} column={col} row={row} textColor={colors.text} testID={`${rowID(key)}-${col.key}`} styleOverrides={o} />
-            ))}
-          </Pressable>,
+            )),
+          ),
           row,
           key,
         );

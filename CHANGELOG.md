@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.9.2
+
+- **🔴 In-cell action buttons (Edit/Delete/Stop) now fire on a real pointer gesture, not just a bare
+  synthetic click.** A NON-interactive row (no `onRowPress`) was still rendered as a `<Pressable>`.
+  On react-native-web a `Pressable` installs pointer responders (pointerdown/up/cancel) on the row
+  container that CAPTURE a real mouse/touch gesture and cancel the press of any interactive child in
+  a cell — so a Delete/Stop/Edit button inside a static row looked clickable, fired on a bare
+  `element.click()`, but silently did nothing on an actual click/tap (and on a Playwright `.click()`,
+  which is why the AML v2 settings webhook-delete + stop-monitoring E2Es were red). A non-pressable
+  row is now a plain `<View>` (new `RowContainer`), so its cell controls receive the full gesture.
+  Interactive tables (`onRowPress`) are unchanged. Same class as the earlier `disabled`→
+  `pointer-events:none` fix; this closes the remaining pointer-responder-capture path.
+
 ## 1.9.0
 
 - **`Pager` dropdown-variant rows menu now escapes ancestor stacking contexts (web).** The
