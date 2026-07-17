@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.11.0
+
+Additive: a **declarative `Filters` bar** + **Pager** enhancements. Every change is additive and
+backward compatible — existing `FilterBar` / `Pager` / `DataTable` consumers (aml-v2, agora,
+zygos, kefi, erevna, katalogos) are untouched and every new prop is optional, so a MINOR bump.
+No app is migrated by this release; adoption is a later wave (see `ADOPTION.md`).
+
+- **`Filters`** — the declarative, configurable filter bar built ON the existing `FilterBar`
+  shell (reusing its live results count + WCAG live region + actions slot). A caller passes a
+  `fields` schema — the SUPERSET harvested from every portal's hand-rolled filters — of kinds
+  `select` / `text` / `number` / `dateRange` / `typeahead` / `boolean`, plus a value map and
+  `onChange`. Two value models: **LIVE** (edits apply immediately — agora, zygos) and
+  **DRAFT/APPLY** (edits accumulate in a draft, an Apply button + Enter-in-a-field commit it —
+  aml, kefi audit), the latter driven by the new `useFilterDraft` hook. Customisation is style
+  (theme) + slots only: every label/option/placeholder/error is a pre-localized string; no
+  FM/router/store. Apps can inject `@dloizides/ui-layout`'s `ModalDropdown` for the `select`
+  field via `renderSelect` (the in-tree dropdown is the dependency-free default).
+- **`useFilterDraft`** — the draft-vs-applied state engine (draft + committed + `apply` / `reset`
+  / `setField` / `dirty`), with `onApply` / `onReset` callbacks the caller wires to `setPage(1)`
+  (the universal reset-to-page-1-on-narrowing invariant, kept free of pagination coupling).
+- **`suggestOptions` / `isUnmatched`** — the ranked substring matcher behind the `typeahead`
+  field (generalized from aml's `suggestCountries`), exported for reuse.
+- **`Pager`** — three additive props reconciling the variants across apps: `showFirstLast`
+  (First/Last jump buttons, disabled at bounds — erevna's `PaginationControls`),
+  `unitLabelSingular` (renders `1 result` when `total === 1` — the singularisation apps did in
+  the FilterBar noun), and `responsive` + `stackBreakpoint` (collapse to a compact
+  Prev/Next-only nav below the breakpoint — the mobile fallback, mirroring the DataTable
+  card-stack). New pager test ids `ui-pager-first` / `ui-pager-last`.
+
 ## 1.10.0
 
 Additive: **bulk-select** + **keyboard navigation** on `DataTable` (ZY-08). Every new prop is

@@ -6,26 +6,17 @@
  * everything is themed from `useUi().theme` and labelled via the UiProvider `t`.
  */
 import React from 'react';
-import { Pressable, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Text, View, useWindowDimensions, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
-import { DEFAULT_PAGE_SIZE_OPTIONS, TABLE_I18N, TABLE_TEST_IDS } from './constants';
-import { SizeDropdown } from './SizeDropdown';
+import { CARD_STACK_BREAKPOINT, DEFAULT_PAGE_SIZE_OPTIONS, TABLE_I18N, TABLE_TEST_IDS } from './constants';
+import { PagerNav } from './PagerNav';
 import { chromeStyles as c } from './styles';
 
 const FIRST_PAGE = 1;
 const EN_DASH = '–';
-const DISABLED_OPACITY = 0.4;
-const FULL_OPACITY = 1;
-const TRANSPARENT = 'transparent';
 const BOLD = '700' as const;
-/**
- * Pager controls are compact (~24–26px tall). `hitSlop` expands the TOUCH target toward the
- * WCAG ≥44px minimum WITHOUT changing the rendered size, so the layout is byte-identical while
- * taps/clicks get an easier target. Vertical only, so adjacent pills never overlap horizontally.
- */
-const PAGER_HIT_SLOP = { top: 10, bottom: 10 } as const;
 
 /**
  * Per-slot style overrides for the Pager, merged **LAST** into each slot's style array
@@ -79,6 +70,26 @@ export interface PagerProps {
    */
   unitLabel?: string;
   /**
+   * Optional, already-translated SINGULAR unit noun, used in place of `unitLabel` when
+   * `total === 1` (e.g. `unitLabel="results"` + `unitLabelSingular="result"` → `1–1 of 1 result`).
+   * Ignored unless `unitLabel` is also set; when omitted, `unitLabel` is used at every count.
+   */
+  unitLabelSingular?: string;
+  /**
+   * Render First / Last jump buttons flanking Prev / Next (reconciling erevna's
+   * `PaginationControls`). Off by default (byte-identical to prior behaviour) — the two
+   * buttons only appear when explicitly enabled.
+   */
+  showFirstLast?: boolean;
+  /**
+   * Collapse to a compact, mobile-friendly nav below `stackBreakpoint`: the rows-per-page
+   * control and the First/Last jumps are hidden, leaving Prev / Next + the count line. Off by
+   * default (byte-identical). Auto-driven by the window width, mirroring the DataTable card-stack.
+   */
+  responsive?: boolean;
+  /** Width (px) below which `responsive` collapses to the compact nav. Default 640 (shared with DataTable). */
+  stackBreakpoint?: number;
+  /**
    * Optional, already-translated word prefixed to the count line, e.g. `"Showing"` renders
    * `Showing 1–50 of 3,023 leadership terms`. Omit for the bare `from–to of N` line
    * (byte-identical to prior behaviour).
@@ -98,35 +109,6 @@ export interface PagerProps {
   testID?: string;
 }
 
-interface NavButtonProps {
-  label: string;
-  hint: string;
-  disabled: boolean;
-  onPress: () => void;
-  color: string;
-  border: string;
-  testID: string;
-  styleOverrides?: Pick<PagerStyleOverrides, 'control' | 'controlText'>;
-}
-
-function NavButton({ label, hint, disabled, onPress, color, border, testID, styleOverrides: o }: NavButtonProps): React.ReactElement {
-  return (
-    <Pressable
-      testID={testID}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityHint={hint}
-      accessibilityState={{ disabled }}
-      disabled={disabled}
-      hitSlop={PAGER_HIT_SLOP}
-      onPress={onPress}
-      style={[c.control, { borderColor: border, opacity: disabled ? DISABLED_OPACITY : FULL_OPACITY }, o?.control]}
-    >
-      <Text style={[c.controlText, { color }, o?.controlText]}>{label}</Text>
-    </Pressable>
-  );
-}
-
 export function Pager({
   page,
   pageSize,
@@ -136,25 +118,34 @@ export function Pager({
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   rowsVariant = 'pills',
   unitLabel,
+  unitLabelSingular,
+  showFirstLast = false,
+  responsive = false,
+  stackBreakpoint = CARD_STACK_BREAKPOINT,
   infoPrefix,
   boldNumbers = false,
   styleOverrides: o,
   testID = TABLE_TEST_IDS.pager,
 }: PagerProps): React.ReactElement {
   const { theme, t } = useUi();
-  const { colors, palette } = theme;
-  const brand = palette.primary['500'];
+  const { colors } = theme;
+  const { width } = useWindowDimensions();
   const isDropdown = rowsVariant === 'dropdown';
+  // Below the breakpoint (opt-in) collapse to Prev/Next + count only — drop the rows-per-page
+  // control and the First/Last jumps, mirroring the DataTable's card-stack behaviour.
+  const isCompact = responsive && width < stackBreakpoint;
 
   const lastPage = Math.max(FIRST_PAGE, Math.ceil(total / pageSize));
   const safePage = Math.min(Math.max(page, FIRST_PAGE), lastPage);
   const from = total === 0 ? 0 : (safePage - 1) * pageSize + 1;
   const to = Math.min(safePage * pageSize, total);
   const hasUnit = unitLabel !== undefined && unitLabel !== '';
+  // Singularise the unit noun when exactly one row matches (needs both a base unit AND a singular).
+  const resolvedUnit = total === 1 && unitLabelSingular !== undefined && unitLabelSingular !== '' ? unitLabelSingular : unitLabel;
   const hasPrefix = infoPrefix !== undefined && infoPrefix !== '';
   const prefix = hasPrefix ? `${infoPrefix} ` : '';
   const ofWord = t(TABLE_I18N.pagerInfo);
-  const unitSuffix = hasUnit ? ` ${unitLabel}` : '';
+  const unitSuffix = hasUnit ? ` ${resolvedUnit}` : '';
   const count = `${from.toLocaleString()}${EN_DASH}${to.toLocaleString()} ${ofWord} ${total.toLocaleString()}`;
   const info = `${prefix}${count}${unitSuffix}`;
   const boldStyle = { color: colors.text, fontWeight: BOLD };
@@ -176,71 +167,19 @@ export function Pager({
           info
         )}
       </Text>
-      <View style={[c.pagerNav, o?.pagerNav]}>
-        <Text
-          style={[isDropdown ? c.pagerRowsLabelPlain : c.pagerRowsLabel, { color: colors.textSecondary }, o?.pagerRowsLabel]}
-        >
-          {t(TABLE_I18N.pagerRows)}
-        </Text>
-        {isDropdown ? (
-          <SizeDropdown
-            pageSize={pageSize}
-            pageSizeOptions={pageSizeOptions}
-            onPageSizeChange={onPageSizeChange}
-            testID={testID}
-            triggerHint={t(TABLE_I18N.pagerRowsTriggerHint)}
-            optionHint={t(TABLE_I18N.pagerRowsOptionHint)}
-            textColor={colors.text}
-            mutedColor={colors.textSecondary}
-            borderColor={colors.border}
-            surfaceColor={colors.surface}
-            brandColor={brand}
-            triggerStyle={o?.sizePill}
-            triggerTextStyle={o?.sizePillText}
-          />
-        ) : (
-          <View style={[c.sizeGroup, o?.sizeGroup]}>
-            {pageSizeOptions.map((size) => {
-              const active = size === pageSize;
-              return (
-                <Pressable
-                  key={size}
-                  testID={`${testID}-size-${size}`}
-                  accessibilityRole="button"
-                  accessibilityLabel={String(size)}
-                  accessibilityHint={t(TABLE_I18N.pagerRowsOptionHint)}
-                  accessibilityState={{ selected: active }}
-                  hitSlop={PAGER_HIT_SLOP}
-                  onPress={() => onPageSizeChange(size)}
-                  style={[c.sizePill, { borderColor: active ? brand : colors.border, backgroundColor: active ? brand : TRANSPARENT }, o?.sizePill]}
-                >
-                  <Text style={[c.sizePillText, { color: active ? colors.surface : colors.textSecondary }, o?.sizePillText]}>{size}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        )}
-        <NavButton
-          label={t(TABLE_I18N.pagerPrev)}
-          hint={t(TABLE_I18N.pagerPrevHint)}
-          disabled={safePage <= FIRST_PAGE}
-          onPress={() => onPageChange(safePage - 1)}
-          color={colors.text}
-          border={colors.border}
-          styleOverrides={o}
-          testID={TABLE_TEST_IDS.pagerPrev}
-        />
-        <NavButton
-          label={t(TABLE_I18N.pagerNext)}
-          hint={t(TABLE_I18N.pagerNextHint)}
-          disabled={safePage >= lastPage}
-          onPress={() => onPageChange(safePage + 1)}
-          color={colors.text}
-          border={colors.border}
-          styleOverrides={o}
-          testID={TABLE_TEST_IDS.pagerNext}
-        />
-      </View>
+      <PagerNav
+        pageSize={pageSize}
+        pageSizeOptions={pageSizeOptions}
+        onPageSizeChange={onPageSizeChange}
+        onPageChange={onPageChange}
+        safePage={safePage}
+        lastPage={lastPage}
+        isCompact={isCompact}
+        isDropdown={isDropdown}
+        showFirstLast={showFirstLast}
+        testID={testID}
+        styleOverrides={o}
+      />
     </View>
   );
 }

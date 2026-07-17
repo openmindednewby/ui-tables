@@ -30,8 +30,10 @@ export const TABLE_TEST_IDS = {
   results: 'ui-results',
   pager: 'ui-pager',
   pagerInfo: 'ui-pager-info',
+  pagerFirst: 'ui-pager-first',
   pagerPrev: 'ui-pager-prev',
   pagerNext: 'ui-pager-next',
+  pagerLast: 'ui-pager-last',
 } as const;
 
 /** The test id of a row: `${tableTestID}-row-${key}` (key from `keyExtractor`). */
@@ -88,10 +90,14 @@ export const TABLE_I18N = {
   selectClearHint: 'uiTables.select.clearHint',
   results: 'uiTables.results',
   pagerInfo: 'uiTables.pager.info',
+  pagerFirst: 'uiTables.pager.first',
   pagerPrev: 'uiTables.pager.prev',
   pagerNext: 'uiTables.pager.next',
+  pagerLast: 'uiTables.pager.last',
+  pagerFirstHint: 'uiTables.pager.firstHint',
   pagerPrevHint: 'uiTables.pager.prevHint',
   pagerNextHint: 'uiTables.pager.nextHint',
+  pagerLastHint: 'uiTables.pager.lastHint',
   pagerRows: 'uiTables.pager.rows',
   pagerRowsOptionHint: 'uiTables.pager.rowsOptionHint',
   /** Accessible hint for the dropdown-variant rows-per-page trigger button. */

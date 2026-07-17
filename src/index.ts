@@ -19,3 +19,38 @@ export {
   rowSelectTestID,
   selectAllTestID,
 } from './DataTable';
+
+// Filters — the declarative, configurable filter bar built ON the FilterBar shell. A caller
+// passes a `fields` schema (select / text / number / dateRange / typeahead / boolean), a value
+// map, and a live-or-draft/apply value model (`useFilterDraft`). Superset of every portal's
+// hand-rolled filters; only the theme changes per app.
+export { Filters, useFilterDraft, suggestOptions, isUnmatched } from './Filters';
+export type {
+  FiltersProps,
+  RenderSelectArgs,
+  FieldStrings,
+  UseFilterDraftOptions,
+  FilterDraft,
+  FilterField,
+  FilterFieldKind,
+  FilterOption,
+  FilterValue,
+  FilterValues,
+  DateRangeValue,
+  SelectFilterField,
+  TextFilterField,
+  NumberFilterField,
+  DateRangeFilterField,
+  TypeaheadFilterField,
+  BooleanFilterField,
+} from './Filters';
+export {
+  FILTERS_TEST_ID,
+  FILTERS_I18N,
+  FIELD_MIN_WIDTH,
+  DEFAULT_TYPEAHEAD_MIN_CHARS,
+  DEFAULT_TYPEAHEAD_MAX_SUGGESTIONS,
+  fieldTestID,
+  applyTestID,
+  clearTestID,
+} from './Filters';

@@ -51,7 +51,8 @@
     "files": [
         "dist",
         "README.md",
-        "CHANGELOG.md"
+        "CHANGELOG.md",
+        "ADOPTION.md"
     ],
     "sideEffects": false,
     "engines": {

@@ -10,7 +10,8 @@ portfolio. Reads theme + translations from the shared `@dloizides/ui-feedback` U
 | `StatCard` | ✅ Available — labelled metric tile (label + locale-formatted value). |
 | `DataTable` | ✅ Available — the shared, tokenized RN-web grid (the `GRID.md` contract): `columns + rows` API, sticky header, zebra striping, per-row tint, pressable rows, per-row `testID` + a11y, optional **expandable rows**, and a responsive label:value **card-stack** below `stackBreakpoint`. |
 | `FilterBar` | ✅ Available — the `.ui-filters` shell: wrapping field row + live results count + actions slot. |
-| `Pager` | ✅ Available — the `.ui-pager` control: `from–to of N` page-info + rows-per-page control + Prev/Next. Pass an optional, already-translated `unitLabel` (e.g. `"leadership terms"`) to render `1–50 of 3,023 leadership terms`. The rows-per-page control defaults to a row of size **pills** (`rowsVariant="pills"`); pass `rowsVariant="dropdown"` for the compact v1-console `<select>`-style anchored dropdown (trigger + chevron + popover, mixed-case "Rows" caption). |
+| `Filters` | ✅ Available — the **declarative** filter bar built ON `FilterBar`: pass a `fields` schema (`select` / `text` / `number` / `dateRange` / `typeahead` / `boolean`) + a value map + `onChange`. Two value models (LIVE, or DRAFT/APPLY via `useFilterDraft` + an Apply button). The superset of every portal's hand-rolled filters; only the theme changes. See [Filters](#filters--declarative-filter-bar). |
+| `Pager` | ✅ Available — the `.ui-pager` control: `from–to of N` page-info + rows-per-page control + Prev/Next (+ optional **First/Last** via `showFirstLast`). Pass an optional, already-translated `unitLabel` (e.g. `"leadership terms"`) — plus `unitLabelSingular` for `1 result` **singularisation** — to render `1–50 of 3,023 leadership terms`. `responsive` collapses to a compact Prev/Next-only nav below `stackBreakpoint` (mobile fallback). The rows-per-page control defaults to size **pills** (`rowsVariant="pills"`); pass `rowsVariant="dropdown"` for the compact `<select>`-style anchored dropdown. |
 | `StatGrid` | ⏳ Deferred — exists only in kefi-web (n=1); moves in when a 2nd consumer appears. |
 
 ### DataTable / FilterBar / Pager
@@ -26,6 +27,70 @@ const columns: DataTableColumn<Row>[] = [
 <FilterBar resultsCount={rows.length} actions={<ApplyButton />}>{fields}</FilterBar>
 <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} zebra stickyHeader testID="grid" />
 <Pager page={page} pageSize={size} total={total} onPageChange={setPage} onPageSizeChange={setSize} />
+```
+
+### Filters — declarative filter bar
+
+`FilterBar` is the *shell* (layout + results count + actions). `Filters` is the *declarative*
+bar built on it: describe your filters as **data** and the bar renders the same structure +
+behaviour everywhere — only the theme changes. Field kinds: `select`, `text`, `number`,
+`dateRange`, `typeahead` (search-as-you-type), `boolean`.
+
+Every user-facing string is **pre-localized** and passed in (labels, option labels, placeholders,
+errors) — the package never calls FM/i18n for content, touches a router, or reads a store.
+
+```tsx
+import { Filters, useFilterDraft, type FilterField, type FilterValues } from '@dloizides/ui-tables';
+
+const fields: FilterField[] = [
+  { key: 'q', kind: 'text', label: FM('cases.q'), grow: true, placeholder: FM('cases.qHint') },
+  { key: 'status', kind: 'select', label: FM('cases.status'),
+    options: [{ label: FM('common.any'), value: '' }, { label: FM('status.open'), value: 'open' }] },
+  { key: 'dates', kind: 'dateRange', label: FM('cases.valueDate') },
+  { key: 'country', kind: 'typeahead', label: FM('leaders.country'), options: countryOptions, minChars: 1 },
+  { key: 'active', kind: 'boolean', label: FM('cases.activeOnly') },
+];
+```
+
+**Live model** (agora / zygos) — each edit applies immediately, no Apply button:
+
+```tsx
+const [values, setValues] = useState<FilterValues>(EMPTY);
+<Filters fields={fields} values={values} onChange={setValues} resultsCount={total} resultsLabel={FM('cases.results')} />
+```
+
+**Draft / apply model** (aml / kefi audit) — edits accumulate in a draft; Apply (or Enter in a
+field) commits it, and page resets to 1 via your `onApply`. `useFilterDraft` is the state engine:
+
+```tsx
+const draft = useFilterDraft({ initial: EMPTY, onApply: () => setPage(1) });
+<Filters
+  fields={fields}
+  values={draft.draft}
+  onChange={draft.setDraft}
+  onApply={draft.apply}          // presence of onApply → shows the Apply button + Enter-to-commit
+  applyDisabled={datesInvalid}   // aml's validity gate
+  onClear={draft.reset}          // presence of onClear → shows Clear/Reset
+  actions={<ExportButtons query={draft.committed} />}  // custom actions (Export CSV/PDF, bulk bar)
+  resultsCount={total}
+  resultsLabel={total === 1 ? FM('cases.resultOne') : FM('cases.resultMany')}  // caller singularises
+/>
+```
+
+**Injecting `ModalDropdown`** — the built-in `select` is a dependency-free in-tree dropdown. To
+use `@dloizides/ui-layout`'s responsive `ModalDropdown` (modal on mobile/native) instead, pass
+`renderSelect`:
+
+```tsx
+<Filters
+  fields={fields}
+  values={values}
+  onChange={setValues}
+  renderSelect={({ field, value, onChange, testID }) => (
+    <ModalDropdown testID={testID} accessibilityLabel={field.label} accessibilityHint={field.label}
+      value={value} options={field.options} onChange={onChange} />
+  )}
+/>
 ```
 
 #### Expandable rows (optional)
