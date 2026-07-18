@@ -1,5 +1,60 @@
 # Changelog
 
+## 1.12.0
+
+Accessibility fix: controls that announced a **bare number** now say what they are. Confirmed in
+a real browser, the rows-per-page trigger rendered `aria-label="50"` — a screen-reader user heard
+the value and nothing about the control. Fixed across the whole package, plus two more instances
+of the same defect class found while auditing.
+
+### ⚠️ ACTION REQUIRED — add three translation keys
+
+The new accessible names are user-facing strings, so they come from the host app's locale files.
+**Every consuming app must add these three keys:**
+
+| Key | Params | Suggested English |
+|---|---|---|
+| `uiTables.pager.rowsTriggerLabel` | `{{p1}}` = current page size | `Rows per page, currently {{p1}}` |
+| `uiTables.pager.rowsOptionLabel` | `{{p1}}` = that option's size | `Show {{p1}} rows per page` |
+| `uiTables.filters.selectTriggerLabel` | `{{p1}}` = field label, `{{p2}}` = selection | `{{p1}}: {{p2}}` |
+
+They are exported as `TABLE_I18N.pagerRowsTriggerLabel`, `TABLE_I18N.pagerRowsOptionLabel` and
+`FILTERS_I18N.selectTriggerLabel`, so an app that derives its required-key list from those maps
+(as zygos' guard test does) picks them up automatically.
+
+**Upgrading without adding them is safe.** Unlike the usual kit contract — where an undefined key
+renders as its literal dotted name, the failure that put 44 raw keys on screen in zygos — a
+newly-introduced ACCESSIBLE-NAME key degrades to the value it replaced (the bare number, the field
+label). An aria-label is invisible to sighted reviewers, so a raw key there would ship silently and
+hurt only screen-reader users. Until you add the keys you simply keep the old, worse names.
+
+### Fixed
+
+- **`Pager` rows-per-page trigger** (`dropdown` variant) — was `aria-label="50"`, now
+  "Rows per page, currently 50".
+- **`Pager` rows-per-page options** (`dropdown` variant) — was `aria-label="100"`, now
+  "Show 100 rows per page".
+- **`Pager` rows-per-page pills** (the **DEFAULT** `pills` variant) — carried the identical
+  bare-number defect and was NOT in the original report, so it affected more consumers than the
+  dropdown did. Same fix, same key.
+- **`Filters` select trigger** — `accessibilityLabel` replaces the trigger's visible text for a
+  screen reader, so labelling it `field.label` alone silently hid the current selection: sighted
+  users saw "Closed", screen-reader users heard only "Status". Now "Status: Closed".
+- **`StatCard`** — its two translation keys were string literals inlined in the component rather
+  than members of an exported map, so an app deriving its required-key list from `TABLE_I18N`
+  could not see them and would render them raw. Now exported as `TABLE_I18N.statCardLabel` /
+  `TABLE_I18N.statHint`. **The key strings are unchanged** (`analytics.statCardLabel`,
+  `analytics.statHint`) — renaming them would have broken every app that already defines them.
+
+### Added
+
+- **`accessibleName(translated, key, fallback)`** — the internal degradation guard described
+  above. Not exported; the kit's fallback-free i18n contract is unchanged for visible copy.
+
+Additive and backward compatible for consumers — no public prop changed, so a MINOR bump.
+`SizeDropdown`'s props gained `triggerLabel` / `getOptionLabel`, but that component is internal
+(never exported from the package root).
+
 ## 1.11.0
 
 Additive: a **declarative `Filters` bar** + **Pager** enhancements. Every change is additive and

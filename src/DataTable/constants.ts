@@ -102,4 +102,24 @@ export const TABLE_I18N = {
   pagerRowsOptionHint: 'uiTables.pager.rowsOptionHint',
   /** Accessible hint for the dropdown-variant rows-per-page trigger button. */
   pagerRowsTriggerHint: 'uiTables.pager.rowsTriggerHint',
+  /**
+   * Accessible NAME of the rows-per-page control, e.g. "Rows per page, currently {{p1}}".
+   * Without it the control is announced as the bare number ("50"), which says nothing about
+   * what it does. Untranslated it degrades to that bare number — never to the raw key.
+   */
+  pagerRowsTriggerLabel: 'uiTables.pager.rowsTriggerLabel',
+  /**
+   * Accessible NAME of ONE rows-per-page choice, e.g. "Show {{p1}} rows per page". Used by
+   * BOTH the `dropdown` options and the default `pills`. Untranslated it degrades to the
+   * bare number — never to the raw key.
+   */
+  pagerRowsOptionLabel: 'uiTables.pager.rowsOptionLabel',
+  /**
+   * StatCard's accessible name, e.g. "{{p1}}: {{p2}}". Note the `analytics.` prefix: these
+   * two keys predate this map and were only ever inlined in StatCard.tsx, so apps deriving
+   * their required-key list from TABLE_I18N could not see them. Registered here UNCHANGED
+   * (renaming them would break every app that already defines them).
+   */
+  statCardLabel: 'analytics.statCardLabel',
+  statHint: 'analytics.statHint',
 } as const;

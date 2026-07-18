@@ -129,6 +129,14 @@ export interface SizeDropdownProps {
   onPageSizeChange: (pageSize: number) => void;
   /** Base pager test id; the trigger is `${testID}-size-trigger`, each option `${testID}-size-${size}`. */
   testID: string;
+  /**
+   * Already-translated accessible NAME for the trigger, e.g. "Rows per page, currently 50".
+   * The bare page-size number is NOT an acceptable name: it tells a screen-reader user the
+   * value but never what the control is.
+   */
+  triggerLabel: string;
+  /** Already-translated accessible NAME for one option, e.g. "Show 100 rows per page". */
+  getOptionLabel: (size: number) => string;
   /** Already-translated accessible hint for the trigger. */
   triggerHint: string;
   /** Already-translated accessible hint for each option. */
@@ -148,6 +156,8 @@ export function SizeDropdown({
   pageSizeOptions,
   onPageSizeChange,
   testID,
+  triggerLabel,
+  getOptionLabel,
   triggerHint,
   optionHint,
   textColor,
@@ -193,7 +203,7 @@ export function SizeDropdown({
             key={size}
             testID={`${testID}-size-${size}`}
             accessibilityRole="menuitem"
-            accessibilityLabel={String(size)}
+            accessibilityLabel={getOptionLabel(size)}
             accessibilityHint={optionHint}
             accessibilityState={{ selected: active }}
             onPress={() => select(size)}
@@ -211,7 +221,7 @@ export function SizeDropdown({
       <Pressable
         testID={`${testID}-size-trigger`}
         accessibilityRole="button"
-        accessibilityLabel={String(pageSize)}
+        accessibilityLabel={triggerLabel}
         accessibilityHint={triggerHint}
         accessibilityState={{ expanded: isOpen }}
         aria-expanded={isOpen}

@@ -40,6 +40,13 @@ export const FILTERS_I18N = {
   selectPlaceholder: 'uiTables.filters.selectPlaceholder',
   dropdownHint: 'uiTables.filters.dropdownHint',
   optionHint: 'uiTables.filters.optionHint',
+  /**
+   * Accessible NAME of a select trigger, e.g. "{{p1}}: {{p2}}" → "Status: Active". The
+   * trigger's `accessibilityLabel` REPLACES its visible text for a screen reader, so labelling
+   * it with the field name alone silently hides the current selection. Untranslated it
+   * degrades to the field label alone (prior behaviour) — never to the raw key.
+   */
+  selectTriggerLabel: 'uiTables.filters.selectTriggerLabel',
   from: 'uiTables.filters.from',
   to: 'uiTables.filters.to',
 } as const;

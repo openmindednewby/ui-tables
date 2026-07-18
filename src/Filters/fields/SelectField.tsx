@@ -12,7 +12,8 @@ import { Pressable, Text, View } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
-import { fieldTestID } from '../constants';
+import { accessibleName } from '../../accessibleName';
+import { FILTERS_I18N, fieldTestID } from '../constants';
 import { filterStyles as s } from '../styles';
 import type { SelectFilterField } from '../types';
 import { AnchoredMenu } from '../components/AnchoredMenu';
@@ -33,7 +34,7 @@ export interface SelectFieldProps {
 }
 
 export function SelectField({ field, barTestID, value, onChange, placeholder, dropdownHint, optionHint }: SelectFieldProps): React.ReactElement {
-  const { theme } = useUi();
+  const { theme, t } = useUi();
   const { colors, palette } = theme;
   const anchorRef = useRef<View>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +44,14 @@ export function SelectField({ field, barTestID, value, onChange, placeholder, dr
     const found = field.options.find((o) => o.value === value);
     return found?.label ?? field.placeholder ?? placeholder;
   }, [field.options, field.placeholder, placeholder, value]);
+
+  // The accessible name REPLACES the trigger's visible text, so it must carry the selection
+  // too — "Status: Active", not just "Status", which announces the control but not its value.
+  const triggerLabel = accessibleName(
+    t(FILTERS_I18N.selectTriggerLabel, field.label, selectedLabel),
+    FILTERS_I18N.selectTriggerLabel,
+    field.label,
+  );
 
   const close = useCallback(() => { setIsOpen(false); }, []);
   const toggle = useCallback(() => { setIsOpen((prev) => !prev); }, []);
@@ -58,7 +67,7 @@ export function SelectField({ field, barTestID, value, onChange, placeholder, dr
     <View ref={anchorRef} style={s.anchor}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={field.label}
+        accessibilityLabel={triggerLabel}
         accessibilityHint={field.accessibilityHint ?? dropdownHint}
         accessibilityState={{ expanded: isOpen }}
         aria-expanded={isOpen}

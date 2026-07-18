@@ -226,6 +226,39 @@ renders exactly as it always has.
 
 Colours come entirely from `useUi().theme` (drive it with `@dloizides/design-tokens` via `tokensToUiTheme`), so the grid re-themes per tenant. Every component-authored string is routed through the UiProvider `t` — provide the `uiTables.*` keys (see `TABLE_I18N`) in your locale files; a caller may also pass already-translated `loadingLabel` / `emptyLabel` / `resultsLabel` directly.
 
+## ⚠️ New in 1.12.0 — three translation keys every host app must add
+
+1.12.0 gives three controls a real accessible name instead of a bare number. Those names are
+user-facing strings, so they come from **your** locale files. **Add these three keys.**
+
+| Key (constant) | Key (string) | Params | Suggested English |
+|---|---|---|---|
+| `TABLE_I18N.pagerRowsTriggerLabel` | `uiTables.pager.rowsTriggerLabel` | `{{p1}}` = current page size | `Rows per page, currently {{p1}}` |
+| `TABLE_I18N.pagerRowsOptionLabel` | `uiTables.pager.rowsOptionLabel` | `{{p1}}` = that option's size | `Show {{p1}} rows per page` |
+| `FILTERS_I18N.selectTriggerLabel` | `uiTables.filters.selectTriggerLabel` | `{{p1}}` = field label, `{{p2}}` = selected option | `{{p1}}: {{p2}}` |
+
+Also newly **listed** in `TABLE_I18N` (not new keys — StatCard has always called them, they were
+just inlined in the component where a key-coverage guard could not see them). If your app renders
+`StatCard`, check you actually define them:
+
+| Key (constant) | Key (string) | Params |
+|---|---|---|
+| `TABLE_I18N.statCardLabel` | `analytics.statCardLabel` | `{{p1}}` = label, `{{p2}}` = value |
+| `TABLE_I18N.statHint` | `analytics.statHint` | `{{p1}}` = label |
+
+**Your app will not visibly break if you skip this.** A key you have not defined degrades to the
+value it replaced (the bare number, the field label alone) rather than to the raw dotted key —
+so upgrading is safe, but until you add the keys your screen-reader users keep the old, worse
+experience. Derive your required-key list from the exported maps rather than hand-maintaining it:
+
+```ts
+import { TABLE_I18N, FILTERS_I18N } from '@dloizides/ui-tables';
+
+// Guard test: every key the kit can ask for must exist in your locale file.
+const required = [...Object.values(TABLE_I18N), ...Object.values(FILTERS_I18N)];
+required.forEach((key) => expect(en).toHaveProperty(key));
+```
+
 ## Install
 
 ```bash
@@ -243,8 +276,9 @@ import { StatCard } from '@dloizides/ui-tables';
 ```
 
 Mount a `FeedbackUiProvider` / `UiProvider` (from `@dloizides/ui-feedback`) at your app root so the
-component picks up your theme + translations. The injected `t` is called with `analytics.statHint` and
-`analytics.statCardLabel` (provide these keys in your locale files).
+component picks up your theme + translations. The injected `t` is called with `TABLE_I18N.statHint`
+(`analytics.statHint`) and `TABLE_I18N.statCardLabel` (`analytics.statCardLabel`) — provide these
+keys in your locale files.
 
 ## License
 

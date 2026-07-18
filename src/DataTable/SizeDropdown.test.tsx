@@ -14,6 +14,8 @@ function renderDropdown(overrides?: { pageSize?: number; onPageSizeChange?: (n: 
       pageSizeOptions={OPTIONS}
       onPageSizeChange={onPageSizeChange}
       testID="pager"
+      triggerLabel={`Rows per page, currently ${String(overrides?.pageSize ?? 50)}`}
+      getOptionLabel={(size) => `Show ${String(size)} rows per page`}
       triggerHint="Change rows per page"
       optionHint="Set rows per page"
       textColor="#111"

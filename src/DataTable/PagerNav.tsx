@@ -6,8 +6,9 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { useUi } from '@dloizides/ui-feedback';
+import { useUi, type UiTranslate } from '@dloizides/ui-feedback';
 
+import { accessibleName } from '../accessibleName';
 import { TABLE_I18N, TABLE_TEST_IDS } from './constants';
 import { SizeDropdown } from './SizeDropdown';
 import { chromeStyles as c } from './styles';
@@ -63,6 +64,24 @@ export interface PagerNavProps {
   styleOverrides?: PagerStyleOverrides;
 }
 
+/**
+ * Accessible NAME of the rows-per-page control — "Rows per page, currently 50", never the
+ * bare "50" it used to be, which announces the value but never says what the control is.
+ */
+function rowsTriggerLabel(t: UiTranslate, pageSize: number): string {
+  const size = String(pageSize);
+  return accessibleName(t(TABLE_I18N.pagerRowsTriggerLabel, size), TABLE_I18N.pagerRowsTriggerLabel, size);
+}
+
+/**
+ * Accessible NAME of ONE rows-per-page choice — "Show 100 rows per page". Shared by the
+ * `dropdown` options AND the default `pills`, which carried the identical bare-number defect.
+ */
+function rowsOptionLabel(t: UiTranslate, optionSize: number): string {
+  const size = String(optionSize);
+  return accessibleName(t(TABLE_I18N.pagerRowsOptionLabel, size), TABLE_I18N.pagerRowsOptionLabel, size);
+}
+
 /** The rows-per-page control (hidden when compact): a dropdown or a row of size pills. */
 function RowsControl({ pageSize, pageSizeOptions, onPageSizeChange, isDropdown, testID, styleOverrides: o }: Pick<PagerNavProps, 'pageSize' | 'pageSizeOptions' | 'onPageSizeChange' | 'isDropdown' | 'testID' | 'styleOverrides'>): React.ReactElement {
   const { theme, t } = useUi();
@@ -80,6 +99,8 @@ function RowsControl({ pageSize, pageSizeOptions, onPageSizeChange, isDropdown, 
           pageSizeOptions={pageSizeOptions}
           onPageSizeChange={onPageSizeChange}
           testID={testID}
+          triggerLabel={rowsTriggerLabel(t, pageSize)}
+          getOptionLabel={(size) => rowsOptionLabel(t, size)}
           triggerHint={t(TABLE_I18N.pagerRowsTriggerHint)}
           optionHint={t(TABLE_I18N.pagerRowsOptionHint)}
           textColor={colors.text}
@@ -99,7 +120,7 @@ function RowsControl({ pageSize, pageSizeOptions, onPageSizeChange, isDropdown, 
                 key={size}
                 testID={`${testID}-size-${size}`}
                 accessibilityRole="button"
-                accessibilityLabel={String(size)}
+                accessibilityLabel={rowsOptionLabel(t, size)}
                 accessibilityHint={t(TABLE_I18N.pagerRowsOptionHint)}
                 accessibilityState={{ selected: active }}
                 hitSlop={PAGER_HIT_SLOP}

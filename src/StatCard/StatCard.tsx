@@ -7,6 +7,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
+import { TABLE_I18N } from '../DataTable/constants';
+
 const CARD_PADDING = 16;
 const CARD_BORDER_RADIUS = 12;
 const CARD_BORDER_WIDTH = 1;
@@ -45,8 +47,8 @@ export const StatCard = memo(({ label, value, testID }: StatCardProps): React.Re
 
   return (
     <View
-      accessibilityHint={t('analytics.statHint', label)}
-      accessibilityLabel={t('analytics.statCardLabel', label, formattedValue)}
+      accessibilityHint={t(TABLE_I18N.statHint, label)}
+      accessibilityLabel={t(TABLE_I18N.statCardLabel, label, formattedValue)}
       accessibilityRole="text"
       style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
       testID={testID}
