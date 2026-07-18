@@ -54,3 +54,10 @@ export {
   applyTestID,
   clearTestID,
 } from './Filters';
+
+// usePagedRows — client-side pagination state for an in-memory array. Promoted from the
+// byte-identical PaginatedList twins (erevna-web / katalogos-web) as a HOOK, not a
+// component: the original hard-bound FlatList + app-specific empty/loading states, which
+// stay app-side. For server-side paging use DataTable's pager instead.
+export { usePagedRows, DEFAULT_PAGE_SIZE } from './Pagination/usePagedRows';
+export type { UsePagedRowsOptions, PagedRows } from './Pagination/usePagedRows';

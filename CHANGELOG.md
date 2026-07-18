@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.13.0
+
+De-fork wave W1.1: pagination logic promoted from the byte-identical `PaginatedList`
+twins in erevna-web and katalogos-web.
+
+### Added
+
+- `usePagedRows(rows, { pageSize })` — client-side pagination state for an already
+  in-memory array. Returns `pageRows`, `currentPage`, `totalPages`, `setPage`,
+  `hasPages`, `pageSize`. No new translation keys; no action required.
+
+Promoted as a **hook, not a component**, deliberately: the app-side `PaginatedList`
+hard-bound a `FlatList` plus app-specific empty and loading states. Only the paging
+maths is genuinely shared, so only that moved — callers keep their own list renderer.
+For server-side paging keep using `DataTable`'s pager.
+
+### Fixed (behaviour differs from the app-side original)
+
+- The original only clamped the page index when `totalPages > 0`, so emptying the list
+  left a stale non-zero page behind and the next non-empty render started on the wrong
+  page. `usePagedRows` clamps to 0 in that case.
+- A `pageSize` of 0 divided by zero (`Math.ceil(n / 0)` → `Infinity` pages). Now floored
+  to 1.
+- `setPage` clamps out-of-range input; the original trusted the caller.
+
 ## 1.12.0
 
 Accessibility fix: controls that announced a **bare number** now say what they are. Confirmed in
