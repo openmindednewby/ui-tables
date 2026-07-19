@@ -1,25 +1,28 @@
 /**
- * SelectField — a single-select enum/status dropdown (aml decision/status/riskBand, zygos
- * status/direction/currency, agora category/order-status). A bordered trigger shows the
- * selected option's label (or the placeholder when unset) + a chevron; pressing it opens the
- * shared {@link AnchoredMenu}. Selecting fires `onChange` and closes.
+ * SelectField — the ADAPTER binding this bar's declarative {@link SelectFilterField} schema to
+ * `@dloizides/ui-forms`' `SelectControl`.
  *
- * Apps that need ui-layout's responsive modal/bottom-sheet select inject it via
- * `Filters.renderSelect`; this in-tree control is the dependency-free default.
+ * The control itself (trigger, chevron, anchored menu, dismissal) moved to ui-forms in F2, where
+ * every portal can reach it — six of them had reimplemented it because they could not. What stays
+ * here is exactly what is FILTER-BAR-shaped and must not migrate:
+ *
+ *  - the schema binding (`field.options` / `field.placeholder` / `field.testID` → plain props);
+ *  - the derived testID (`${barTestID}-field-${key}`);
+ *  - the i18n. `ui-forms` never calls `t`, so the trigger's accessible NAME is composed HERE
+ *    through `useUi().t` against `FILTERS_I18N.selectTriggerLabel`. That keeps the exported
+ *    FILTERS_I18N manifest — which every portal's guard binds to LIVE — working untouched.
+ *
+ * Apps that need ui-layout's responsive modal/bottom-sheet select still inject it via
+ * `Filters.renderSelect`; `SelectControl` is the dependency-free default.
  */
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React from 'react';
 
 import { useUi } from '@dloizides/ui-feedback';
+import { SelectControl } from '@dloizides/ui-forms';
 
 import { accessibleName } from '../../accessibleName';
 import { FILTERS_I18N, fieldTestID } from '../constants';
-import { filterStyles as s } from '../styles';
 import type { SelectFilterField } from '../types';
-import { AnchoredMenu } from '../components/AnchoredMenu';
-
-const CHEVRON_DOWN = '▾';
-const CHEVRON_UP = '▴';
 
 export interface SelectFieldProps {
   field: SelectFilterField;
@@ -34,65 +37,32 @@ export interface SelectFieldProps {
 }
 
 export function SelectField({ field, barTestID, value, onChange, placeholder, dropdownHint, optionHint }: SelectFieldProps): React.ReactElement {
-  const { theme, t } = useUi();
-  const { colors, palette } = theme;
-  const anchorRef = useRef<View>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const { t } = useUi();
   const testID = field.testID ?? fieldTestID(barTestID, field.key);
+  const resolvedPlaceholder = field.placeholder ?? placeholder;
 
-  const selectedLabel = useMemo(() => {
-    const found = field.options.find((o) => o.value === value);
-    return found?.label ?? field.placeholder ?? placeholder;
-  }, [field.options, field.placeholder, placeholder, value]);
+  // The label the control will DISPLAY — resolved here too, because the accessible name must
+  // carry it. That name REPLACES the trigger's visible text for a screen reader, so labelling
+  // it with the field name alone silently hides the current selection.
+  const selectedLabel = field.options.find((o) => o.value === value)?.label ?? resolvedPlaceholder;
 
-  // The accessible name REPLACES the trigger's visible text, so it must carry the selection
-  // too — "Status: Active", not just "Status", which announces the control but not its value.
   const triggerLabel = accessibleName(
     t(FILTERS_I18N.selectTriggerLabel, field.label, selectedLabel),
     FILTERS_I18N.selectTriggerLabel,
     field.label,
   );
 
-  const close = useCallback(() => { setIsOpen(false); }, []);
-  const toggle = useCallback(() => { setIsOpen((prev) => !prev); }, []);
-  const select = useCallback(
-    (next: string) => {
-      onChange(next);
-      setIsOpen(false);
-    },
-    [onChange],
-  );
-
   return (
-    <View ref={anchorRef} style={s.anchor}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={triggerLabel}
-        accessibilityHint={field.accessibilityHint ?? dropdownHint}
-        accessibilityState={{ expanded: isOpen }}
-        aria-expanded={isOpen}
-        onPress={toggle}
-        style={[s.selectTrigger, { borderColor: colors.border, backgroundColor: colors.surface }]}
-        testID={`${testID}-trigger`}
-      >
-        <Text numberOfLines={1} style={[s.selectTriggerText, { color: value === '' ? colors.textSecondary : colors.text }]}>
-          {selectedLabel}
-        </Text>
-        <Text aria-hidden style={[s.chevron, { color: colors.textSecondary }]}>{isOpen ? CHEVRON_UP : CHEVRON_DOWN}</Text>
-      </Pressable>
-      {isOpen ? (
-        <AnchoredMenu
-          options={field.options}
-          selectedValue={value}
-          onSelect={select}
-          onDismiss={close}
-          colors={{ text: colors.text, border: colors.border, surface: colors.surface, brand: palette.primary['500'] }}
-          optionHint={optionHint}
-          testID={testID}
-          anchorRef={anchorRef}
-        />
-      ) : null}
-    </View>
+    <SelectControl
+      accessibilityHint={field.accessibilityHint ?? dropdownHint}
+      accessibilityLabel={triggerLabel}
+      options={field.options}
+      optionHint={optionHint}
+      placeholder={resolvedPlaceholder}
+      testID={testID}
+      value={value}
+      onChange={onChange}
+    />
   );
 }
 

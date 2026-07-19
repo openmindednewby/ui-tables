@@ -14,20 +14,26 @@
  */
 import type { StyleProp, ViewStyle } from 'react-native';
 
+import type { ControlOption, DateRangeValue } from '@dloizides/ui-forms';
+
 /** The kinds of field the declarative bar can render. */
 export type FilterFieldKind = 'select' | 'text' | 'number' | 'dateRange' | 'typeahead' | 'boolean';
 
-/** A single choice for a `select` / `typeahead` field. Label is pre-localized. */
-export interface FilterOption {
-  readonly label: string;
-  readonly value: string;
-}
+/**
+ * A single choice for a `select` / `typeahead` field. Label is pre-localized.
+ *
+ * F2: an ALIAS of `@dloizides/ui-forms`' `ControlOption`, not a second declaration. The two were
+ * structurally identical, which is precisely the shape that drifts silently — a field added to
+ * one would type-check against the other until the day it didn't. The public name is unchanged,
+ * so this is not a breaking change for any consumer.
+ */
+export type FilterOption = ControlOption;
 
-/** The inclusive from/to value of a `dateRange` field (each an ISO `YYYY-MM-DD` string, or ''). */
-export interface DateRangeValue {
-  readonly from: string;
-  readonly to: string;
-}
+/**
+ * The inclusive from/to value of a `dateRange` field (each an ISO `YYYY-MM-DD` string, or '').
+ * Aliased onto `ui-forms`' `DateRangeValue` for the same reason as {@link FilterOption}.
+ */
+export type { DateRangeValue };
 
 /** The runtime value a field holds, by kind. */
 export type FilterValue = string | boolean | DateRangeValue;

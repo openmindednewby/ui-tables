@@ -39,6 +39,13 @@ behaviour everywhere — only the theme changes. Field kinds: `select`, `text`, 
 Every user-facing string is **pre-localized** and passed in (labels, option labels, placeholders,
 errors) — the package never calls FM/i18n for content, touches a router, or reads a store.
 
+> **Since 1.14.0 the controls themselves live in [`@dloizides/ui-forms`](https://www.npmjs.com/package/@dloizides/ui-forms)**
+> as `SelectControl`, `TypeaheadControl` and `DateRangeControl`. They used to be private to this
+> bar, which is why the fleet grew 6 selects, 5 date fields and 2 typeaheads — apps could see them
+> working and could not import them. **If you need a select or a date range OUTSIDE a filter bar,
+> import it from `ui-forms` — do not rebuild it, and do not reach into this package.** `Filters`
+> is unchanged and still the right thing for a filter bar; it now composes the shared controls.
+
 ```tsx
 import { Filters, useFilterDraft, type FilterField, type FilterValues } from '@dloizides/ui-tables';
 
@@ -262,10 +269,12 @@ required.forEach((key) => expect(en).toHaveProperty(key));
 ## Install
 
 ```bash
-npm install @dloizides/ui-tables @dloizides/ui-feedback
+npm install @dloizides/ui-tables @dloizides/ui-feedback @dloizides/ui-forms @dloizides/ui-buttons
 ```
 
-Peer dependencies: `@dloizides/ui-feedback >= 1.1.0`, `react >= 18`, `react-native >= 0.74`.
+Peer dependencies: `@dloizides/ui-feedback >= 1.1.0`, `@dloizides/ui-forms >= 1.8.0`,
+`@dloizides/ui-buttons >= 1.4.0` (inherited through `ui-forms`), `react >= 18`,
+`react-native >= 0.74`.
 
 ## Usage
 

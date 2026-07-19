@@ -17,10 +17,16 @@ export const FIELD_MIN_WIDTH: Record<FilterFieldKind, number> = {
   boolean: 150,
 };
 
-/** Default min characters before a typeahead surfaces suggestions. */
-export const DEFAULT_TYPEAHEAD_MIN_CHARS = 1;
-/** Default cap on typeahead suggestions rendered. */
-export const DEFAULT_TYPEAHEAD_MAX_SUGGESTIONS = 8;
+/**
+ * Typeahead defaults. F2: these are RE-EXPORTED from `@dloizides/ui-forms`, which now owns the
+ * control they configure — a second copy here could drift from the behaviour it claims to
+ * describe. The public names are unchanged, so consumers importing them from `ui-tables` are
+ * unaffected.
+ */
+export {
+  DEFAULT_TYPEAHEAD_MIN_CHARS,
+  DEFAULT_TYPEAHEAD_MAX_SUGGESTIONS,
+} from '@dloizides/ui-forms';
 
 /** Derived testIDs for the declarative bar. */
 export const fieldTestID = (barTestID: string, key: string): string => `${barTestID}-field-${key}`;

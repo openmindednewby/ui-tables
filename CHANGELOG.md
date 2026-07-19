@@ -1,5 +1,75 @@
 # Changelog
 
+## 1.14.0
+
+**Campaign F2 — the private filter fields are now public, in `@dloizides/ui-forms`.**
+
+This package contained a complete, themed, a11y-wired set of form controls inside its `Filters`
+bar and exported NONE of them. Six portals could see them working and none could import them, so
+the fleet reimplemented them: **6 select implementations, 5 date fields, 2 typeaheads**. Same
+shape as `MultiTenancy.EntityFrameworkCore` shipping no EF Core. They now live in
+`@dloizides/ui-forms` 1.8.0 as `SelectControl` / `TypeaheadControl` / `DateRangeControl` /
+`AnchoredMenu` / `controlStyles`, and this package consumes them.
+
+**No behaviour changed. All 258 pre-existing tests pass UNMODIFIED** — including
+`Filters.test.tsx` (which drives every field kind through the bar), `selectAccessibleName.test.tsx`
+(the i18n path) and `suggest.test.ts` (now running against the moved implementation). That is the
+proof the move preserved behaviour rather than merely relocating it.
+
+### What moved, and what deliberately did not
+
+The controls moved; the **schema** stayed. Each field was bound to this bar's `FilterField` types
+(`field: SelectFilterField`, `barTestID`, `fieldTestID`), so moving them verbatim would have
+dragged `FilterField`, `FilterFieldKind`, `FilterValues` and `FIELD_MIN_WIDTH` into `ui-forms` —
+i.e. `ui-forms` would have come to own "what a filter bar's field schema is". Wrong direction.
+The field files are now thin ADAPTERS mapping schema → plain props.
+
+`TextField` and `BooleanField` stayed. `ui-forms` already ships two text inputs (`ThemedTextInput`,
+`FormField`) and a switch row (`FormSwitch`); promoting a third of each would ADD duplicates to the
+package this campaign is de-duplicating. Converging onto the existing ones is right but VISIBLE
+(focus ring, hover border, `surfaceElevated` background, different switch-row metrics), so it
+belongs in the visual-QA-gated wave. Both now use the shared `controlStyles` boxes, so no metric
+is forked in the meantime.
+
+### `FieldShell` is deleted
+
+The private label-wrapper fork existed only because `Field` hard-coded the 13/600 `field` label
+voice. `Field` 1.7.0 named both contract voices, so the bar now asks for `labelVariant="control"`
+— the 11/700/uppercase metrics `FieldShell` carried, verbatim. This ends the label-metric split
+between `Field` and `FieldShell` that caused several defects this campaign.
+
+The swap replaces the label implementation under six live portals, so it is guarded by a dedicated
+test (`fieldShellRetirement.test.tsx`) asserting the voice, the absence of `Field`'s 16px form
+rhythm, the per-kind reflow rules and the caller-override precedence. Removing `labelVariant`
+fails two of its five assertions — verified, not assumed.
+
+### i18n manifests are untouched
+
+`FILTERS_I18N` and `TABLE_I18N` are unchanged, and every portal guard that binds to them keeps
+working. `ui-forms` never calls `t`, so the one field that resolved an i18n key —
+`SelectField`'s `FILTERS_I18N.selectTriggerLabel` accessible name — composes that string HERE, in
+the adapter, and passes the finished value down as `accessibilityLabel`. The i18n stayed with the
+package that owns the keys.
+
+### Notes
+
+- New peer dependency: `@dloizides/ui-forms >= 1.8.0`, plus `@dloizides/ui-buttons >= 1.4.0`
+  inherited through it (`ui-forms` bundles `FormActions`). All five portals consuming `ui-tables`
+  already declare `ui-buttons ^1.4.0`, so this is a declaration of existing reality, not a new
+  requirement.
+- `FilterOption` and `DateRangeValue` are now ALIASES of `ui-forms`' `ControlOption` /
+  `DateRangeValue`. Public names unchanged; one definition instead of two structurally-identical
+  twins free to drift.
+- `DEFAULT_TYPEAHEAD_MIN_CHARS` / `DEFAULT_TYPEAHEAD_MAX_SUGGESTIONS` and `suggestOptions` /
+  `isUnmatched` are re-exported from `ui-forms`. Public API unchanged.
+- Inherits the `AnchoredMenu` WCAG fix from `ui-forms` 1.8.0: the selected option now carries
+  `aria-selected`. `accessibilityState` is native-only and react-native-web ignores it, so on web
+  the current option had been conveyed by colour and font-weight alone (WCAG 1.4.1).
+- `AnchoredMenu` remains one of three near-identical anchored-menu implementations, with
+  `ui-layout`'s `InlineMenu` and this package's `SizeDropdown`. Collapsing them was out of scope.
+  The move makes it EASIER: two of the three now sit in packages that may depend on `ui-forms`, so
+  a future collapse has an obvious home rather than needing a new shared package first.
+
 ## 1.13.0
 
 De-fork wave W1.1: pagination logic promoted from the byte-identical `PaginatedList`

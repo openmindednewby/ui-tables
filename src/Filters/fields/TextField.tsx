@@ -2,6 +2,14 @@
  * TextField — renders both the `text` (free search) and `number` (numeric) field kinds; the
  * only difference is the keyboard. Enter/submit calls the bar's `onSubmit` (Apply) so a
  * keyboard user commits a draft without reaching for the mouse (aml's `onSubmitEditing`).
+ *
+ * F2 — why this did NOT move to `ui-forms` with its siblings: `ui-forms` already ships TWO text
+ * inputs (`ThemedTextInput` and `FormField`). Promoting a third would ADD a duplicate to the very
+ * package this campaign is de-duplicating. The right convergence is to render this on
+ * `ThemedTextInput`, but that swaps in the focus ring, the hover border and the
+ * `surfaceElevated` rest background — a visible change for six live portals, so it belongs in the
+ * visual-QA-gated wave, not here. It uses the shared `controlStyles.input` box meanwhile, so
+ * there is no forked metric.
  */
 import React from 'react';
 import { TextInput } from 'react-native';
@@ -9,7 +17,7 @@ import { TextInput } from 'react-native';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { fieldTestID } from '../constants';
-import { filterStyles as s } from '../styles';
+import { controlStyles as s } from '../styles';
 import type { NumberFilterField, TextFilterField } from '../types';
 
 export interface TextFieldProps {

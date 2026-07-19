@@ -2,6 +2,12 @@
  * BooleanField — a themed RN `Switch` for a boolean filter (aml's `includeRelatives` /
  * `prioritize`). The label sits inline to the LEFT of the switch (switch-row idiom), not
  * above it, so it reads as a toggle rather than an input.
+ *
+ * F2 — why this did NOT move to `ui-forms` with its siblings: `ui-forms` already ships
+ * `FormSwitch`, the same idea at different metrics (`space-between` + 12px bottom margin +
+ * a 600-weight label, versus this row's 8px gap and 11px micro-caption). Promoting this would
+ * put two switch rows in one package; converging onto `FormSwitch` moves pixels. Both belong in
+ * the visual-QA-gated wave. It shares `controlStyles.subLabel`, so no metric is forked.
  */
 import React from 'react';
 import { Switch, Text, View } from 'react-native';
@@ -9,7 +15,7 @@ import { Switch, Text, View } from 'react-native';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { fieldTestID } from '../constants';
-import { filterStyles as s } from '../styles';
+import { controlStyles, filterStyles as s } from '../styles';
 import type { BooleanFilterField } from '../types';
 
 export interface BooleanFieldProps {
@@ -26,7 +32,7 @@ export function BooleanField({ field, barTestID, value, onChange }: BooleanField
 
   return (
     <View style={s.switchRow} testID={testID}>
-      <Text style={[s.subLabel, { color: colors.text }]}>{field.label}</Text>
+      <Text style={[controlStyles.subLabel, { color: colors.text }]}>{field.label}</Text>
       <Switch
         accessibilityLabel={field.label}
         accessibilityHint={field.accessibilityHint}
