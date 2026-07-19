@@ -1,6 +1,6 @@
 {
     "name": "@dloizides/ui-tables",
-    "version": "1.13.0",
+    "version": "1.14.0",
     "description": "Themable, brand-agnostic React Native (RN-web) table/stat components for the dloizides.com portfolio. Starts with StatCard; DataTable/StatGrid join when a 2nd consumer appears. Shares the @dloizides/ui-feedback UI context.",
     "keywords": [
         "react",
