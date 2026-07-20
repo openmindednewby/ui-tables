@@ -126,8 +126,26 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     </View>
   );
 
-  if (loading) return stateView(loadingLabel ?? t(TABLE_I18N.loading));
-  if (rows.length === 0) return stateView(emptyLabel ?? t(TABLE_I18N.empty));
+  /**
+   * A REFETCH MUST NOT BLANK THE GRID.
+   *
+   * This used to be an unconditional `if (loading) return stateView(...)`, which threw away the
+   * rows the user was already looking at for the duration of every re-fetch. On a server-paged
+   * grid that is not a cosmetic flicker — it is the paging bug: clicking "Next" replaced the table
+   * with "Loading…", so the grid visibly EMPTIED and only later refilled. To an observer (and to a
+   * Playwright assertion that samples the rows after the click) the page appeared to render no
+   * rows at all, which reads as "Next paged to nothing" rather than "the next page is on its way".
+   * The same applied to re-filtering and to any `reload()`.
+   *
+   * So the full-bleed state view is now reserved for when there is genuinely NOTHING to show:
+   * the first load (loading, no rows yet) and a resolved empty result (not loading, no rows).
+   * Once rows exist they stay on screen — stale for a moment — and swap when the new page
+   * resolves. `aria-busy` below carries the in-flight fetch to assistive tech, which
+   * the discarded-rows approach communicated only by destroying the content.
+   */
+  if (rows.length === 0) {
+    return stateView(loading ? loadingLabel ?? t(TABLE_I18N.loading) : emptyLabel ?? t(TABLE_I18N.empty));
+  }
 
   /** One row, in whichever layout — `DataTableRow` owns everything below the frame style. */
   const renderRow = (row: T, key: string, style: React.ComponentProps<typeof DataTableRow>['style']): React.ReactElement => (
@@ -168,7 +186,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   // --- mobile: label:value card-stack (GRID.md). Disabled by `stackBreakpoint={0}`. ---
   if (stacked) {
     return (
-      <View style={[s.wrap, frame, o?.wrap]} testID={testID}>
+      <View style={[s.wrap, frame, o?.wrap]} testID={testID} aria-busy={loading}>
         {banner}
         {rows.map((row, i) => {
           const key = rowKeys[i] ?? keyExtractor(row);
@@ -192,6 +210,9 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     <View
       style={[s.wrap, frame, o?.wrap]}
       testID={testID}
+      // Rows now survive a re-fetch (see the `rows.length === 0` guard above), so the in-flight
+      // state has to be announced rather than implied by the content vanishing.
+      aria-busy={loading}
       // A navigable table is a real ARIA grid; a plain one keeps the roles it always had.
       {...(keyboardNavigation ? { role: 'grid' as const } : null)}
     >

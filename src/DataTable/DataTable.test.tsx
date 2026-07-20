@@ -65,6 +65,39 @@ describe('DataTable', () => {
     expect(screen.getByText('Loading')).toBeTruthy();
   });
 
+  // A server-paged grid re-fetches on every page change. Blanking the table for the duration
+  // turns "Next" into "the grid emptied" — the rows the user is reading disappear and only come
+  // back when the next page lands. These three lock the rule: the state view is for when there is
+  // nothing to show; rows that already exist survive the re-fetch.
+  it('KEEPS the current rows visible while a re-fetch is in flight', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />);
+
+    expect(screen.getByText('Ada')).toBeTruthy();
+    expect(screen.getByText('Bo')).toBeTruthy();
+    expect(screen.queryByText('Loading')).toBeNull();
+  });
+
+  it('marks the table busy while a re-fetch is in flight, since the rows no longer vanish', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />);
+    expect(screen.getByTestId('grid').getAttribute('aria-busy')).toBe('true');
+  });
+
+  it('swaps to the NEXT page rows once the re-fetch resolves', () => {
+    const { rerender } = renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />,
+    );
+    const page2: Person[] = [{ id: 'c', name: 'Cy', score: 30 }];
+
+    rerender(
+      <UiProvider theme={theme} t={t}>
+        <DataTable columns={columns} rows={page2} keyExtractor={(r) => r.id} testID="grid" />
+      </UiProvider>,
+    );
+
+    expect(screen.getByText('Cy')).toBeTruthy();
+    expect(screen.queryByText('Ada')).toBeNull();
+  });
+
   it('shows the translated empty state via `t` when there are no rows', () => {
     renderTable(<DataTable columns={columns} rows={[]} keyExtractor={(r) => r.id} testID="grid" />);
     expect(screen.getByText('No rows')).toBeTruthy();

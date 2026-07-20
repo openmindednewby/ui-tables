@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.15.0
+
+**A re-fetch no longer blanks the grid — the server-paged paging defect.**
+
+`DataTable` returned its full-bleed loading state whenever `loading` was true, unconditionally.
+On a server-paged grid that is not a cosmetic flicker, it is the paging bug: clicking **Next**
+replaced the table with "Loading…", so the grid visibly EMPTIED and only refilled once the next
+page arrived. To anyone watching — and to any assertion that samples the rows after the click —
+the grid appeared to page to nothing. The same applied to re-filtering and to any `reload()`.
+
+Evidence this was real and not theoretical: against the live AML v2 cases console, the API
+returned a correct, non-overlapping page at `skip=50`, yet the UI rendered **zero** rows after
+Next. The rows were being discarded by this component, not by the query.
+
+### The rule now
+
+The state view is reserved for when there is genuinely nothing to show:
+
+| `loading` | `rows.length` | Renders |
+|---|---|---|
+| true | 0 | loading state (first load) |
+| false | 0 | empty state |
+| true | > 0 | **the existing rows** (stale for a moment), `aria-busy="true"` |
+| false | > 0 | the rows |
+
+Rows that already exist stay on screen and swap when the new page resolves. Because the content
+no longer vanishes, the in-flight fetch is announced explicitly via `aria-busy` on the table
+container rather than being implied by the table's destruction.
+
+**Behaviour is unchanged for every first load and every empty result**, which is what keeps this a
+MINOR bump. The only consumers that see a difference are those that were already passing `loading`
+alongside non-empty `rows` — i.e. exactly the ones that were silently blanking.
+
+All 266 pre-existing tests pass unmodified; 3 added for the retained-rows / busy / swap contract.
+
 ## 1.14.0
 
 **Campaign F2 — the private filter fields are now public, in `@dloizides/ui-forms`.**
