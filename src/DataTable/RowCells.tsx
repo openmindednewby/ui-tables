@@ -40,7 +40,10 @@ export function RowCells<T>({
     return (
       <>
         {columns.map((col) => (
-          <View key={col.key} style={[s.cardLine, o?.cardLine]}>
+          // The SAME per-cell test id the desktop cell carries (`${rowTestID}-${col.key}`),
+          // so an E2E selector like `${rowTestID}-${col.key}` resolves in BOTH layouts — the
+          // card-stack must not silently drop the hooks a wide-viewport test relies on.
+          <View key={col.key} style={[s.cardLine, o?.cardLine]} testID={`${rowTestID}-${col.key}`}>
             <Text style={[s.cardLabel, { color: labelColor }, o?.cardLabel]}>{col.header}</Text>
             <View style={[s.cardValue, o?.cardValue]}>{cellContent(col, row, textColor, o)}</View>
           </View>

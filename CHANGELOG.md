@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.16.0
+
+**The responsive card-stack now reads as a proper mobile layout — and keeps every E2E hook.**
+
+`DataTable` has always collapsed to a label:value card-stack below a breakpoint (`stackBreakpoint`),
+but on a phone the multi-column tables it powers (e.g. the organizer Passes table) were still hard
+to read, and the card-stack silently dropped test hooks a wide-viewport E2E suite relies on. This
+release makes the card-stack the readable, self-explanatory mobile layout it was meant to be —
+**with no change to the desktop grid and no broken selectors.**
+
+### What changed
+
+| Area | Before | Now |
+|---|---|---|
+| **Default breakpoint** | `640` | `768` — the kit-wide narrow-viewport threshold, aligned with `@dloizides/ui-layout`'s `MENU_BREAKPOINT` (already the collapse point for the nav menu and tabs). `CARD_STACK_BREAKPOINT` is re-exported at the new value. |
+| **Card line layout** | label LEFT, value RIGHT on one `space-between` row (cramped for long values / action buttons) | each column's header sits **ABOVE** its value, both left-aligned, so the value gets the full card width |
+| **Per-cell test id `${row}-${colKey}`** | resolved **only** on the desktop grid | resolves in **BOTH** layouts (the card line carries the same id the desktop cell does) |
+| **Head test id `ui-data-table-head`** | **absent** in card-stack mode | resolves in **BOTH** layouts via a hidden, a11y-inert carrier (`display: none`, `aria-hidden`) — E2E selectors survive at every width |
+
+### Backward compatibility
+
+- **The desktop grid is byte-for-byte unchanged.** Opt out of the card-stack entirely, at every
+  width, with `stackBreakpoint={0}` (unchanged).
+- A column's `render` node (badge, link, **action button**) renders identically in a card cell.
+- Row / per-cell / head / detail-panel / select-checkbox test ids are all preserved; the only
+  net-new guarantee is that per-cell and head ids now ALSO resolve in the card-stack.
+- The one observable difference for an existing consumer is cosmetic: tables between 640px and
+  768px wide now show the card-stack (they showed the cramped desktop row before), and cards read
+  vertically rather than as a `space-between` row. Both are strict readability improvements — which
+  is what keeps this a MINOR bump.
+
+All 272 tests pass (6 added for the both-layouts test-hook contract + the vertical card layout).
+
 ## 1.15.0
 
 **A re-fetch no longer blanks the grid — the server-paged paging defect.**

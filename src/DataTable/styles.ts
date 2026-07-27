@@ -14,8 +14,9 @@ const STATE_PAD_V = 34;
 const HEAD_FONT = 12;
 const CELL_FONT = 14;
 const STATE_FONT = 14;
-const CARD_LINE_PAD_V = 3;
-const CARD_LINE_GAP = 12;
+const CARD_LINE_PAD_V = 5;
+/** Gap between a card line's label and the value stacked beneath it. */
+const CARD_LABEL_GAP = 3;
 const PILL_RADIUS = 999;
 const PAGER_GAP = 8;
 const PAGER_SIZE_GAP = 6;
@@ -101,9 +102,22 @@ export const tableStyles = StyleSheet.create({
   /** Full-width panel under an expanded row — spans every column (the wrap is a column flexbox). */
   rowDetail: { width: FULL_WIDTH, paddingHorizontal: ROW_PAD_H, paddingVertical: ROW_PAD_V, borderTopWidth: BORDER_WIDTH },
   card: { paddingHorizontal: ROW_PAD_H, paddingVertical: ROW_PAD_V, borderTopWidth: BORDER_WIDTH },
-  cardLine: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', paddingVertical: CARD_LINE_PAD_V, gap: CARD_LINE_GAP },
+  /**
+   * A card line is a VERTICAL label:value pair — the header sits ABOVE its value, both
+   * left-aligned, so a narrow phone column never cramps the value against the label the
+   * way the old `space-between` row did (an Actions cell of buttons or a long text value
+   * now gets the full card width). `paddingVertical` gives the stacked lines their rhythm.
+   */
+  cardLine: { flexDirection: 'column', alignItems: 'stretch', paddingVertical: CARD_LINE_PAD_V, gap: CARD_LABEL_GAP },
   cardLabel: { fontSize: HEAD_FONT, fontWeight: '600', textTransform: 'uppercase', letterSpacing: LABEL_LETTER_SPACING },
-  cardValue: { flexShrink: 1, alignItems: 'flex-end' },
+  cardValue: { alignItems: 'flex-start' },
+  /**
+   * A zero-footprint carrier for the `ui-data-table-head` test id in the card-stack layout
+   * (which has no visible header row). `display: 'none'` keeps it out of layout AND the
+   * accessibility tree, while the `data-testid` stays queryable — so an E2E selector that
+   * targets the head survives at every viewport width.
+   */
+  headSentinel: { display: 'none' },
 });
 
 /**

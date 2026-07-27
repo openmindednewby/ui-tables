@@ -119,9 +119,8 @@ describe('DataTable', () => {
     // jsdom width is 1024; a huge breakpoint forces the stacked branch.
     const HUGE = 5000;
     renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={HUGE} testID="grid" />);
-    // header row (desktop-only) is absent; the row cards + labels render.
-    expect(screen.queryByTestId(TABLE_TEST_IDS.head)).toBeNull();
-    expect(screen.getAllByText('Name').length).toBe(rows.length); // one label per card
+    // One label PER CARD proves the stacked branch (the desktop header renders it just once).
+    expect(screen.getAllByText('Name').length).toBe(rows.length);
   });
 
   it('renders the desktop sticky header region when stickyHeader is set', () => {
@@ -281,7 +280,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
     renderTable(
       <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['b']} stackBreakpoint={HUGE} testID="grid" />,
     );
-    expect(screen.queryByTestId(TABLE_TEST_IDS.head)).toBeNull(); // stacked branch
+    expect(screen.getAllByText('Name').length).toBe(rows.length); // one label per card ⇒ stacked branch
     expect(screen.getByTestId('grid-row-b').nextElementSibling).toBe(screen.getByTestId('grid-row-detail-b'));
     expect(screen.queryByTestId('grid-row-detail-a')).toBeNull();
   });
@@ -308,5 +307,51 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
   it('exposes the panel test id shape through rowDetailTestID', () => {
     expect(rowDetailTestID('grid', 'a')).toBe('grid-row-detail-a');
     expect(rowTestID('grid', 'a')).toBe('grid-row-a');
+  });
+});
+
+// Enabling the card-stack by default must not silently drop the test hooks a wide-viewport
+// E2E suite relies on: the head, the row test ids, and the per-cell `${row}-${colKey}` ids all
+// have to resolve in BOTH layouts, and a column's custom render node (an action button) must
+// render identically in a card cell as in a desktop cell.
+describe('DataTable — E2E test hooks survive BOTH layouts', () => {
+  const DESKTOP = 0; // width is always >= 0, so the desktop grid always wins
+  const PHONE = 100_000; // width is always < this, so the card-stack always wins
+
+  it.each([
+    ['desktop grid', DESKTOP],
+    ['card-stack', PHONE],
+  ])('resolves the head test id in %s mode', (_mode, stackBreakpoint) => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={stackBreakpoint} testID="grid" />);
+    expect(screen.getByTestId(TABLE_TEST_IDS.head)).toBeTruthy();
+  });
+
+  it.each([
+    ['desktop grid', DESKTOP],
+    ['card-stack', PHONE],
+  ])('resolves the row + per-cell `${row}-${colKey}` test ids in %s mode', (_mode, stackBreakpoint) => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={stackBreakpoint} testID="grid" />);
+    expect(screen.getByTestId('grid-row-a')).toBeTruthy();
+    expect(screen.getByTestId('grid-row-a-name')).toBeTruthy();
+    expect(screen.getByTestId('grid-row-a-score')).toBeTruthy();
+    expect(screen.getByTestId('grid-row-b-name')).toBeTruthy();
+  });
+
+  it('keeps the head test-id carrier out of the accessibility tree in card-stack mode', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
+    // Present for E2E (queryable by test id) but a11y-inert — it announces no phantom header.
+    expect(screen.getByTestId(TABLE_TEST_IDS.head).getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('renders a column`s custom render node (e.g. an action button) inside the card cell', () => {
+    const actionColumns: ReadonlyArray<DataTableColumn<Person>> = [
+      { key: 'name', header: 'Name', render: (r) => r.name },
+      { key: 'actions', header: 'Actions', render: (r) => <button type="button">{`edit-${r.id}`}</button> },
+    ];
+    renderTable(<DataTable columns={actionColumns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
+    // The per-cell test id resolves to the card line, and the action button renders within it.
+    expect(screen.getByTestId('grid-row-a-actions')).toBeTruthy();
+    expect(screen.getByText('edit-a')).toBeTruthy();
+    expect(screen.getByText('edit-b')).toBeTruthy();
   });
 });

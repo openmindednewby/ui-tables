@@ -226,7 +226,7 @@ describe('DataTable — every slot is genuinely reachable', () => {
         testID="grid"
       />,
     );
-    expect(screen.queryByTestId(TABLE_TEST_IDS.head)).toBeNull(); // stacked branch
+    expect(screen.getAllByText('Name').length).toBe(rows.length); // one label per card ⇒ stacked branch
     const card = screen.getByTestId('grid-row-a');
     expect(card.style.backgroundColor).toBe(CARD_BG);
     expect(screen.getAllByText('Name')[0]?.style.color).toBe(LABEL_COLOR); // cardLabel beat textSecondary

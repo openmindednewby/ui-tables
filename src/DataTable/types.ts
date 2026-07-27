@@ -155,7 +155,9 @@ export interface DataTableProps<T> {
   /** Empty text (already translated). Falls back to the kit's `empty` translation. */
   emptyLabel?: string;
   /**
-   * Below this width (px) rows collapse to a label:value card. Default 640.
+   * Below this width (px) rows collapse to a stacked label:value card (each column's
+   * header sits above its value). Default 768 — the kit-wide narrow-viewport threshold,
+   * aligned with `@dloizides/ui-layout`'s `MENU_BREAKPOINT` (`CARD_STACK_BREAKPOINT`).
    *
    * **Opt out of the card-stack entirely with `stackBreakpoint={0}`**: the stack is
    * chosen by `width < stackBreakpoint`, which is never true for 0, so the desktop

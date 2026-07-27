@@ -226,10 +226,20 @@ const overrides: DataTableStyleOverrides = {
 | `Pager` | `PagerStyleOverrides` | `pager`, `pagerInfo`, `pagerNav`, `pagerRowsLabel`, `sizeGroup`, `control`, `controlText`, `sizePill`, `sizePillText` |
 | `FilterBar` | `FilterBarStyleOverrides` | `filters`, `filtersSpacer`, `results`, `filtersActions` |
 
-**Disabling the card-stack**: the label:value card-stack renders when `width < stackBreakpoint`,
-so `stackBreakpoint={0}` (never true) keeps the desktop grid at every width — the opt-out for a
-consumer whose table never had a card-stack. Omit `styleOverrides` entirely and every component
-renders exactly as it always has.
+**The responsive card-stack** (default breakpoint `768`, aligned with `@dloizides/ui-layout`'s
+`MENU_BREAKPOINT`): below `stackBreakpoint` each row collapses to a card where every column's
+header sits **above** its value (left-aligned label:value pairs), so a narrow phone never crams a
+multi-column table into a side-scrolling row. The desktop grid above the breakpoint is unchanged.
+
+- **Test hooks survive both layouts.** The head test id (`ui-data-table-head`), the row test ids
+  (`${testID}-row-${key}`) and the **per-cell** test ids (`${testID}-row-${key}-${col.key}`) all
+  resolve in the card-stack exactly as they do on the desktop grid — so an E2E suite written
+  against the wide layout keeps working when a table goes card-stack on mobile. A column's `render`
+  node (badge, link, action button) renders identically in a card cell.
+- **Disabling the card-stack**: it renders when `width < stackBreakpoint`, so `stackBreakpoint={0}`
+  (never true) keeps the desktop grid at every width — the opt-out for a table that never had one.
+
+Omit `styleOverrides` entirely and every component renders exactly as it always has.
 
 Colours come entirely from `useUi().theme` (drive it with `@dloizides/design-tokens` via `tokensToUiTheme`), so the grid re-themes per tenant. Every component-authored string is routed through the UiProvider `t` — provide the `uiTables.*` keys (see `TABLE_I18N`) in your locale files; a caller may also pass already-translated `loadingLabel` / `emptyLabel` / `resultsLabel` directly.
 

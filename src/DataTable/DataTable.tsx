@@ -188,6 +188,10 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     return (
       <View style={[s.wrap, frame, o?.wrap]} testID={testID} aria-busy={loading}>
         {banner}
+        {/* The card-stack has no visible header, but E2E selectors that target the head must
+            still resolve at phone width — a hidden, a11y-inert carrier keeps `ui-data-table-head`
+            queryable in BOTH layouts (see `headSentinel` in styles.ts). */}
+        <View style={s.headSentinel} testID={TABLE_TEST_IDS.head} aria-hidden />
         {rows.map((row, i) => {
           const key = rowKeys[i] ?? keyExtractor(row);
           const bg = rowBg(row, i, key);

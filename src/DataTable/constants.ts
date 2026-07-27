@@ -4,8 +4,17 @@
  * components hold no magic numbers and no ad-hoc strings.
  */
 
-/** Default breakpoint (px): below this a row collapses to a label:value card. */
-export const CARD_STACK_BREAKPOINT = 640;
+/**
+ * Default breakpoint (px): below this a row collapses to a label:value card.
+ *
+ * Aligned with `@dloizides/ui-layout`'s `MENU_BREAKPOINT` (768) — the kit's single
+ * "this is a phone / narrow tablet" threshold, already the collapse point for the nav
+ * menu (`ModalDropdown`) and the tabs bar (`TABS_COLLAPSE_BREAKPOINT`). Kept as a plain
+ * literal rather than an import so a table has no runtime dependency on the layout kit
+ * for one number; the value is what is shared, and it is documented here as such. A table
+ * that never wants the card-stack still opts out with `stackBreakpoint={0}`.
+ */
+export const CARD_STACK_BREAKPOINT = 768;
 
 /** Default rows-per-page choices, matching the vanilla console's GRID.md pager. */
 export const DEFAULT_PAGE_SIZE_OPTIONS: readonly number[] = [25, 50, 100, 200];
