@@ -34,8 +34,16 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
+import { FadeIn, useReducedMotion } from '@dloizides/ui-motion';
 
-import { CARD_STACK_BREAKPOINT, TABLE_I18N, TABLE_TEST_IDS, selectAllTestID } from './constants';
+import {
+  CARD_STACK_BREAKPOINT,
+  TABLE_I18N,
+  TABLE_TEST_IDS,
+  rowEntranceDelayMs,
+  rowFadeTestID,
+  selectAllTestID,
+} from './constants';
 import { DataTableRow } from './DataTableRow';
 import { SelectAllBanner } from './SelectAllBanner';
 import { selectionStyles as sel, softBrandTint, tableStyles as s } from './styles';
@@ -54,11 +62,16 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     getRowAccessibilityLabel, loading, loadingLabel, emptyLabel,
     renderRowDetail, expandedRowKeys, styleOverrides: o,
     selectedRowKeys, onSelectionChange, matchingCount, allMatchingSelected, onSelectAllMatchingChange,
-    keyboardNavigation = false,
+    keyboardNavigation = false, animateRows = true,
     stackBreakpoint = CARD_STACK_BREAKPOINT, testID = TABLE_TEST_IDS.root,
   } = props;
 
   const { theme, t } = useUi();
+  // Row entrance: on by default, but collapse to instant (no wrapper, no delay) under
+  // reduced-motion — the FadeIn gates too, but skipping the wrapper entirely keeps the
+  // reduced-motion DOM byte-for-byte identical to the un-animated table.
+  const reducedMotion = useReducedMotion();
+  const animateRowEntrance = animateRows && !reducedMotion;
   const { colors } = theme;
   const { width } = useWindowDimensions();
   const stacked = width < stackBreakpoint;
@@ -147,28 +160,53 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     return stateView(loading ? loadingLabel ?? t(TABLE_I18N.loading) : emptyLabel ?? t(TABLE_I18N.empty));
   }
 
-  /** One row, in whichever layout — `DataTableRow` owns everything below the frame style. */
-  const renderRow = (row: T, key: string, style: React.ComponentProps<typeof DataTableRow>['style']): React.ReactElement => (
-    <DataTableRow
-      key={key}
-      columns={columns}
-      expanded={expandedRowKeys?.includes(key) ?? false}
-      getRowAccessibilityLabel={getRowAccessibilityLabel}
-      keyboardNavigation={keyboardNavigation}
-      renderRowDetail={renderRowDetail}
-      roving={roving}
-      row={row}
-      rowKey={key}
-      selection={selection}
-      stacked={stacked}
-      style={style}
-      styleOverrides={o}
-      tableTestID={testID}
-      onHoverIn={() => setHoveredKey(key)}
-      onHoverOut={() => setHoveredKey((current) => (current === key ? undefined : current))}
-      onRowPress={onRowPress}
-    />
-  );
+  /**
+   * One row, in whichever layout — `DataTableRow` owns everything below the frame style.
+   *
+   * When `animateRowEntrance` is on, the row (and its expanded detail panel, if any) is
+   * wrapped in a `<FadeIn>` **keyed by the row key**. That key is what keeps the entrance
+   * honest: React reuses the same `<FadeIn>` instance across unrelated parent re-renders
+   * (hover, a re-fetch that resolves to the SAME keys), so it fades exactly once — on the
+   * mount of that key. Only a real change to the row set (sort / filter / page) mounts new
+   * keys, which is the one time a re-fade is wanted. The stagger delay is capped, so a long
+   * page settles in a fixed time rather than animating row-by-row.
+   *
+   * When off (opt-out or reduced-motion), the row renders with no wrapper node at all — a
+   * keyed `Fragment` adds nothing to the DOM — so the un-animated table is unchanged.
+   */
+  const renderRow = (
+    row: T,
+    key: string,
+    index: number,
+    style: React.ComponentProps<typeof DataTableRow>['style'],
+  ): React.ReactElement => {
+    const node = (
+      <DataTableRow
+        columns={columns}
+        expanded={expandedRowKeys?.includes(key) ?? false}
+        getRowAccessibilityLabel={getRowAccessibilityLabel}
+        keyboardNavigation={keyboardNavigation}
+        renderRowDetail={renderRowDetail}
+        roving={roving}
+        row={row}
+        rowKey={key}
+        selection={selection}
+        stacked={stacked}
+        style={style}
+        styleOverrides={o}
+        tableTestID={testID}
+        onHoverIn={() => setHoveredKey(key)}
+        onHoverOut={() => setHoveredKey((current) => (current === key ? undefined : current))}
+        onRowPress={onRowPress}
+      />
+    );
+    if (!animateRowEntrance) return <React.Fragment key={key}>{node}</React.Fragment>;
+    return (
+      <FadeIn key={key} delay={rowEntranceDelayMs(index)} testID={rowFadeTestID(testID, key)}>
+        {node}
+      </FadeIn>
+    );
+  };
 
   /** The select-all-matching banner. Renders nothing unless the consumer opted in. */
   const banner = (
@@ -195,7 +233,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
         {rows.map((row, i) => {
           const key = rowKeys[i] ?? keyExtractor(row);
           const bg = rowBg(row, i, key);
-          return renderRow(row, key, [
+          return renderRow(row, key, i, [
             s.card,
             { borderTopColor: colors.border },
             i === FIRST_ROW_INDEX ? { borderTopWidth: 0 } : null,
@@ -235,7 +273,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
       {rows.map((row, i) => {
         const key = rowKeys[i] ?? keyExtractor(row);
         const bg = rowBg(row, i, key);
-        return renderRow(row, key, [s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]);
+        return renderRow(row, key, i, [s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]);
       })}
     </View>
   );

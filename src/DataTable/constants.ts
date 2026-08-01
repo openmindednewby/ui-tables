@@ -19,6 +19,27 @@ export const CARD_STACK_BREAKPOINT = 768;
 /** Default rows-per-page choices, matching the vanilla console's GRID.md pager. */
 export const DEFAULT_PAGE_SIZE_OPTIONS: readonly number[] = [25, 50, 100, 200];
 
+/**
+ * Row-entrance stagger (the Ant-design-like list fade-in via `@dloizides/ui-motion`'s
+ * `<FadeIn>`): only the first `ROW_ENTRANCE_STAGGER_CAP` rows fade in one-after-another,
+ * each `ROW_ENTRANCE_STAGGER_STEP_MS` behind the last. Every row past the cap shares the
+ * capped delay so the entrance settles in a fixed ~`cap * step` ms no matter the page size.
+ *
+ * The cap is the whole point: without it a 200-row page schedules 200 escalating delays
+ * (and a 5,000-row list would take minutes to finish appearing while pinning the main
+ * thread) — exactly the jank this animation is supposed to add polish over, not create.
+ */
+export const ROW_ENTRANCE_STAGGER_CAP = 10;
+export const ROW_ENTRANCE_STAGGER_STEP_MS = 30;
+
+/**
+ * The entrance delay (ms) for the row at `index`, capped at `ROW_ENTRANCE_STAGGER_CAP`
+ * rows: rows 0..cap stagger; every row beyond the cap gets the same (capped) delay, so a
+ * long page never animates row-by-row. Pure + exported for direct unit testing.
+ */
+export const rowEntranceDelayMs = (index: number): number =>
+  Math.min(index, ROW_ENTRANCE_STAGGER_CAP) * ROW_ENTRANCE_STAGGER_STEP_MS;
+
 /** Stable test ids so consumers/e2e can target the shared chrome. */
 export const TABLE_TEST_IDS = {
   root: 'ui-data-table',
@@ -29,6 +50,8 @@ export const TABLE_TEST_IDS = {
   rowDetailInfix: 'row-detail',
   /** Infix of a row's select checkbox: `${tableTestID}-select-${key}`. */
   rowSelectInfix: 'select',
+  /** Infix of a row's entrance-fade wrapper: `${tableTestID}-fade-${key}`. */
+  rowFadeInfix: 'fade',
   /** Suffix of the header (select-all-on-page) checkbox: `${tableTestID}-select-all`. */
   selectAllSuffix: 'select-all',
   /** Suffix of the select-all-matching banner: `${tableTestID}-select-banner`. */
@@ -68,6 +91,14 @@ export const rowSelectTestID = (tableTestID: string, key: string): string =>
 /** The test id of the header (select-all-on-page) checkbox: `${tableTestID}-select-all`. */
 export const selectAllTestID = (tableTestID: string): string =>
   `${tableTestID}-${TABLE_TEST_IDS.selectAllSuffix}`;
+
+/**
+ * The test id of a row's entrance-fade wrapper: `${tableTestID}-fade-${key}` (key from
+ * `keyExtractor`). Only present while `animateRows` is on and reduced-motion is off.
+ * Exported so consumers/e2e can target (or assert the absence of) the animation wrapper.
+ */
+export const rowFadeTestID = (tableTestID: string, key: string): string =>
+  `${tableTestID}-${TABLE_TEST_IDS.rowFadeInfix}-${key}`;
 
 /**
  * Translation keys for every component-authored, user-facing string. Apps map

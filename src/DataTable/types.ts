@@ -149,6 +149,22 @@ export interface DataTableProps<T> {
    * Web-only in effect (focus movement and key events are DOM concerns); inert on native.
    */
   keyboardNavigation?: boolean;
+  /**
+   * Fade each row in (with a small upward translate) as the row SET mounts — the
+   * Ant-design-like list entrance, via `@dloizides/ui-motion`'s `<FadeIn>`. The first
+   * few rows stagger; every row past the cap shares one capped delay, so a full page
+   * never animates row-by-row (see `ROW_ENTRANCE_STAGGER_CAP`).
+   *
+   * The entrance plays when a row's key first appears — i.e. on first load and whenever
+   * the row set changes (sort / filter / page) — and **NOT** on unrelated re-renders
+   * (hover, a re-fetch that resolves to the same keys), because each row's `<FadeIn>` is
+   * keyed by its row key and so keeps its identity across those renders.
+   *
+   * Honours reduced-motion: the rows render instantly, with no wrapper and no delay.
+   * Default **on**; pass `animateRows={false}` to opt out — rows then render exactly as
+   * they did before this prop existed (no wrapper node, unchanged DOM).
+   */
+  animateRows?: boolean;
   loading?: boolean;
   /** Loading text (already translated). Falls back to the kit's `loading` translation. */
   loadingLabel?: string;

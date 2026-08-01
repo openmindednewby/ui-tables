@@ -12,5 +12,6 @@ export {
   rowTestID,
   rowDetailTestID,
   rowSelectTestID,
+  rowFadeTestID,
   selectAllTestID,
 } from './constants';

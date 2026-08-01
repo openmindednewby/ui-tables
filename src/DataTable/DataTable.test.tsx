@@ -4,7 +4,16 @@ import React from 'react';
 import { UiProvider, type UiTheme, type UiValue } from '@dloizides/ui-feedback';
 
 import { DataTable } from './DataTable';
-import { TABLE_I18N, TABLE_TEST_IDS, rowDetailTestID, rowTestID } from './constants';
+import {
+  ROW_ENTRANCE_STAGGER_CAP,
+  ROW_ENTRANCE_STAGGER_STEP_MS,
+  TABLE_I18N,
+  TABLE_TEST_IDS,
+  rowDetailTestID,
+  rowEntranceDelayMs,
+  rowFadeTestID,
+  rowTestID,
+} from './constants';
 import type { DataTableColumn } from './types';
 
 const theme: UiTheme = {
@@ -254,8 +263,11 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
   });
 
   it('renders the panel DIRECTLY beneath its own row (between it and the next row)', () => {
+    // Placement is independent of the entrance animation; opt the wrapper out so this
+    // asserts the flat row/panel/row sibling chain (with animateRows a row+panel share one
+    // FadeIn wrapper — covered by the entrance suite below).
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} animateRows={false} stackBreakpoint={0} testID="grid" />,
     );
     const rowA = screen.getByTestId('grid-row-a');
     const panel = screen.getByTestId('grid-row-detail-a');
@@ -353,5 +365,66 @@ describe('DataTable — E2E test hooks survive BOTH layouts', () => {
     expect(screen.getByTestId('grid-row-a-actions')).toBeTruthy();
     expect(screen.getByText('edit-a')).toBeTruthy();
     expect(screen.getByText('edit-b')).toBeTruthy();
+  });
+});
+
+// The Ant-design-like row entrance: each row fades in through a keyed `<FadeIn>` from
+// `@dloizides/ui-motion`. These lock the CONTRACT (opt-in default, opt-out, cap, keying)
+// rather than the visual fade itself (that is FadeIn's own + an E2E concern).
+describe('DataTable — row entrance animation (ui-motion FadeIn)', () => {
+  it('caps the per-row stagger so a long page never animates row-by-row', () => {
+    // First `cap` rows stagger one step apart; every row past the cap shares the capped
+    // delay — the guard that keeps a 100/5,000-row page from scheduling 100/5,000 delays.
+    expect(rowEntranceDelayMs(0)).toBe(0);
+    expect(rowEntranceDelayMs(1)).toBe(ROW_ENTRANCE_STAGGER_STEP_MS);
+    const capped = ROW_ENTRANCE_STAGGER_CAP * ROW_ENTRANCE_STAGGER_STEP_MS;
+    expect(rowEntranceDelayMs(ROW_ENTRANCE_STAGGER_CAP)).toBe(capped);
+    expect(rowEntranceDelayMs(ROW_ENTRANCE_STAGGER_CAP + 1)).toBe(capped);
+    expect(rowEntranceDelayMs(500)).toBe(capped); // never grows past the cap
+  });
+
+  it('wraps each row in a keyed FadeIn by default, with the row still inside it', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
+    const fadeA = screen.getByTestId(rowFadeTestID('grid', 'a'));
+    expect(fadeA).toBeTruthy();
+    expect(screen.getByTestId(rowFadeTestID('grid', 'b'))).toBeTruthy();
+    // The row lives INSIDE its fade wrapper — the entrance wraps the real row, not a placeholder.
+    expect(fadeA.contains(screen.getByTestId('grid-row-a'))).toBe(true);
+  });
+
+  it('renders rows plainly with NO fade wrapper when animateRows is false', () => {
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} animateRows={false} stackBreakpoint={0} testID="grid" />);
+    expect(screen.queryByTestId(rowFadeTestID('grid', 'a'))).toBeNull();
+    expect(screen.getByTestId('grid-row-a')).toBeTruthy(); // row itself unaffected
+  });
+
+  it('still fires onRowPress for a row rendered through the FadeIn wrapper', () => {
+    const onRowPress = jest.fn();
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={onRowPress} stackBreakpoint={0} testID="grid" />);
+    fireEvent.click(screen.getByTestId('grid-row-b'));
+    expect(onRowPress).toHaveBeenCalledWith(rows[1]);
+  });
+
+  it('keeps the SAME FadeIn instance across an unrelated re-render (same keys ⇒ no re-fade)', () => {
+    // The keying is what prevents re-animating on every render: an unrelated re-render (here a
+    // loading toggle that resolves to the SAME row keys) must reuse the existing wrapper node,
+    // so FadeIn keeps its mounted identity and does not replay its mount-only fade.
+    const { rerender } = renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />,
+    );
+    const before = screen.getByTestId(rowFadeTestID('grid', 'a'));
+    rerender(
+      <UiProvider theme={theme} t={t}>
+        <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} loading stackBreakpoint={0} testID="grid" />
+      </UiProvider>,
+    );
+    expect(screen.getByTestId(rowFadeTestID('grid', 'a'))).toBe(before); // identical DOM node
+  });
+
+  it('wraps cards in the responsive card-stack layout too', () => {
+    const PHONE = 100_000;
+    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
+    expect(screen.getByTestId(rowFadeTestID('grid', 'a'))).toBeTruthy();
+    expect(screen.getByTestId(rowFadeTestID('grid', 'b'))).toBeTruthy();
   });
 });

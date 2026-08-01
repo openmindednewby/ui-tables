@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.17.0
+
+**`DataTable` rows now fade in on load — the Ant-design-like list entrance — via `@dloizides/ui-motion`.**
+
+When a `DataTable` mounts its rows (first load, and whenever the row set changes — sort / filter /
+page), each row now fades in with a small upward translate, staggered across the first few rows. It
+is a subtle polish layer, gated hard so it never becomes jank on a large page, and **entirely
+opt-outable** — omit nothing and the table behaves exactly as before minus the fade.
+
+### What changed
+
+| Area | Detail |
+|---|---|
+| **New optional prop** | `animateRows?: boolean` (default **`true`**). Each row (and its expanded detail panel, if any) is wrapped in `@dloizides/ui-motion`'s `<FadeIn>`, keyed by the row key. |
+| **Capped stagger** | Only the first `ROW_ENTRANCE_STAGGER_CAP` (10) rows stagger, `ROW_ENTRANCE_STAGGER_STEP_MS` (30 ms) apart; every row past the cap shares the capped delay. A 100- or 5,000-row page settles in a fixed ~300 ms, **never** row-by-row. |
+| **Reduced-motion** | Honoured: rows render instantly, with **no wrapper node and no delay** (`FadeIn` gates too, but the wrapper is skipped entirely so the reduced-motion DOM is identical to the un-animated table). |
+| **No re-fade on re-render** | Each row's `<FadeIn>` is keyed by its row key, so React keeps its identity across unrelated re-renders (hover, a re-fetch that resolves to the SAME keys) — the entrance plays once per key, not on every render. A genuine row-set change (new keys) re-fades, as intended. |
+| **New test id** | `rowFadeTestID(tableTestID, key)` → `${tableTestID}-fade-${key}` (present only while animating), exported alongside the other row test-id helpers. |
+
+### Backward compatibility
+
+- **MINOR, additive.** The public API gains one optional prop and one test-id helper; nothing is
+  renamed or removed.
+- All existing behaviour is preserved: zebra, sticky header, mobile card-stack, row/per-cell/head/
+  detail-panel/select-checkbox test ids, `onRowPress`, bulk-select, keyboard navigation, the pager,
+  and the refetch-does-not-blank-the-grid guard.
+- Pass `animateRows={false}` (or run under `prefers-reduced-motion`) and rows render with no
+  wrapper node — DOM identical to before this release.
+- New peer of the kit: `@dloizides/ui-motion` (`^1.0.1`) is added as a dependency.
+
 ## 1.16.0
 
 **The responsive card-stack now reads as a proper mobile layout — and keeps every E2E hook.**
