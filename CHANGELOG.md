@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.17.0
+## 1.18.0
 
 **`DataTable` rows now fade in on load — the Ant-design-like list entrance — via `@dloizides/ui-motion`.**
 
