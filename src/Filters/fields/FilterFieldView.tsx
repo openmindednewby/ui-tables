@@ -143,7 +143,7 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
 
   return (
     <Field
-      containerStyle={[s.fieldInBar, { minWidth }, grow, field.style]}
+      containerStyle={[s.fieldInBar, { minWidth, maxWidth: '100%' as const }, grow, field.style]}
       label={field.label}
       labelVariant="control"
       testID={field.testID ?? fieldTestID(barTestID, field.key)}
