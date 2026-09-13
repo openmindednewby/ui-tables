@@ -20,6 +20,7 @@ import { SelectField } from './SelectField';
 import { TextField } from './TextField';
 import { TypeaheadField } from './TypeaheadField';
 import { FIELD_MIN_WIDTH, fieldTestID } from '../constants';
+import { clampedMinWidth } from '../utils/clampedMinWidth';
 import { filterStyles as s } from '../styles';
 import type { DateRangeValue, FilterField, FilterValue, FilterValues, SelectFilterField } from '../types';
 
@@ -143,7 +144,7 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
 
   return (
     <Field
-      containerStyle={[s.fieldInBar, { minWidth, maxWidth: '100%' as const }, grow, field.style]}
+      containerStyle={[s.fieldInBar, { minWidth: clampedMinWidth(minWidth), maxWidth: '100%' as const }, grow, field.style]}
       label={field.label}
       labelVariant="control"
       testID={field.testID ?? fieldTestID(barTestID, field.key)}

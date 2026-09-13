@@ -76,9 +76,9 @@ describe('F2 — the label still speaks the CONTROL voice after FieldShell was d
     const grown = window.getComputedStyle(screen.getByTestId(fieldTestID(FILTERS_TEST_ID, 'q')));
     const plain = window.getComputedStyle(screen.getByTestId(fieldTestID(FILTERS_TEST_ID, 'status')));
     expect(grown.flexGrow).toBe('1');
-    expect(grown.minWidth).toBe('200px');
+    expect(grown.minWidth).toBe('min(200px, 100%)');
     // select's default min-width differs from text's — proof the per-kind table is still read.
-    expect(plain.minWidth).toBe('150px');
+    expect(plain.minWidth).toBe('min(150px, 100%)');
   });
 
   it('lets a caller style override win, applied LAST', () => {
