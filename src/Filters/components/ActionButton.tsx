@@ -9,7 +9,7 @@ import { Pressable, Text } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
-import { FILTER_HIT_SLOP, filterStyles as s } from '../styles';
+import { filterStyles as s } from '../styles';
 
 const DISABLED_OPACITY = 0.4;
 const FULL_OPACITY = 1;
@@ -37,7 +37,6 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
       accessibilityHint={hint}
       accessibilityState={{ disabled }}
       disabled={disabled}
-      hitSlop={FILTER_HIT_SLOP}
       onPress={onPress}
       style={[
         s.action,

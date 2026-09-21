@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.19.0
+
+**Every pressable renders a 44x44 hit box (SHOWCASE-1 "Publish the UI showcase at ui.dloizides.com").**
+
+Live QA on ui.dloizides.com/tables at 360x640 measured switches at 40x20, page-size buttons at
+32-39x30 and pager buttons 31px tall. `hitSlop` is inert on react-native-web, so the rendered box
+is the target. Pager buttons, page-size pills, the dropdown trigger and its options, filter action
+buttons, the select checkbox (gutter now 44px wide) and the select-all banner action now carry
+`minHeight`/`minWidth` of `MIN_TARGET_PX` (44). The filter `Switch` keeps its 40x20 track inside a
+44x44 `Pressable` (`-switch-hit` test id); the inner Switch keeps focus and the switch role.
+The inert `hitSlop` props were removed.
+
 ## 1.18.0
 
 **`DataTable` rows now fade in on load — the Ant-design-like list entrance — via `@dloizides/ui-motion`.**

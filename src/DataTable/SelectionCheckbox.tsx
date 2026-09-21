@@ -21,12 +21,6 @@ import { selectionStyles as sel } from './styles';
 const CHECK_GLYPH = '✓';
 /** The indeterminate mark: a dash, the conventional "some but not all". */
 const MIXED_GLYPH = '–';
-/**
- * Checkboxes are ~18px. `hitSlop` grows the TOUCH target toward the WCAG ≥44px minimum
- * without changing the rendered size — the same trick, and the same reason, as the Pager's
- * `PAGER_HIT_SLOP`.
- */
-const CHECKBOX_HIT_SLOP = { top: 12, bottom: 12, left: 12, right: 12 } as const;
 const TRANSPARENT = 'transparent';
 
 interface SelectionCheckboxProps {
@@ -75,7 +69,6 @@ export function SelectionCheckbox({
       accessibilityRole="checkbox"
       accessibilityState={{ checked }}
       aria-checked={checked}
-      hitSlop={CHECKBOX_HIT_SLOP}
       style={sel.checkboxHit}
       testID={testID}
       onPress={onToggle}

@@ -18,8 +18,6 @@ const FIRST_PAGE = 1;
 const DISABLED_OPACITY = 0.4;
 const FULL_OPACITY = 1;
 const TRANSPARENT = 'transparent';
-/** Grows the touch target toward WCAG ≥44px without changing rendered size (vertical only). */
-const PAGER_HIT_SLOP = { top: 10, bottom: 10 } as const;
 
 interface NavButtonProps {
   label: string;
@@ -41,7 +39,6 @@ function NavButton({ label, hint, disabled, onPress, color, border, testID, styl
       accessibilityHint={hint}
       accessibilityState={{ disabled }}
       disabled={disabled}
-      hitSlop={PAGER_HIT_SLOP}
       onPress={onPress}
       style={[c.control, { borderColor: border, opacity: disabled ? DISABLED_OPACITY : FULL_OPACITY }, o?.control]}
     >
@@ -123,7 +120,6 @@ function RowsControl({ pageSize, pageSizeOptions, onPageSizeChange, isDropdown, 
                 accessibilityLabel={rowsOptionLabel(t, size)}
                 accessibilityHint={t(TABLE_I18N.pagerRowsOptionHint)}
                 accessibilityState={{ selected: active }}
-                hitSlop={PAGER_HIT_SLOP}
                 onPress={() => onPageSizeChange(size)}
                 style={[c.sizePill, { borderColor: active ? brand : colors.border, backgroundColor: active ? brand : TRANSPARENT }, o?.sizePill]}
               >

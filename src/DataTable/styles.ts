@@ -4,6 +4,8 @@
  */
 import { Platform, StyleSheet, type ViewStyle } from 'react-native';
 
+import { MIN_TARGET_PX } from '../minTarget';
+
 const BORDER_WIDTH = 1;
 const BORDER_RADIUS = 12;
 const COLUMN_GAP = 16;
@@ -38,7 +40,7 @@ const LABEL_LETTER_SPACING = 0.3;
 const STICKY_Z = 2;
 const FULL_WIDTH = '100%' as const;
 /** The checkbox column's width — a fixed gutter, so header and rows line up exactly. */
-const SELECT_COL_WIDTH = 20;
+const SELECT_COL_WIDTH = MIN_TARGET_PX;
 const CHECKBOX_SIZE = 18;
 const CHECKBOX_RADIUS = 4;
 const CHECKBOX_GLYPH_FONT = 11;
@@ -128,8 +130,8 @@ export const tableStyles = StyleSheet.create({
 export const selectionStyles = StyleSheet.create({
   /** The fixed-width gutter holding the checkbox, in both the header and every row. */
   selectCell: { width: SELECT_COL_WIDTH, alignItems: 'flex-start', justifyContent: 'center' },
-  /** The checkbox's pressable area (the hit target is grown further with `hitSlop`). */
-  checkboxHit: { alignItems: 'center', justifyContent: 'center' },
+  /** The checkbox's pressable area — a full 44x44 box around the 18px visual square. */
+  checkboxHit: { minWidth: MIN_TARGET_PX, minHeight: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center' },
   checkbox: {
     width: CHECKBOX_SIZE,
     height: CHECKBOX_SIZE,
@@ -157,6 +159,7 @@ export const selectionStyles = StyleSheet.create({
     paddingVertical: BANNER_PAD_V,
   },
   bannerText: { fontSize: BANNER_FONT },
+  bannerHit: { minHeight: MIN_TARGET_PX, justifyContent: 'center' },
   bannerAction: { fontSize: BANNER_FONT, fontWeight: '700', textDecorationLine: 'underline' },
 });
 
@@ -172,18 +175,18 @@ export const chromeStyles = StyleSheet.create({
   /** Mixed-case "Rows" caption for the dropdown variant (v1's muted `.hint` label — no uppercase transform). */
   pagerRowsLabelPlain: { fontSize: HEAD_FONT, letterSpacing: LABEL_LETTER_SPACING },
   sizeGroup: { flexDirection: 'row', gap: PAGER_SIZE_GAP, alignItems: 'center' },
-  control: { paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: BORDER_RADIUS, borderWidth: BORDER_WIDTH },
+  control: { minHeight: MIN_TARGET_PX, minWidth: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center', paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: BORDER_RADIUS, borderWidth: BORDER_WIDTH },
   controlText: { fontSize: CONTROL_FONT, fontWeight: '600' },
-  sizePill: { paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: PILL_RADIUS, borderWidth: BORDER_WIDTH },
+  sizePill: { minHeight: MIN_TARGET_PX, minWidth: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center', paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: PILL_RADIUS, borderWidth: BORDER_WIDTH },
   sizePillText: { fontSize: HEAD_FONT, fontWeight: '600', fontVariant: ['tabular-nums'] },
   /** Dropdown variant: relatively-positioned wrapper holding the trigger + the anchored popover. */
   sizeAnchor: { position: 'relative' },
   /** Dropdown variant: the compact `<select>`-like trigger (bordered ghost look, height-matched to Prev/Next) + chevron. */
-  sizeTrigger: { flexDirection: 'row', alignItems: 'center', gap: PAGER_SIZE_GAP, paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: BORDER_RADIUS, borderWidth: BORDER_WIDTH },
+  sizeTrigger: { minHeight: MIN_TARGET_PX, minWidth: MIN_TARGET_PX, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: PAGER_SIZE_GAP, paddingHorizontal: CONTROL_PAD_H, paddingVertical: CONTROL_PAD_V, borderRadius: BORDER_RADIUS, borderWidth: BORDER_WIDTH },
   sizeTriggerText: { fontSize: CONTROL_FONT, fontWeight: '600', fontVariant: ['tabular-nums'] },
   sizeChevron: { fontSize: CHEVRON_FONT },
   /** Dropdown variant: the anchored popover listing the rows-per-page options. */
   sizeMenu: { position: 'absolute', top: '100%', right: 0, marginTop: MENU_TOP_GAP, minWidth: MENU_MIN_WIDTH, borderWidth: BORDER_WIDTH, borderRadius: BORDER_RADIUS, paddingVertical: MENU_PAD_V, zIndex: MENU_Z_INDEX, boxShadow: MENU_BOX_SHADOW, elevation: MENU_ELEVATION },
-  sizeOption: { paddingHorizontal: CONTROL_PAD_H, paddingVertical: MENU_OPT_PAD_V },
+  sizeOption: { minHeight: MIN_TARGET_PX, justifyContent: 'center', paddingHorizontal: CONTROL_PAD_H, paddingVertical: MENU_OPT_PAD_V },
   sizeOptionText: { fontSize: CONTROL_FONT, fontVariant: ['tabular-nums'] },
 });

@@ -74,6 +74,7 @@ export function SelectAllBanner({
         accessibilityRole="button"
         testID={actionTestID}
         onPress={onAction}
+        style={sel.bannerHit}
       >
         <Text style={[sel.bannerAction, { color: palette.primary['500'] }]}>{actionLabel}</Text>
       </Pressable>

@@ -9,7 +9,9 @@
  * The Jest suite runs on react-native-web (`Platform.OS === 'web'`), so the
  * native branch is exercised through the injectable `resolveStickyHeaderStyle`.
  */
-import { STICKY_HEADER_STYLE, resolveStickyHeaderStyle, softBrandTint } from './styles';
+import { filterStyles } from '../Filters/styles';
+import { MIN_TARGET_PX } from '../minTarget';
+import { STICKY_HEADER_STYLE, chromeStyles, resolveStickyHeaderStyle, selectionStyles, softBrandTint } from './styles';
 
 describe('resolveStickyHeaderStyle', () => {
   it('emits the web-only sticky block on web (unchanged web rendering)', () => {
@@ -39,5 +41,36 @@ describe('softBrandTint (row-hover highlight fill)', () => {
     expect(softBrandTint('rgb(79,70,229)')).toBeUndefined();
     expect(softBrandTint('#fff')).toBeUndefined();
     expect(softBrandTint('rebeccapurple')).toBeUndefined();
+  });
+});
+
+/**
+ * SHOWCASE-1 "Publish the UI showcase at ui.dloizides.com" — every pressable's OWN box is the
+ * hit target on RN-web (`hitSlop` is inert there). Live QA measured the switches at 40x20, the
+ * page-size pills at 32-39x30 and the pager buttons 31px tall; these pin the 44px floor.
+ */
+describe('44px hit boxes', () => {
+
+  it.each([
+    ['pager nav button', chromeStyles.control],
+    ['page-size pill', chromeStyles.sizePill],
+    ['page-size dropdown trigger', chromeStyles.sizeTrigger],
+    ['select checkbox', selectionStyles.checkboxHit],
+    ['filter action button', filterStyles.action],
+    ['switch wrapper', filterStyles.switchHit],
+  ])('%s is at least 44x44', (_name, style) => {
+    expect(style.minHeight).toBeGreaterThanOrEqual(MIN_TARGET_PX);
+    expect(style.minWidth).toBeGreaterThanOrEqual(MIN_TARGET_PX);
+  });
+
+  it.each([
+    ['page-size menu option', chromeStyles.sizeOption],
+    ['select-all banner action', selectionStyles.bannerHit],
+  ])('%s is at least 44px tall', (_name, style) => {
+    expect(style.minHeight).toBeGreaterThanOrEqual(MIN_TARGET_PX);
+  });
+
+  it('the floor itself is 44px', () => {
+    expect(MIN_TARGET_PX).toBe(44);
   });
 });

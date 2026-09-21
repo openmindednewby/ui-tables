@@ -10,7 +10,7 @@
  * the visual-QA-gated wave. It shares `controlStyles.subLabel`, so no metric is forked.
  */
 import React from 'react';
-import { Switch, Text, View } from 'react-native';
+import { Pressable, Switch, Text, View } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
@@ -33,7 +33,17 @@ export function BooleanField({ field, barTestID, value, onChange }: BooleanField
   return (
     <View style={s.switchRow} testID={testID}>
       <Text style={[controlStyles.subLabel, { color: colors.text }]}>{field.label}</Text>
-      <Switch
+      {/* The Pressable is the 44x44 pointer target; the Switch keeps its visual size, its focus and
+          its a11y role. `accessible={false}` + `focusable={false}` keep the wrapper out of the
+          a11y tree and the tab order, so assistive tech still meets exactly one switch. */}
+      <Pressable
+        accessible={false}
+        focusable={false}
+        onPress={() => onChange(!value)}
+        style={s.switchHit}
+        testID={`${testID}-switch-hit`}
+      >
+        <Switch
         accessibilityLabel={field.label}
         accessibilityHint={field.accessibilityHint}
         accessibilityRole="switch"
@@ -42,8 +52,10 @@ export function BooleanField({ field, barTestID, value, onChange }: BooleanField
         thumbColor={colors.surface}
         value={value}
         onValueChange={onChange}
+        style={s.switchInert}
         testID={`${testID}-switch`}
       />
+      </Pressable>
     </View>
   );
 }

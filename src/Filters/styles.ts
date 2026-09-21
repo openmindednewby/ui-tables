@@ -14,6 +14,8 @@ import { StyleSheet } from 'react-native';
 
 import { controlStyles } from '@dloizides/ui-forms';
 
+import { MIN_TARGET_PX } from '../minTarget';
+
 const FIELD_GAP = 4;
 const SWITCH_ROW_GAP = 8;
 const ACTION_PAD_H = 14;
@@ -32,8 +34,12 @@ export const filterStyles = StyleSheet.create({
    * six live portals, which this wave must not make.
    */
   fieldInBar: { marginBottom: NO_FORM_RHYTHM },
-  switchRow: { flexDirection: 'row', alignItems: 'center', gap: SWITCH_ROW_GAP, paddingVertical: FIELD_GAP },
-  action: { paddingHorizontal: ACTION_PAD_H, paddingVertical: ACTION_PAD_V, borderRadius: ACTION_RADIUS, borderWidth: ACTION_BORDER },
+  switchRow: { minHeight: MIN_TARGET_PX, flexDirection: 'row', alignItems: 'center', gap: SWITCH_ROW_GAP, paddingVertical: FIELD_GAP },
+  /** A 44x44 pressable around the switch: RN-web draws the Switch at 40x20 and that box IS its hit target. */
+  switchHit: { minWidth: MIN_TARGET_PX, minHeight: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center' },
+  /** The inner Switch takes no pointer events, so one tap toggles once (via `switchHit`), not twice. */
+  switchInert: { pointerEvents: 'none' },
+  action: { minHeight: MIN_TARGET_PX, minWidth: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center', paddingHorizontal: ACTION_PAD_H, paddingVertical: ACTION_PAD_V, borderRadius: ACTION_RADIUS, borderWidth: ACTION_BORDER },
   actionText: { fontSize: ACTION_FONT, fontWeight: '600' },
 });
 
@@ -43,6 +49,3 @@ export const filterStyles = StyleSheet.create({
  * promoted controls rather than a second copy.
  */
 export { controlStyles };
-
-/** Touch-target growth toward WCAG ≥44px without changing rendered size (vertical only). */
-export const FILTER_HIT_SLOP = { top: 8, bottom: 8 } as const;
