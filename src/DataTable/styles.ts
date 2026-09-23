@@ -167,7 +167,14 @@ export const chromeStyles = StyleSheet.create({
   filters: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-end', columnGap: COLUMN_GAP, rowGap: PAGER_GAP, borderWidth: BORDER_WIDTH, borderRadius: BORDER_RADIUS, paddingHorizontal: ROW_PAD_H, paddingVertical: ROW_PAD_V },
   filtersSpacer: { flexGrow: 1 },
   results: { fontSize: RESULTS_FONT },
-  filtersActions: { flexDirection: 'row', gap: PAGER_SIZE_GAP, alignItems: 'center' },
+  /**
+   * The actions cluster WRAPS and is capped at the bar's width (TABLES-MOBILE-1 "Filter bar and
+   * pager overflow at 360"). A nowrap row is one unbreakable flex item: at 360 on aml-v2 Leaders
+   * it measured 431px inside a 255px bar and pushed Apply off-screen. `maxWidth: 100%` +
+   * `flexShrink` fit the cluster to its line; its own `flexWrap` then breaks the buttons onto
+   * further lines instead of overflowing (flex-shrink alone cannot: it never wraps a line).
+   */
+  filtersActions: { flexDirection: 'row', flexWrap: 'wrap', flexShrink: 1, maxWidth: '100%', rowGap: PAGER_GAP, columnGap: PAGER_SIZE_GAP, alignItems: 'center' },
   pager: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: PAGER_GAP },
   pagerInfo: { fontSize: CONTROL_FONT, fontVariant: ['tabular-nums'] },
   pagerNav: { flexDirection: 'row', alignItems: 'center', gap: PAGER_SIZE_GAP, flexWrap: 'wrap' },

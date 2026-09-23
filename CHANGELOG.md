@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+**The `Filters` / `FilterBar` actions cluster wraps (TABLES-MOBILE-1 "Filter bar and pager overflow at 360").**
+
+Visual QA of aml-v2 `/app/leaders` at 360 measured the actions row (Reset, Export CSV/PDF, Apply)
+at 431px inside a 255px bar: a nowrap row is one unbreakable flex item, so Apply rendered at x=373,
+off-screen. `filtersActions` now has `flexWrap: 'wrap'`, `flexShrink: 1` and `maxWidth: '100%'`,
+so the cluster fits its line and its buttons break onto further lines. Desktop is unchanged: where
+the row fits, nothing wraps. The 44px Apply / pager hit boxes shipped in 1.19.0.
+
 ## 1.19.0
 
 **Every pressable renders a 44x44 hit box (SHOWCASE-1 "Publish the UI showcase at ui.dloizides.com").**

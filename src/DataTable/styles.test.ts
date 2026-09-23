@@ -74,3 +74,24 @@ describe('44px hit boxes', () => {
     expect(MIN_TARGET_PX).toBe(44);
   });
 });
+
+/**
+ * TABLES-MOBILE-1 "Filter bar and pager overflow at 360": the Filters actions cluster was a
+ * nowrap row — 431px inside a 255px bar on aml-v2 Leaders at 360, Apply off-screen. These fail
+ * if the bar, the actions cluster or the pager stops wrapping, or the cluster loses its width cap.
+ */
+describe('filter bar + pager wrap at narrow widths', () => {
+  it.each([
+    ['filter bar', chromeStyles.filters],
+    ['filter actions cluster', chromeStyles.filtersActions],
+    ['pager row', chromeStyles.pager],
+    ['pager nav', chromeStyles.pagerNav],
+  ])('%s wraps', (_name, style) => {
+    expect(style.flexWrap).toBe('wrap');
+  });
+
+  it('the actions cluster is capped at the bar width and may shrink, so its wrap can engage', () => {
+    expect(chromeStyles.filtersActions.maxWidth).toBe('100%');
+    expect(chromeStyles.filtersActions.flexShrink).toBeGreaterThan(0);
+  });
+});
