@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.19.2
+
+**The pager shrinks and wraps beside a title (TABLES-MOBILE-1 "Filter bar and pager overflow at 360").**
+
+Visual QA of aml-v2 `/app/cases` at 360 measured the pager, placed beside the "Cases" title in a
+wrapping row, at 328px inside a 255px slot: `flex-shrink: 0`, no width cap, so Next ran to x=373
+and an `overflow: hidden` ancestor clipped it. `pager` and `pagerNav` now carry `flexShrink: 1`,
+`minWidth: 0` and `maxWidth: '100%'`, so they fit their line and their existing `flexWrap` breaks
+the count / Rows / Prev / Next onto further lines. Desktop is unchanged where the row fits.
+
 ## 1.19.1
 
 **The `Filters` / `FilterBar` actions cluster wraps (TABLES-MOBILE-1 "Filter bar and pager overflow at 360").**

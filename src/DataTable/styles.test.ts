@@ -1,3 +1,4 @@
+import type { ViewStyle } from 'react-native';
 /**
  * Native-safety tests for the sticky-header escape hatch.
  *
@@ -93,5 +94,16 @@ describe('filter bar + pager wrap at narrow widths', () => {
   it('the actions cluster is capped at the bar width and may shrink, so its wrap can engage', () => {
     expect(chromeStyles.filtersActions.maxWidth).toBe('100%');
     expect(chromeStyles.filtersActions.flexShrink).toBeGreaterThan(0);
+  });
+
+  // aml-v2 /app/cases at 360: the pager shares a wrapping title row; with flex-shrink 0 and no
+  // width cap it measured 328px in a 255px slot and Next was clipped (TABLES-MOBILE-1).
+  it.each<[string, ViewStyle]>([
+    ['pager row', chromeStyles.pager],
+    ['pager nav', chromeStyles.pagerNav],
+  ])('the %s may shrink to its container so its own wrap engages beside a title', (_name, style) => {
+    expect(style.flexShrink).toBeGreaterThan(0);
+    expect(style.minWidth).toBe(0);
+    expect(style.maxWidth).toBe('100%');
   });
 });

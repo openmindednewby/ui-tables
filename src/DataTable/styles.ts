@@ -175,9 +175,15 @@ export const chromeStyles = StyleSheet.create({
    * further lines instead of overflowing (flex-shrink alone cannot: it never wraps a line).
    */
   filtersActions: { flexDirection: 'row', flexWrap: 'wrap', flexShrink: 1, maxWidth: '100%', rowGap: PAGER_GAP, columnGap: PAGER_SIZE_GAP, alignItems: 'center' },
-  pager: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: PAGER_GAP },
+  /**
+   * The pager and its nav may SHRINK to their container (TABLES-MOBILE-1). Placed beside a title
+   * in a wrapping row (aml-v2 /app/cases), a `flex-shrink: 0` pager measured 328px in a 255px slot
+   * and Next was clipped. `minWidth: 0` + `maxWidth: 100%` let the line fit, then `flexWrap`
+   * breaks the info / nav / buttons onto further lines instead of overflowing.
+   */
+  pager: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: PAGER_GAP, flexShrink: 1, minWidth: 0, maxWidth: '100%' },
   pagerInfo: { fontSize: CONTROL_FONT, fontVariant: ['tabular-nums'] },
-  pagerNav: { flexDirection: 'row', alignItems: 'center', gap: PAGER_SIZE_GAP, flexWrap: 'wrap' },
+  pagerNav: { flexDirection: 'row', alignItems: 'center', gap: PAGER_SIZE_GAP, flexWrap: 'wrap', flexShrink: 1, minWidth: 0, maxWidth: '100%' },
   pagerRowsLabel: { fontSize: HEAD_FONT, textTransform: 'uppercase', letterSpacing: LABEL_LETTER_SPACING },
   /** Mixed-case "Rows" caption for the dropdown variant (v1's muted `.hint` label — no uppercase transform). */
   pagerRowsLabelPlain: { fontSize: HEAD_FONT, letterSpacing: LABEL_LETTER_SPACING },
