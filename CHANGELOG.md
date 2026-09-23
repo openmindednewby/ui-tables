@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.19.1
 
 **The `Filters` / `FilterBar` actions cluster wraps (TABLES-MOBILE-1 "Filter bar and pager overflow at 360").**
 
