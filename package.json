@@ -117,6 +117,7 @@
         "typescript": "^5.4.0"
     },
     "dependencies": {
+        "@dloizides/design-tokens": "^1.13.0",
         "@dloizides/ui-motion": "^1.0.1"
     }
 }

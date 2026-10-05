@@ -2,6 +2,7 @@
  * Shared StyleSheet for the DataTable family. All colours are applied inline from
  * `useUi().theme` at render time — nothing here carries a colour literal.
  */
+import { Z_INDEX } from '@dloizides/design-tokens';
 import { Platform, StyleSheet, type ViewStyle } from 'react-native';
 
 import { MIN_TARGET_PX } from '../minTarget';
@@ -30,14 +31,15 @@ const MENU_TOP_GAP = 4;
 const MENU_PAD_V = 4;
 const MENU_MIN_WIDTH = 80;
 const MENU_OPT_PAD_V = 7;
-const MENU_Z_INDEX = 1000;
+/** Body-portalled on web, so it must clear an open RN-web Modal (9999): the shared popover layer. */
+const MENU_Z_INDEX = Z_INDEX.popover;
 const MENU_ELEVATION = 8;
 /** Soft drop shadow so the rows-per-page popover reads as floating above the page (mirrors ui-layout's InlineMenu). */
 const MENU_BOX_SHADOW = '0px 2px 8px rgba(0, 0, 0, 0.15)';
 const RESULTS_FONT = 13;
 const HEAD_LETTER_SPACING = 0.4;
 const LABEL_LETTER_SPACING = 0.3;
-const STICKY_Z = 2;
+const STICKY_Z = Z_INDEX.sticky;
 const FULL_WIDTH = '100%' as const;
 /** The checkbox column's width — a fixed gutter, so header and rows line up exactly. */
 const SELECT_COL_WIDTH = MIN_TARGET_PX;

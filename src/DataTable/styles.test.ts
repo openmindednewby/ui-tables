@@ -10,6 +10,8 @@ import type { ViewStyle } from 'react-native';
  * The Jest suite runs on react-native-web (`Platform.OS === 'web'`), so the
  * native branch is exercised through the injectable `resolveStickyHeaderStyle`.
  */
+import { RN_WEB_MODAL_Z_INDEX, Z_INDEX } from '@dloizides/design-tokens';
+
 import { filterStyles } from '../Filters/styles';
 import { MIN_TARGET_PX } from '../minTarget';
 import { STICKY_HEADER_STYLE, chromeStyles, resolveStickyHeaderStyle, selectionStyles, softBrandTint } from './styles';
@@ -105,5 +107,25 @@ describe('filter bar + pager wrap at narrow widths', () => {
     expect(style.flexShrink).toBeGreaterThan(0);
     expect(style.minWidth).toBe(0);
     expect(style.maxWidth).toBe('100%');
+  });
+});
+
+/**
+ * react-native-web mounts `Modal` in a
+ * body-level layer at zIndex 9999. The rows-per-page menu portals to the body on web, so at
+ * 1000 it painted UNDER an open Modal and clicks fell through to the dialog behind it.
+ */
+describe('overlay stacking against the shared z-index scale', () => {
+  it('the page-size menu paints above an open RN-web Modal', () => {
+    expect(chromeStyles.sizeMenu.zIndex).toBeGreaterThan(RN_WEB_MODAL_Z_INDEX);
+  });
+
+  it('the page-size menu sits on the shared popover layer, below toasts', () => {
+    expect(chromeStyles.sizeMenu.zIndex).toBe(Z_INDEX.popover);
+    expect(chromeStyles.sizeMenu.zIndex).toBeLessThan(Z_INDEX.toast);
+  });
+
+  it('the sticky header uses the shared sticky layer', () => {
+    expect(STICKY_HEADER_STYLE).toEqual({ position: 'sticky', top: 0, zIndex: Z_INDEX.sticky });
   });
 });

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.20.0
+
+**The rows-per-page menu opens above an RN-web Modal (UI-ZINDEX-SCALE-1 "Shared overlay z-index scale").**
+
+react-native-web mounts `Modal` in a body-level layer at zIndex 9999. On web the `SizeDropdown`
+menu portals to the body, and at zIndex 1000 it painted under an open Modal, so clicks fell through
+to the dialog. The menu now uses `Z_INDEX.popover` (10000, below toasts) and the sticky header uses
+`Z_INDEX.sticky` (2, unchanged), both from `@dloizides/design-tokens` ^1.13.0, which is now a dependency.
+
 ## 1.19.2
 
 **The pager shrinks and wraps beside a title (TABLES-MOBILE-1 "Filter bar and pager overflow at 360").**
