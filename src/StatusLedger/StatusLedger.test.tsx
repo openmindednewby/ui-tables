@@ -85,6 +85,7 @@ describe('StatusLedger', () => {
     fireEvent.click(screen.getByTestId(sectionRowTestID('attention', 'bad-job')));
 
     expect(onRowPress).toHaveBeenCalledWith(rows[0]);
+    expect(onRowPress).toHaveBeenCalledTimes(1);
   });
 
   it('in the wide layout, pressing a plain text cell in the middle of a row fires onRowPress with that row', () => {
@@ -94,6 +95,7 @@ describe('StatusLedger', () => {
     fireEvent.click(screen.getByText('note:ok-job'));
 
     expect(onRowPress).toHaveBeenCalledWith(rows[1]);
+    expect(onRowPress).toHaveBeenCalledTimes(1);
   });
 
   it('in the wide layout, pressing a time cell inside a row fires onRowPress with that row', () => {
@@ -103,6 +105,7 @@ describe('StatusLedger', () => {
     fireEvent.click(screen.getByTestId(seenTestID(rows[1] as Job)));
 
     expect(onRowPress).toHaveBeenCalledWith(rows[1]);
+    expect(onRowPress).toHaveBeenCalledTimes(1);
   });
 
   it('in the wide layout, pressing a time cell inside a row still swaps it to the absolute time', () => {
