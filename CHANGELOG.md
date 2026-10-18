@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.21.0
+
+**New `StatusLedger` (JOBS-UX-1 "Jobs page: one clear, consistent view of every job and source").**
+
+A status-first ledger built on `DataTable` + `Filters`: one sortable, filterable table at or above
+the breakpoint (768 by default, from `useWindowDimensions`), and a "needs a look first" feed below
+it (bad then warn rows on top, then the rest). Filters: free text, status, group; sort by any column
+with a `sortValue`, plus a 44px direction toggle. Generic row shape through accessors; every string
+via `labels`/`statusLabel`; tone colours from the theme (`toneColors` overrides). Also exports
+`StatusPill`, `RelativeTime` (tap swaps to absolute), `formatRelativeTime` and the pure
+`filterLedgerRows` / `sortLedgerRows` / `splitNeedsLook` helpers. Additive, nothing existing changes.
+
 ## 1.20.0
 
 **The rows-per-page menu opens above an RN-web Modal (UI-ZINDEX-SCALE-1 "Shared overlay z-index scale").**
