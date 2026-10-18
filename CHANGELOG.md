@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.22.0
+
+**`StatusLedger` opens a row's detail inline, under the row (JOBS-INLINE-1 "Ledger run history opens under its row").**
+
+New optional `renderRowDetail(row)` + controlled `expandedRowKey` on `StatusLedger`, passed to the
+`DataTable` in the wide table and in both narrow "needs a look" sections, so the detail sits
+directly under the pressed row or card. The expanded row carries `aria-expanded`; the detail region
+is named by `getRowAccessibilityLabel`. `DataTable` gains `getRowDetailAccessibilityLabel` (defaults
+to the generic `uiTables.rowDetail`). Additive, nothing existing changes.
+
 ## 1.21.0
 
 **New `StatusLedger` (JOBS-UX-1 "Jobs page: one clear, consistent view of every job and source").**

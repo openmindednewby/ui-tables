@@ -90,6 +90,8 @@ export interface DataTableProps<T> {
    * Omit for a plain table (nothing about the row rendering changes).
    */
   renderRowDetail?: (row: T) => React.ReactNode;
+  /** Accessible name of a row's detail panel; defaults to the generic `uiTables.rowDetail`. */
+  getRowDetailAccessibilityLabel?: (row: T) => string;
   /**
    * Keys (as produced by `keyExtractor`) of the rows currently expanded. Expansion
    * is CONTROLLED by the caller: own the state, toggle it from `onRowPress`. The

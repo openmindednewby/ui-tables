@@ -60,7 +60,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const {
     columns, rows, keyExtractor, rowTint, zebra, stickyHeader, onRowPress,
     getRowAccessibilityLabel, loading, loadingLabel, emptyLabel,
-    renderRowDetail, expandedRowKeys, styleOverrides: o,
+    renderRowDetail, getRowDetailAccessibilityLabel, expandedRowKeys, styleOverrides: o,
     selectedRowKeys, onSelectionChange, matchingCount, allMatchingSelected, onSelectAllMatchingChange,
     keyboardNavigation = false, animateRows = true,
     stackBreakpoint = CARD_STACK_BREAKPOINT, testID = TABLE_TEST_IDS.root,
@@ -185,6 +185,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
         columns={columns}
         expanded={expandedRowKeys?.includes(key) ?? false}
         getRowAccessibilityLabel={getRowAccessibilityLabel}
+        getRowDetailAccessibilityLabel={getRowDetailAccessibilityLabel}
         keyboardNavigation={keyboardNavigation}
         renderRowDetail={renderRowDetail}
         roving={roving}

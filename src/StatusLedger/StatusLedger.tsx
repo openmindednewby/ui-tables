@@ -18,6 +18,8 @@ const GAP = 12;
 const HEADING_FONT = 15;
 const HEADING_WEIGHT = '700' as const;
 
+const expandedKeys = (key: string | null | undefined): readonly string[] | undefined => (key === null || key === undefined ? undefined : [key]);
+
 const styles = StyleSheet.create({
   root: { gap: GAP },
   heading: { fontSize: HEADING_FONT, fontWeight: HEADING_WEIGHT },
@@ -43,9 +45,12 @@ function LedgerSection<T>({ title, rows, columns, emptyLabel, testID, ledger }: 
       ) : (
         <DataTable
           columns={columns}
+          expandedRowKeys={expandedKeys(ledger.expandedRowKey)}
           getRowAccessibilityLabel={ledger.getRowAccessibilityLabel}
+          getRowDetailAccessibilityLabel={ledger.getRowAccessibilityLabel}
           keyExtractor={ledger.keyExtractor}
           onRowPress={ledger.onRowPress}
+          renderRowDetail={ledger.renderRowDetail}
           rows={rows}
           stackBreakpoint={ledger.breakpoint ?? CARD_STACK_BREAKPOINT}
           testID={`${testID}-table`}
@@ -96,10 +101,13 @@ export function StatusLedger<T>(props: StatusLedgerProps<T>): React.ReactElement
         <DataTable
           columns={view.tableColumns}
           emptyLabel={labels.empty}
+          expandedRowKeys={expandedKeys(props.expandedRowKey)}
           getRowAccessibilityLabel={props.getRowAccessibilityLabel}
+          getRowDetailAccessibilityLabel={props.getRowAccessibilityLabel}
           keyExtractor={props.keyExtractor}
           loading={loading}
           onRowPress={props.onRowPress}
+          renderRowDetail={props.renderRowDetail}
           rows={view.visible}
           stackBreakpoint={feed ? breakpoint : 0}
           testID={`${testID}-table`}

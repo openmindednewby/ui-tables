@@ -48,6 +48,10 @@ export interface StatusLedgerProps<T> {
   getRowAccessibilityLabel?: (row: T) => string;
   onRowPress?: (row: T) => void;
   renderActions?: (row: T) => React.ReactNode;
+  /** Renders a detail region directly under the expanded row (table and card layouts); labelled by `getRowAccessibilityLabel`. */
+  renderRowDetail?: (row: T) => React.ReactNode;
+  /** Key of the expanded row (CONTROLLED: toggle it from `onRowPress`); `null`/omitted = none. */
+  expandedRowKey?: string | null;
   toneColors?: ToneColors;
   layout?: LedgerLayout;
   breakpoint?: number;

@@ -262,6 +262,16 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
     expect(screen.getByTestId('grid-row-b').getAttribute('aria-expanded')).toBe('false');
   });
 
+  it('with getRowDetailAccessibilityLabel, names the panel after its row', () => {
+    renderTable(
+      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} getRowDetailAccessibilityLabel={(r) => `Row ${r.id}`} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+    );
+
+    const label = screen.getByTestId('grid-row-detail-a').getAttribute('aria-label');
+
+    expect(label).toBe('Row a');
+  });
+
   it('renders the panel DIRECTLY beneath its own row (between it and the next row)', () => {
     // Placement is independent of the entrance animation; opt the wrapper out so this
     // asserts the flat row/panel/row sibling chain (with animateRows a row+panel share one

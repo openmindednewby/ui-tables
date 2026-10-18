@@ -44,6 +44,7 @@ export interface DataTableRowProps<T> {
   onRowPress?: (row: T) => void;
   getRowAccessibilityLabel?: (row: T) => string;
   renderRowDetail?: (row: T) => React.ReactNode;
+  getRowDetailAccessibilityLabel?: (row: T) => string;
   /** This row is currently expanded (computed by the parent from `expandedRowKeys`). */
   expanded: boolean;
   onHoverIn: () => void;
@@ -64,6 +65,7 @@ export function DataTableRow<T>({
   onRowPress,
   getRowAccessibilityLabel,
   renderRowDetail,
+  getRowDetailAccessibilityLabel,
   expanded,
   onHoverIn,
   onHoverOut,
@@ -151,7 +153,7 @@ export function DataTableRow<T>({
     <>
       {rowNode}
       <View
-        accessibilityLabel={t(TABLE_I18N.rowDetail)}
+        accessibilityLabel={getRowDetailAccessibilityLabel?.(row) ?? t(TABLE_I18N.rowDetail)}
         accessibilityRole="summary"
         style={[s.rowDetail, { borderTopColor: colors.border, backgroundColor: colors.background }, o?.rowDetail]}
         testID={rowDetailTestID(tableTestID, rowKey)}
