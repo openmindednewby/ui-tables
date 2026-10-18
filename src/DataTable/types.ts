@@ -65,6 +65,8 @@ export interface DataTableColumn<T> {
   numeric?: boolean;
   /** Flex weight on desktop. Default 1. */
   weight?: number;
+  /** Desktop width floor (px): the column never shrinks below it, so a button or pill in it is not clipped. */
+  minWidth?: number;
   render: (row: T) => React.ReactNode;
 }
 

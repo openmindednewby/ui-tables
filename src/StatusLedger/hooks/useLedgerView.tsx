@@ -5,7 +5,7 @@ import { useUi } from '@dloizides/ui-feedback';
 import type { DataTableColumn } from '../../DataTable/types';
 import type { FilterField, FilterValues } from '../../Filters/types';
 import { StatusPill } from '../components/StatusPill';
-import { ACTIONS_COLUMN_KEY, ALL_VALUE, STATUS_COLUMN_KEY } from '../constants';
+import { ACTIONS_COLUMN_KEY, ACTIONS_MIN_WIDTH, ALL_VALUE, STATUS_COLUMN_KEY, STATUS_MIN_WIDTH } from '../constants';
 import { LedgerFilterKey } from '../LedgerFilterKey';
 import { SortDirection } from '../SortDirection';
 import { StatusTone } from '../StatusTone';
@@ -43,10 +43,11 @@ export function useLedgerView<T>(props: StatusLedgerProps<T>) {
     const status = {
       key: STATUS_COLUMN_KEY,
       header: labels.status,
+      minWidth: STATUS_MIN_WIDTH,
       sortValue: (row: T): SortValue => toneRank(toneOf(row)),
       render: (row: T) => <StatusPill color={toneColor(toneOf(row))} label={statusLabel(getStatus(row))} tone={toneOf(row)} />,
     };
-    const actions = renderActions === undefined ? [] : [{ key: ACTIONS_COLUMN_KEY, header: labels.actions, render: renderActions }];
+    const actions = renderActions === undefined ? [] : [{ key: ACTIONS_COLUMN_KEY, header: labels.actions, minWidth: ACTIONS_MIN_WIDTH, render: renderActions }];
     return [columns[0], status, ...columns.slice(1), ...actions].filter((c) => c !== undefined);
   }, [columns, labels, toneOf, toneColor, statusLabel, getStatus, renderActions]);
 

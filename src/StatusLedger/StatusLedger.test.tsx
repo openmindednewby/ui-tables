@@ -4,7 +4,7 @@ import { UiProvider, type UiTheme } from '@dloizides/ui-feedback';
 
 import { rowDetailTestID, rowTestID } from '../DataTable/constants';
 import { RelativeTime } from './components/RelativeTime';
-import { ledgerSectionTestID } from './constants';
+import { ACTIONS_MIN_WIDTH, STATUS_MIN_WIDTH, ledgerSectionTestID } from './constants';
 import { StatusLedger } from './StatusLedger';
 import { StatusTone } from './StatusTone';
 import type { StatusLedgerColumn, StatusLedgerLabels } from './types';
@@ -53,6 +53,7 @@ function renderLedger(breakpoint: number, onRowPress: (row: Job) => void, expand
         keyExtractor={(r) => r.id}
         labels={labels}
         onRowPress={onRowPress}
+        renderActions={(r) => <button type="button">{`run:${r.id}`}</button>}
         renderRowDetail={(r) => <span>{`detail:${r.id}`}</span>}
         rows={rows}
         statusLabel={(s) => s}
@@ -66,6 +67,7 @@ function renderLedger(breakpoint: number, onRowPress: (row: Job) => void, expand
 const renderNarrowLedger = (onRowPress: (row: Job) => void, expandedRowKey?: string | null): void => renderLedger(NARROW_BREAKPOINT, onRowPress, expandedRowKey);
 const tableDetailTestID = (key: string): string => rowDetailTestID(`${LEDGER}-table`, key);
 
+const tableCell = (key: string, column: string): HTMLElement => screen.getByTestId(`${rowTestID(`${LEDGER}-table`, key)}-${column}`);
 const sectionTable = (section: string): string => `${ledgerSectionTestID(LEDGER, section)}-table`;
 const sectionRowTestID = (section: string, key: string): string => rowTestID(sectionTable(section), key);
 
@@ -156,5 +158,21 @@ describe('StatusLedger', () => {
     const card = screen.getByTestId(sectionRowTestID('attention', 'bad-job'));
 
     expect(card.nextElementSibling).toBe(screen.getByTestId(rowDetailTestID(sectionTable('attention'), 'bad-job')));
+  });
+
+  it('in the wide layout, floors the actions column at its minimum width so its button is never clipped', () => {
+    renderLedger(WIDE_BREAKPOINT, jest.fn());
+
+    const cell = tableCell('ok-job', 'actions');
+
+    expect(cell.style.minWidth).toBe(`${ACTIONS_MIN_WIDTH}px`);
+  });
+
+  it('in the wide layout, floors the status column at its minimum width so its pill never spills into the next cell', () => {
+    renderLedger(WIDE_BREAKPOINT, jest.fn());
+
+    const cell = tableCell('bad-job', 'status');
+
+    expect(cell.style.minWidth).toBe(`${STATUS_MIN_WIDTH}px`);
   });
 });

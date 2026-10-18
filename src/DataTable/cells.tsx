@@ -81,7 +81,7 @@ export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides,
   return (
     <View
       style={[
-        { flex: column.weight ?? 1, alignItems: column.numeric ? 'flex-end' : 'flex-start' },
+        { flex: column.weight ?? 1, minWidth: column.minWidth, alignItems: column.numeric ? 'flex-end' : 'flex-start' },
         styleOverrides?.cellWrap,
       ]}
       testID={testID}

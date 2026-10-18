@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.24.0
+
+**`StatusLedger` floors its status and actions columns, so a row's button and status pill are never clipped (JOBS-POLISH-1 "Jobs page visual fixes").**
+
+Every desktop cell was `flex: weight` with react-native-web's `min-width: 0`, so on a crowded row the
+actions cell shrank below its button and the table wrap's `overflow: hidden` cut "Run now" in half
+(63 of 100 px visible at 1024); the status pill could spill into the next cell the same way.
+`DataTableColumn` gains an optional `minWidth` (px), applied to the header and body cell alike so
+they stay aligned; the ledger sets 120 on status and 136 on actions. Additive.
+
 ## 1.23.0
 
 **A press anywhere on an interactive `DataTable` / `StatusLedger` row opens it, including on a time cell (JOBS-NOLOSS-1 "Restore everything the old Jobs page showed").**

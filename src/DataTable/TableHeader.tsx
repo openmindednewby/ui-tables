@@ -61,7 +61,7 @@ export function TableHeader<T>({ columns, stickyHeader, selection, inGrid, style
       {columns.map((col) => (
         <Text
           key={col.key}
-          style={[s.headCell, { color: colors.textSecondary, flex: col.weight ?? 1, textAlign: col.numeric ? 'right' : 'left' }, o?.headCell]}
+          style={[s.headCell, { color: colors.textSecondary, flex: col.weight ?? 1, minWidth: col.minWidth, textAlign: col.numeric ? 'right' : 'left' }, o?.headCell]}
           {...(inGrid ? { role: 'columnheader' as const } : null)}
         >
           {col.header}
