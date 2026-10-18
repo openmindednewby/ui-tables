@@ -21,6 +21,7 @@ import { useUi } from '@dloizides/ui-feedback';
 import { TABLE_I18N, rowDetailTestID, rowSelectTestID, rowTestID } from './constants';
 import { HeaderCheckboxState } from './headerCheckboxState';
 import { RowCells } from './RowCells';
+import { RowPressProvider } from './rowPressContext';
 import { SelectionCheckbox } from './SelectionCheckbox';
 import { tableStyles as s } from './styles';
 import { TableRow, type RowA11y } from './TableRow';
@@ -77,6 +78,7 @@ export function DataTableRow<T>({
   const isExpandable = renderRowDetail !== undefined;
   const { selectable } = selection;
   const isSelected = selectable && selection.isSelected(rowKey);
+  const pressRow = onRowPress === undefined ? undefined : () => onRowPress(row);
 
   /**
    * Each block is additive and gated on the feature that earns it, so a table that opted
@@ -132,18 +134,20 @@ export function DataTableRow<T>({
       testID={rowID}
       onHoverIn={onHoverIn}
       onHoverOut={onHoverOut}
-      onPress={onRowPress === undefined ? undefined : () => onRowPress(row)}
+      onPress={pressRow}
     >
-      <RowCells
-        columns={columns}
-        inGrid={keyboardNavigation}
-        labelColor={colors.textSecondary}
-        row={row}
-        rowTestID={rowID}
-        stacked={stacked}
-        styleOverrides={o}
-        textColor={colors.text}
-      />
+      <RowPressProvider value={pressRow}>
+        <RowCells
+          columns={columns}
+          inGrid={keyboardNavigation}
+          labelColor={colors.textSecondary}
+          row={row}
+          rowTestID={rowID}
+          stacked={stacked}
+          styleOverrides={o}
+          textColor={colors.text}
+        />
+      </RowPressProvider>
     </TableRow>
   );
 

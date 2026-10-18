@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
+import { useRowPress } from '../../DataTable/rowPressContext';
 import { MIN_TARGET_PX } from '../../minTarget';
 import { formatRelativeTime, toEpochMs, type RelativeTimeStrings, type TimeInput } from '../utils/relativeTime';
 
@@ -25,6 +26,7 @@ export interface RelativeTimeProps {
 export function RelativeTime({ value, nowMs, strings, hint, formatAbsolute = defaultAbsolute, testID }: RelativeTimeProps): React.ReactElement {
   const { theme } = useUi();
   const [showAbsolute, setShowAbsolute] = useState(false);
+  const pressRow = useRowPress();
   const ms = toEpochMs(value);
   const relative = formatRelativeTime(value, nowMs, strings);
   const absolute = ms === null ? relative : formatAbsolute(ms);
@@ -35,7 +37,10 @@ export function RelativeTime({ value, nowMs, strings, hint, formatAbsolute = def
       accessibilityLabel={absolute}
       accessibilityRole="button"
       disabled={ms === null}
-      onPress={() => setShowAbsolute((current) => !current)}
+      onPress={() => {
+        setShowAbsolute((current) => !current);
+        pressRow?.();
+      }}
       style={styles.target}
       testID={testID}
     >

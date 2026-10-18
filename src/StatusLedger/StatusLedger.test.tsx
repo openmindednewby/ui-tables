@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { UiProvider, type UiTheme } from '@dloizides/ui-feedback';
 
 import { rowDetailTestID, rowTestID } from '../DataTable/constants';
+import { RelativeTime } from './components/RelativeTime';
 import { ledgerSectionTestID } from './constants';
 import { StatusLedger } from './StatusLedger';
 import { StatusTone } from './StatusTone';
@@ -17,6 +18,7 @@ const theme: UiTheme = {
 interface Job {
   id: string;
   status: string;
+  seenAt: number;
 }
 
 const labels: StatusLedgerLabels = {
@@ -24,8 +26,15 @@ const labels: StatusLedgerLabels = {
   sortAscending: 'Asc', sortDescending: 'Desc', sortDirectionHint: 'Toggle', clear: 'Clear', clearHint: 'Clear filters',
   results: 'Results', needsLook: 'Needs a look', everythingElse: 'Everything else', allClear: 'All clear', empty: 'Nothing', actions: 'Actions',
 };
-const columns: ReadonlyArray<StatusLedgerColumn<Job>> = [{ key: 'id', header: 'Id', render: (r) => r.id }];
-const rows: Job[] = [{ id: 'bad-job', status: 'failed' }, { id: 'ok-job', status: 'ok' }];
+const NOW = 1_700_000_000_000;
+const timeStrings = { justNow: 'now', never: 'never', minutes: '{{n}}m', hours: '{{n}}h', days: '{{n}}d' };
+const seenTestID = (r: Job): string => `seen-${r.id}`;
+const columns: ReadonlyArray<StatusLedgerColumn<Job>> = [
+  { key: 'id', header: 'Id', render: (r) => r.id },
+  { key: 'note', header: 'Note', render: (r) => `note:${r.id}` },
+  { key: 'seen', header: 'Seen', render: (r) => <RelativeTime hint="Toggle time" nowMs={NOW} strings={timeStrings} testID={seenTestID(r)} value={r.seenAt} /> },
+];
+const rows: Job[] = [{ id: 'bad-job', status: 'failed', seenAt: NOW }, { id: 'ok-job', status: 'ok', seenAt: NOW }];
 const NARROW_BREAKPOINT = 100000;
 const LEDGER = 'ledger';
 
@@ -76,6 +85,33 @@ describe('StatusLedger', () => {
     fireEvent.click(screen.getByTestId(sectionRowTestID('attention', 'bad-job')));
 
     expect(onRowPress).toHaveBeenCalledWith(rows[0]);
+  });
+
+  it('in the wide layout, pressing a plain text cell in the middle of a row fires onRowPress with that row', () => {
+    const onRowPress = jest.fn();
+    renderLedger(WIDE_BREAKPOINT, onRowPress);
+
+    fireEvent.click(screen.getByText('note:ok-job'));
+
+    expect(onRowPress).toHaveBeenCalledWith(rows[1]);
+  });
+
+  it('in the wide layout, pressing a time cell inside a row fires onRowPress with that row', () => {
+    const onRowPress = jest.fn();
+    renderLedger(WIDE_BREAKPOINT, onRowPress);
+
+    fireEvent.click(screen.getByTestId(seenTestID(rows[1] as Job)));
+
+    expect(onRowPress).toHaveBeenCalledWith(rows[1]);
+  });
+
+  it('in the wide layout, pressing a time cell inside a row still swaps it to the absolute time', () => {
+    renderLedger(WIDE_BREAKPOINT, jest.fn());
+    const cell = screen.getByTestId(seenTestID(rows[1] as Job));
+
+    fireEvent.click(cell);
+
+    expect(cell.textContent).toBe(new Date(NOW).toLocaleString());
   });
 
   it('in the wide layout, with an expanded row key, renders the detail directly under that row', () => {

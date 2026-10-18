@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.23.0
+
+**A press anywhere on an interactive `DataTable` / `StatusLedger` row opens it, including on a time cell (JOBS-NOLOSS-1 "Restore everything the old Jobs page showed").**
+
+`RelativeTime` is its own `Pressable`, so on react-native-web it claimed the press and the row's
+`onRowPress` never fired: in the wide ledger only cells without a time opened the row detail. An
+interactive row now publishes its press through a context; `RelativeTime` still swaps to the
+absolute time and also presses its row. Outside an interactive row nothing changes.
+
 ## 1.22.0
 
 **`StatusLedger` opens a row's detail inline, under the row (JOBS-INLINE-1 "Ledger run history opens under its row").**
