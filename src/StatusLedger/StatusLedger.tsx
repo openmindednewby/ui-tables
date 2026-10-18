@@ -48,6 +48,7 @@ function LedgerSection<T>({ title, rows, columns, emptyLabel, testID, ledger }: 
           onRowPress={ledger.onRowPress}
           rows={rows}
           stackBreakpoint={ledger.breakpoint ?? CARD_STACK_BREAKPOINT}
+          testID={`${testID}-table`}
         />
       )}
     </View>
