@@ -94,3 +94,6 @@ export type {
   SortValue,
   LedgerFilter,
 } from './StatusLedger';
+
+export { MonthStatusGrid, MonthGridColumns, MONTH_STATUS_GRID_TEST_ID, monthCellTestID, fitMonthGridColumns } from './MonthStatusGrid';
+export type { MonthStatusGridProps, MonthStatusCell } from './MonthStatusGrid';

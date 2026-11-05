@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.25.0
+
+### Added
+
+- `MonthStatusGrid`: one selectable status cell per period in 12, 6 or 4 columns, narrowing when a cell would drop below 44 px. INVOICE-3 "Invoice interface over a user-chosen folder".
+
 ## 1.24.0
 
 **`StatusLedger` floors its status and actions columns, so a row's button and status pill are never clipped (JOBS-POLISH-1 "Jobs page visual fixes").**
