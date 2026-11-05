@@ -59,6 +59,7 @@ export interface MonthStatusGridProps {
   selectedId?: string | null;
   columns?: MonthGridColumns;
   accessibilityLabel: string;
+  accessibilityHint?: string;
   cellHint: string;
   testID?: string;
 }
@@ -105,6 +106,7 @@ export const MonthStatusGrid = ({
   selectedId = null,
   columns = MonthGridColumns.Twelve,
   accessibilityLabel,
+  accessibilityHint,
   cellHint,
   testID = MONTH_STATUS_GRID_TEST_ID,
 }: MonthStatusGridProps): React.ReactElement => {
@@ -115,7 +117,7 @@ export const MonthStatusGrid = ({
   const onLayout = (event: LayoutChangeEvent): void => setMeasuredWidth(event.nativeEvent.layout.width);
 
   return (
-    <View accessibilityLabel={accessibilityLabel} onLayout={onLayout} role="group" style={styles.grid} testID={testID}>
+    <View accessibilityHint={accessibilityHint} accessibilityLabel={accessibilityLabel} onLayout={onLayout} role="group" style={styles.grid} testID={testID}>
       {rows.map((row) => (
         <View key={row[0]?.id} style={styles.row} testID={`${testID}-row`}>
           {row.map((cell) => (
