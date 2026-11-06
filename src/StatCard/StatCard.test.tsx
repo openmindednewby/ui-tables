@@ -17,4 +17,12 @@ describe('StatCard', () => {
     render(<StatCard label="Empty" value={0} testID="stat-empty" />);
     expect(screen.getByText('0')).toBeTruthy();
   });
+
+  it('with a preformatted string value, shows the string unchanged', () => {
+    const value = 'EUR 1234.50';
+
+    render(<StatCard label="Unpaid" value={value} testID="stat-unpaid" />);
+
+    expect(screen.getByText('EUR 1234.50')).toBeTruthy();
+  });
 });

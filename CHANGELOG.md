@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.27.0
+
+### Added
+
+- `StatCard`: `value` accepts a preformatted string (shown as given; numbers still use `toLocaleString`), and an optional `tone` (`StatTone.Neutral` / `Error` / `Success`) colours the label from the theme's semantic 700 step, then 500, then `textSecondary`. `resolveStatToneColor` is exported. INVOICE-FU-9 "INVOICE-5 shared look leftovers", AC-STAT-1.
+
 ## 1.25.0
 
 ### Added

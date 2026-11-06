@@ -1,6 +1,7 @@
 // StatCard — the proven (erevna+katalogos) metric tile.
 export { StatCard } from './StatCard/StatCard';
 export type { StatCardProps } from './StatCard/StatCard';
+export { StatTone, resolveStatToneColor } from './StatCard/StatTone';
 
 // DataTable family — the shared, tokenized RN-web grid (GRID.md contract) promoted
 // from the /coverage POC. Its 2nd consumer is the AML v2 parallel-run portal.

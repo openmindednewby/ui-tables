@@ -8,6 +8,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { TABLE_I18N } from '../DataTable/constants';
+import { StatTone, resolveStatToneColor } from './StatTone';
 
 const CARD_PADDING = 16;
 const CARD_BORDER_RADIUS = 12;
@@ -35,15 +36,17 @@ const styles = StyleSheet.create({
 
 export interface StatCardProps {
   label: string;
-  value: number;
+  value: number | string;
   testID: string;
+  tone?: StatTone;
 }
 
-export const StatCard = memo(({ label, value, testID }: StatCardProps): React.ReactElement => {
+export const StatCard = memo(({ label, value, testID, tone = StatTone.Neutral }: StatCardProps): React.ReactElement => {
   const { theme, t } = useUi();
   const { colors } = theme;
 
-  const formattedValue = value.toLocaleString();
+  const formattedValue = typeof value === 'string' ? value : value.toLocaleString();
+  const labelColor = resolveStatToneColor(theme, tone);
 
   return (
     <View
@@ -53,7 +56,7 @@ export const StatCard = memo(({ label, value, testID }: StatCardProps): React.Re
       style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
       testID={testID}
     >
-      <Text style={[styles.label, { color: colors.textSecondary }]}>
+      <Text style={[styles.label, { color: labelColor }]}>
         {label}
       </Text>
       <Text style={[styles.value, { color: colors.text }]}>
