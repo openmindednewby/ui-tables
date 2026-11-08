@@ -129,3 +129,11 @@ describe('overlay stacking against the shared z-index scale', () => {
     expect(STICKY_HEADER_STYLE).toEqual({ position: 'sticky', top: 0, zIndex: Z_INDEX.sticky });
   });
 });
+
+describe('chromeStyles.pager', () => {
+  it('with the base style, carries no margin or padding', () => {
+    const spacingKeys = Object.keys(chromeStyles.pager).filter((key) => /margin|padding/i.test(key));
+
+    expect(spacingKeys).toEqual([]);
+  });
+});

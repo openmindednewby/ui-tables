@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.29.0
+
+### Added
+
+- `PagedTableLayout`: `filters`, `pager` and `table` slots placed as one unit, with a `layout` of `toolbar` (default), `spaced`, `footer` or `panel`. Joined layouts share one frame; a `DataTable` or `FilterBar` inside drops its own outer border automatically, even behind a local wrapper component. A bare `Pager` is unchanged. PAGER-SPACE-1 "Shared pager touches the content above and below it".
+
 ## 1.28.1
 
 ### Fixed

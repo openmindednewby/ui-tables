@@ -7,10 +7,10 @@ import { Platform, StyleSheet, type ViewStyle } from 'react-native';
 
 import { MIN_TARGET_PX } from '../minTarget';
 
-const BORDER_WIDTH = 1;
-const BORDER_RADIUS = 12;
+export const BORDER_WIDTH = 1;
+export const BORDER_RADIUS = 12;
 const COLUMN_GAP = 16;
-const ROW_PAD_H = 14;
+export const ROW_PAD_H = 14;
 const ROW_PAD_V = 12;
 const HEAD_PAD_V = 11;
 const STATE_PAD_V = 34;

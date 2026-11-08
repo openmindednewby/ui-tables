@@ -30,7 +30,7 @@
  * This component is the ORCHESTRATOR: the frame, the state views, the header and the two
  * layout branches. A row's own behaviour lives in `DataTableRow`.
  */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
@@ -45,6 +45,7 @@ import {
   selectAllTestID,
 } from './constants';
 import { DataTableRow } from './DataTableRow';
+import { JoinedFrameContext } from './joinedFrameContext';
 import { SelectAllBanner } from './SelectAllBanner';
 import { selectionStyles as sel, softBrandTint, tableStyles as s } from './styles';
 import { TableHeader } from './TableHeader';
@@ -76,6 +77,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const { width } = useWindowDimensions();
   const stacked = width < stackBreakpoint;
   const frame = { backgroundColor: colors.surface, borderColor: colors.border };
+  const joined = useContext(JoinedFrameContext);
 
   // Web row-hover highlight (v1 `.ui-table tr.clickable:hover`): only interactive rows
   // (those with `onRowPress`) tint on hover, so static rows never light up. The tint is
@@ -132,7 +134,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
 
   /** Loading / empty share the frame + centred state block. */
   const stateView = (label: string): React.ReactElement => (
-    <View style={[s.wrap, frame, o?.wrap]} testID={testID}>
+    <View style={[s.wrap, frame, joined?.wrap, o?.wrap]} testID={testID}>
       <View style={[s.state, o?.state]}>
         <Text style={[s.stateText, { color: colors.textSecondary }, o?.stateText]}>{label}</Text>
       </View>
@@ -225,7 +227,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   // --- mobile: label:value card-stack (GRID.md). Disabled by `stackBreakpoint={0}`. ---
   if (stacked) {
     return (
-      <View style={[s.wrap, frame, o?.wrap]} testID={testID} aria-busy={loading}>
+      <View style={[s.wrap, frame, joined?.wrap, o?.wrap]} testID={testID} aria-busy={loading}>
         {banner}
         {/* The card-stack has no visible header, but E2E selectors that target the head must
             still resolve at phone width — a hidden, a11y-inert carrier keeps `ui-data-table-head`
@@ -251,7 +253,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   // --- desktop: header + rows ---
   return (
     <View
-      style={[s.wrap, frame, o?.wrap]}
+      style={[s.wrap, frame, joined?.wrap, o?.wrap]}
       testID={testID}
       // Rows now survive a re-fetch (see the `rows.length === 0` guard above), so the in-flight
       // state has to be announced rather than implied by the content vanishing.

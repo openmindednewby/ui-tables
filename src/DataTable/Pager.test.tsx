@@ -114,3 +114,13 @@ describe('Pager', () => {
     expect(screen.queryByTestId(`${TABLE_TEST_IDS.pager}-size-menu`)).toBeNull();
   });
 });
+
+describe('Pager outer spacing', () => {
+  it('with no layout around it, adds no margin or padding', () => {
+    renderPager(<Pager page={1} pageSize={50} total={128} onPageChange={() => undefined} onPageSizeChange={() => undefined} />);
+
+    const pager = screen.getByTestId(TABLE_TEST_IDS.pager);
+
+    expect([pager.style.marginTop, pager.style.marginBottom, pager.style.paddingTop, pager.style.paddingBottom]).toEqual(['', '', '', '']);
+  });
+});

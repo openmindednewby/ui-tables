@@ -59,6 +59,7 @@ export const TABLE_TEST_IDS = {
   /** Suffix of the banner's action: `${tableTestID}-select-banner-action`. */
   selectBannerActionSuffix: 'select-banner-action',
   filterBar: 'ui-filters',
+  pagedLayout: 'ui-paged-table-layout',
   results: 'ui-results',
   pager: 'ui-pager',
   pagerInfo: 'ui-pager-info',

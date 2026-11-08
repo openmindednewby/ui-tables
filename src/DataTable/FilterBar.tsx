@@ -5,12 +5,13 @@
  * Layout + theming only — the fields themselves come from the app (or @dloizides/
  * ui-forms), keeping this reusable across every grid rather than coverage-specific.
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
 import { TABLE_I18N, TABLE_TEST_IDS } from './constants';
+import { JoinedFrameContext } from './joinedFrameContext';
 import { chromeStyles as c } from './styles';
 
 const RESULTS_COUNT_WEIGHT = '700' as const;
@@ -58,10 +59,11 @@ export function FilterBar({
 }: FilterBarProps): React.ReactElement {
   const { theme, t } = useUi();
   const { colors } = theme;
+  const joined = useContext(JoinedFrameContext);
   const word = resultsLabel ?? t(TABLE_I18N.results);
 
   return (
-    <View style={[c.filters, { backgroundColor: colors.surface, borderColor: colors.border }, o?.filters]} testID={testID}>
+    <View style={[c.filters, { backgroundColor: colors.surface, borderColor: colors.border }, joined?.filters, o?.filters]} testID={testID}>
       {children}
       <View style={[c.filtersSpacer, o?.filtersSpacer]} />
       {typeof resultsCount === 'number' && (
