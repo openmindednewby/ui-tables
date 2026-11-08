@@ -100,6 +100,7 @@ export const tableStyles = StyleSheet.create({
   headCell: { fontSize: HEAD_FONT, fontWeight: '600', letterSpacing: HEAD_LETTER_SPACING, textTransform: 'uppercase' },
   row: { flexDirection: 'row', columnGap: COLUMN_GAP, alignItems: 'center', paddingHorizontal: ROW_PAD_H, paddingVertical: ROW_PAD_V, borderTopWidth: BORDER_WIDTH },
   cell: { fontSize: CELL_FONT, fontWeight: '400' },
+  desktopCellContent: { maxWidth: FULL_WIDTH },
   numCell: { fontVariant: ['tabular-nums'], textAlign: 'right' },
   state: { paddingVertical: STATE_PAD_V, alignItems: 'center' },
   stateText: { fontSize: STATE_FONT },

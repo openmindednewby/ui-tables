@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.28.0
+
+### Fixed
+
+- `DataTable`: desktop cell content is bounded to its column, so a long value wraps inside the column instead of running over the next one. Applies to string, number and custom-node cells; the mobile card-stack is unchanged. A custom node that sets `numberOfLines` still truncates, which is the consumer's choice. FINREG-CRM-ORG-1 "CRM organization column, filter and search".
+
 ## 1.27.0
 
 ### Added

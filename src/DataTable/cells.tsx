@@ -87,7 +87,7 @@ export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides,
       testID={testID}
       {...(inGrid === true ? { role: 'cell' as const } : null)}
     >
-      {cellContent(column, row, textColor, styleOverrides)}
+      <View style={s.desktopCellContent}>{cellContent(column, row, textColor, styleOverrides)}</View>
     </View>
   );
 }
