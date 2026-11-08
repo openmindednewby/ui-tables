@@ -203,10 +203,11 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
         onRowPress={onRowPress}
       />
     );
-    if (!animateRowEntrance) return <React.Fragment key={key}>{node}</React.Fragment>;
+    const detachedFromFrame = <JoinedFrameContext.Provider value={null}>{node}</JoinedFrameContext.Provider>;
+    if (!animateRowEntrance) return <React.Fragment key={key}>{detachedFromFrame}</React.Fragment>;
     return (
       <FadeIn key={key} delay={rowEntranceDelayMs(index)} testID={rowFadeTestID(testID, key)}>
-        {node}
+        {detachedFromFrame}
       </FadeIn>
     );
   };

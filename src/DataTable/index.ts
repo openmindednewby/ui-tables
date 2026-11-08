@@ -5,7 +5,8 @@ export { PagedTableLayout } from './PagedTableLayout';
 export type { DataTableColumn, DataTableProps, DataTableStyleOverrides } from './types';
 export type { FilterBarProps, FilterBarStyleOverrides } from './FilterBar';
 export type { PagerProps, PagerStyleOverrides } from './Pager';
-export type { PagedTableLayoutKind, PagedTableLayoutProps } from './PagedTableLayout';
+export { PagedTableLayoutKind } from './PagedTableLayoutKind';
+export type { PagedTableLayoutProps } from './PagedTableLayout';
 export {
   TABLE_TEST_IDS,
   TABLE_I18N,

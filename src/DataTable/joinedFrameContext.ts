@@ -1,9 +1,8 @@
 import { createContext } from 'react';
 import type { ViewStyle } from 'react-native';
 
+import { PagedTableLayoutKind } from './PagedTableLayoutKind';
 import { BORDER_RADIUS, BORDER_WIDTH } from './styles';
-
-export type PagedTableLayoutKind = 'toolbar' | 'spaced' | 'footer' | 'panel';
 
 export interface JoinedFrameStyles {
   wrap?: ViewStyle;
@@ -22,10 +21,10 @@ const AT_FRAME_TOP: ViewStyle = { ...NO_OUTER_BORDER, ...cornerRadii(INNER_RADIU
 const AT_FRAME_BOTTOM: ViewStyle = { ...NO_OUTER_BORDER, ...cornerRadii(SQUARE, INNER_RADIUS) };
 
 export const JOINED_FRAME_STYLES: Record<PagedTableLayoutKind, JoinedFrameStyles | null> = {
-  toolbar: { wrap: AT_FRAME_BOTTOM },
-  spaced: null,
-  footer: { wrap: AT_FRAME_TOP },
-  panel: { wrap: AT_FRAME_BOTTOM, filters: AT_FRAME_TOP },
+  [PagedTableLayoutKind.Toolbar]: { wrap: AT_FRAME_BOTTOM },
+  [PagedTableLayoutKind.Spaced]: null,
+  [PagedTableLayoutKind.Footer]: { wrap: AT_FRAME_TOP },
+  [PagedTableLayoutKind.Panel]: { wrap: AT_FRAME_BOTTOM, filters: AT_FRAME_TOP },
 };
 
 export const JoinedFrameContext = createContext<JoinedFrameStyles | null>(null);

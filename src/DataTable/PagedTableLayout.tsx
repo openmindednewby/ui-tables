@@ -4,10 +4,9 @@ import { View, type ViewStyle } from 'react-native';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { TABLE_TEST_IDS } from './constants';
-import { JOINED_FRAME_STYLES, JoinedFrameContext, type PagedTableLayoutKind } from './joinedFrameContext';
+import { JOINED_FRAME_STYLES, JoinedFrameContext } from './joinedFrameContext';
+import { PagedTableLayoutKind } from './PagedTableLayoutKind';
 import { BORDER_RADIUS, BORDER_WIDTH, ROW_PAD_H } from './styles';
-
-export type { PagedTableLayoutKind } from './joinedFrameContext';
 
 const LAYOUT_GAP = 12;
 const PAGER_SLOT_PAD_V = 8;
@@ -16,10 +15,10 @@ const PAGER_IN_FRAME: ViewStyle = { paddingHorizontal: ROW_PAD_H, paddingVertica
 const FRAME: ViewStyle = { borderWidth: BORDER_WIDTH, borderRadius: BORDER_RADIUS };
 
 const SLOT_STYLES: Record<PagedTableLayoutKind, { filters: ViewStyle; pager: ViewStyle }> = {
-  toolbar: { filters: { marginBottom: LAYOUT_GAP }, pager: { ...PAGER_IN_FRAME, borderBottomWidth: BORDER_WIDTH } },
-  spaced: { filters: {}, pager: { marginTop: LAYOUT_GAP, marginBottom: LAYOUT_GAP } },
-  footer: { filters: { marginBottom: LAYOUT_GAP }, pager: { ...PAGER_IN_FRAME, borderTopWidth: BORDER_WIDTH } },
-  panel: { filters: { borderBottomWidth: BORDER_WIDTH }, pager: { ...PAGER_IN_FRAME, borderBottomWidth: BORDER_WIDTH } },
+  [PagedTableLayoutKind.Toolbar]: { filters: { marginBottom: LAYOUT_GAP }, pager: { ...PAGER_IN_FRAME, borderBottomWidth: BORDER_WIDTH } },
+  [PagedTableLayoutKind.Spaced]: { filters: {}, pager: { marginTop: LAYOUT_GAP, marginBottom: LAYOUT_GAP } },
+  [PagedTableLayoutKind.Footer]: { filters: { marginBottom: LAYOUT_GAP }, pager: { ...PAGER_IN_FRAME, borderTopWidth: BORDER_WIDTH } },
+  [PagedTableLayoutKind.Panel]: { filters: { borderBottomWidth: BORDER_WIDTH }, pager: { ...PAGER_IN_FRAME, borderBottomWidth: BORDER_WIDTH } },
 };
 
 export interface PagedTableLayoutProps {
@@ -28,7 +27,7 @@ export interface PagedTableLayoutProps {
   pager: React.ReactNode;
   table: React.ReactNode;
   /** How the pager joins the table. Default `toolbar`. */
-  layout?: PagedTableLayoutKind;
+  layout?: PagedTableLayoutKind | `${PagedTableLayoutKind}`;
   testID?: string;
 }
 
@@ -37,22 +36,22 @@ export function PagedTableLayout({
   filters,
   pager,
   table,
-  layout = 'toolbar',
+  layout = PagedTableLayoutKind.Toolbar,
   testID = TABLE_TEST_IDS.pagedLayout,
 }: PagedTableLayoutProps): React.ReactElement {
   const { colors } = useUi().theme;
   const slots = SLOT_STYLES[layout];
   const line = { borderColor: colors.border };
   const hasFilters = filters !== undefined && filters !== null && filters !== false;
-  const filtersInFrame = layout === 'panel';
-  const isJoined = layout !== 'spaced';
+  const filtersInFrame = layout === PagedTableLayoutKind.Panel;
+  const isJoined = layout !== PagedTableLayoutKind.Spaced;
 
   const filtersSlot = hasFilters ? (
     <View style={[slots.filters, line]} testID={`${testID}-filters`}>{filters}</View>
   ) : null;
   const pagerSlot = <View style={[slots.pager, line]} testID={`${testID}-pager`}>{pager}</View>;
   const tableSlot = <View testID={`${testID}-table`}>{table}</View>;
-  const pagerAndTable = layout === 'footer' ? <>{tableSlot}{pagerSlot}</> : <>{pagerSlot}{tableSlot}</>;
+  const pagerAndTable = layout === PagedTableLayoutKind.Footer ? <>{tableSlot}{pagerSlot}</> : <>{pagerSlot}{tableSlot}</>;
 
   return (
     <JoinedFrameContext.Provider value={JOINED_FRAME_STYLES[layout]}>

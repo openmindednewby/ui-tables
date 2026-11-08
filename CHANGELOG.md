@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.29.1
+
+### Changed
+
+- `PagedTableLayoutKind` is now a `const enum` exported like `LedgerLayout`, with the same four values. The `layout` prop also accepts the string values, so `isolatedModules` consumers keep writing `layout="spaced"`. D-PAGER-3 "Layout type is a const enum" in PAGER-SPACE-1 "Shared pager touches the content above and below it".
+
+### Fixed
+
+- `DataTable`: a table or filter bar rendered inside a row (column render, row detail, or a modal opened from one) keeps its own border under a joined `PagedTableLayout`.
+
 ## 1.29.0
 
 ### Added

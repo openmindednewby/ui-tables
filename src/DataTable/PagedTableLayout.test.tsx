@@ -5,7 +5,8 @@ import { UiProvider, type UiTheme, type UiValue } from '@dloizides/ui-feedback';
 
 import { DataTable } from './DataTable';
 import { FilterBar } from './FilterBar';
-import { PagedTableLayout, type PagedTableLayoutKind } from './PagedTableLayout';
+import { PagedTableLayout, type PagedTableLayoutProps } from './PagedTableLayout';
+import { PagedTableLayoutKind } from './PagedTableLayoutKind';
 import { Pager } from './Pager';
 import { TABLE_TEST_IDS } from './constants';
 import type { DataTableColumn } from './types';
@@ -40,8 +41,8 @@ const NO_BORDER = '0px';
 const DIVIDER = '1px';
 const GAP = '12px';
 const INNER_RADIUS = '11px';
-const LAYOUTS: readonly PagedTableLayoutKind[] = ['toolbar', 'spaced', 'footer', 'panel'];
-const JOINED_LAYOUTS: readonly PagedTableLayoutKind[] = ['toolbar', 'footer', 'panel'];
+const JOINED_LAYOUTS: readonly PagedTableLayoutKind[] = [PagedTableLayoutKind.Toolbar, PagedTableLayoutKind.Footer, PagedTableLayoutKind.Panel];
+const LAYOUTS: readonly PagedTableLayoutKind[] = [...JOINED_LAYOUTS, PagedTableLayoutKind.Spaced];
 
 const theme: UiTheme = {
   colors: { background: '#f4f6fb', surface: '#ffffff', surfaceElevated: '#ffffff', text: '#111', textSecondary: '#666', border: '#ddd' },
@@ -75,7 +76,7 @@ function LocalPager(): React.ReactElement {
   );
 }
 
-function renderLayout(layout?: PagedTableLayoutKind, table: React.ReactNode = <LocalTable />): void {
+function renderLayout(layout?: PagedTableLayoutProps['layout'], table: React.ReactNode = <LocalTable />): void {
   render(
     <UiProvider theme={theme} t={t}>
       <PagedTableLayout layout={layout} testID={ROOT_ID} filters={<FilterBar testID={FILTERS_ID} />} pager={<LocalPager />} table={table} />
@@ -161,6 +162,14 @@ describe('PagedTableLayout', () => {
     expect(screen.getByTestId(TABLE_ID).style.borderTopWidth).toBe(NO_BORDER);
   });
 
+  it('with the enum member, renders the same layout as its string value', () => {
+    renderLayout(PagedTableLayoutKind.Footer);
+
+    const slots = frameSlots();
+
+    expect(slots).toEqual([TABLE_SLOT_ID, PAGER_SLOT_ID]);
+  });
+
   it('with toolbar, leaves the filter bar its own border', () => {
     renderLayout('toolbar');
 
@@ -214,6 +223,22 @@ describe('PagedTableLayout', () => {
       />
     );
     renderLayout('toolbar', nested);
+
+    const nestedTable = screen.getByTestId(NESTED_TABLE_ID);
+
+    expect(nestedTable.style.borderTopWidth).toBe('');
+  });
+
+  it.each([DESKTOP_WIDTH, PHONE_WIDTH])('at %dpx with a table inside a column render, keeps the nested table border', (width) => {
+    mockWidth = width;
+    const nestedColumns: ReadonlyArray<DataTableColumn<Person>> = [
+      {
+        key: 'name',
+        header: 'Name',
+        render: () => <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID={NESTED_TABLE_ID} />,
+      },
+    ];
+    renderLayout('toolbar', <DataTable columns={nestedColumns} rows={rows} keyExtractor={(r) => r.id} testID={TABLE_ID} />);
 
     const nestedTable = screen.getByTestId(NESTED_TABLE_ID);
 

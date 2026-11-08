@@ -20,7 +20,6 @@ import { useUi } from '@dloizides/ui-feedback';
 
 import { TABLE_I18N, rowDetailTestID, rowSelectTestID, rowTestID } from './constants';
 import { HeaderCheckboxState } from './headerCheckboxState';
-import { JoinedFrameContext } from './joinedFrameContext';
 import { RowCells } from './RowCells';
 import { RowPressProvider } from './rowPressContext';
 import { SelectionCheckbox } from './SelectionCheckbox';
@@ -163,7 +162,7 @@ export function DataTableRow<T>({
         style={[s.rowDetail, { borderTopColor: colors.border, backgroundColor: colors.background }, o?.rowDetail]}
         testID={rowDetailTestID(tableTestID, rowKey)}
       >
-        <JoinedFrameContext.Provider value={null}>{renderRowDetail(row)}</JoinedFrameContext.Provider>
+        {renderRowDetail(row)}
       </View>
     </>
   );
