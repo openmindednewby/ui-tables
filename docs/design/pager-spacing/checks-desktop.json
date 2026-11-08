@@ -1,0 +1,424 @@
+{
+  "viewport": "1280x800",
+  "method": "Static fixture carrying ui-tables styles.ts values; Playwright device descriptor; not the react-native-web build",
+  "checks": {
+    "contrast": "pass",
+    "cvd": "n/a -- spacing and placement only; no option adds or changes a colour meaning",
+    "textFit": "pass",
+    "tapSize": "pass",
+    "formAlignment": "pass",
+    "smallSize": "n/a -- no logo, mark or icon in this change"
+  },
+  "pairMethod": "same-steps",
+  "inventoryScope": "all six controls rendered; compact layout unchanged below 640px",
+  "options": {
+    "contacts-desktop-A": {
+      "inventory": "7/7",
+      "items": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      },
+      "gaps": {
+        "filtersToPager": 12,
+        "pagerToTable": 12,
+        "tableToPager": -511
+      },
+      "minContrast": 4.74
+    },
+    "contacts-desktop-B": {
+      "inventory": "7/7",
+      "items": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      },
+      "gaps": {
+        "filtersToPager": 13,
+        "pagerToTable": 0,
+        "tableToPager": -514
+      },
+      "minContrast": 4.74
+    },
+    "contacts-desktop-C": {
+      "inventory": "7/7",
+      "items": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      },
+      "gaps": {
+        "filtersToPager": 466,
+        "pagerToTable": -514,
+        "tableToPager": 0
+      },
+      "minContrast": 4.74
+    },
+    "contacts-desktop-D": {
+      "inventory": "7/7",
+      "items": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      },
+      "gaps": {
+        "filtersToPager": 0,
+        "pagerToTable": 0,
+        "tableToPager": -514
+      },
+      "minContrast": 4.74
+    }
+  },
+  "beforeGaps": {
+    "filtersToPager": 0,
+    "pagerToTable": 0,
+    "tableToPager": -499
+  },
+  "frames": [
+    {
+      "option": "contacts-desktop-A",
+      "shot": "contacts",
+      "side": "before",
+      "build": "current",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "1280x800",
+        "scrollAnchor": "page top",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      }
+    },
+    {
+      "option": "contacts-desktop-A",
+      "shot": "contacts",
+      "side": "after",
+      "build": "option-A",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "1280x800",
+        "scrollAnchor": "page top",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      }
+    },
+    {
+      "option": "contacts-desktop-B",
+      "shot": "contacts",
+      "side": "before",
+      "build": "current",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "1280x800",
+        "scrollAnchor": "page top",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      }
+    },
+    {
+      "option": "contacts-desktop-B",
+      "shot": "contacts",
+      "side": "after",
+      "build": "option-B",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "1280x800",
+        "scrollAnchor": "page top",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      }
+    },
+    {
+      "option": "contacts-desktop-C",
+      "shot": "contacts",
+      "side": "before",
+      "build": "current",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "1280x800",
+        "scrollAnchor": "page top",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      }
+    },
+    {
+      "option": "contacts-desktop-C",
+      "shot": "contacts",
+      "side": "after",
+      "build": "option-C",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "1280x800",
+        "scrollAnchor": "page top",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      }
+    },
+    {
+      "option": "contacts-desktop-D",
+      "shot": "contacts",
+      "side": "before",
+      "build": "current",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "1280x800",
+        "scrollAnchor": "page top",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      }
+    },
+    {
+      "option": "contacts-desktop-D",
+      "shot": "contacts",
+      "side": "after",
+      "build": "option-D",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "1280x800",
+        "scrollAnchor": "page top",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ],
+        "after": [
+          "count",
+          "rows",
+          "first",
+          "prev",
+          "next",
+          "last"
+        ]
+      }
+    }
+  ],
+  "failures": {
+    "before": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    },
+    "A": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    },
+    "B": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    },
+    "C": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    },
+    "D": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    }
+  }
+}

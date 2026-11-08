@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contacts pager fixture</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
+<style>
+/* Sample data only. Values come from ui-tables DataTable/styles.ts and the FinReg light theme. */
+:root { --bg:#ffffff; --surface:#f7f7f7; --text:#001219; --text2:#6e6e6e; --border:#e6e6e6; --primary:#158176; --on-primary:#ffffff; --ok:#0f6b3d; --ok-bg:#e3f4ea; }
+* { box-sizing:border-box; }
+html,body { margin:0; background:var(--bg); color:var(--text); font:14px/1.4 Sora, system-ui, sans-serif; }
+button { font:inherit; color:inherit; background:var(--bg); border:1px solid var(--border); border-radius:12px; min-height:44px; min-width:44px; padding:6px 12px; }
+.app { display:flex; min-height:100vh; }
+.side { width:216px; flex:none; border-right:1px solid var(--border); padding:16px 12px; display:flex; flex-direction:column; gap:4px; }
+.brand { font-weight:700; font-size:16px; padding:8px 12px 12px; }
+.side a { display:flex; align-items:center; min-height:44px; padding:0 12px; border-radius:12px; color:var(--text); text-decoration:none; }
+.side a.on { background:var(--surface); font-weight:600; }
+.top { display:none; align-items:center; height:52px; padding:0 12px; border-bottom:1px solid var(--border); font-weight:700; font-size:16px; }
+main { flex:1; min-width:0; padding:24px; }
+.head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:16px; }
+h1 { font-size:24px; line-height:30px; margin:0; font-weight:700; }
+.sub { color:var(--text2); margin:4px 0 0; }
+.new { background:var(--primary); color:var(--on-primary); border-color:var(--primary); font-weight:600; }
+.filters { display:flex; flex-wrap:wrap; align-items:flex-end; column-gap:16px; row-gap:8px; border:1px solid var(--border); border-radius:12px; padding:12px 14px; }
+.field { display:flex; flex-direction:column; gap:4px; min-width:130px; flex:0 1 auto; }
+.field.grow { flex:1 1 220px; }
+.field label { font-size:12px; color:var(--text2); }
+.field input, .field .sel { height:44px; border:1px solid var(--border); border-radius:12px; padding:0 12px; font:inherit; background:var(--bg); color:var(--text); width:100%; text-align:left; }
+.field input::placeholder { color:var(--text2); }
+.results { font-size:13px; color:var(--text2); min-height:44px; display:flex; align-items:center; }
+.pager { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; }
+.info { font-size:13px; color:var(--text2); font-variant-numeric:tabular-nums; }
+.info b { color:var(--text); font-weight:700; }
+.nav { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.nav .rows { font-size:12px; color:var(--text2); letter-spacing:.3px; }
+.nav button { font-size:13px; font-weight:600; font-variant-numeric:tabular-nums; }
+.nav button[disabled] { opacity:.4; }
+.table { border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.thead, .tr { display:flex; column-gap:16px; align-items:center; padding:0 14px; }
+.thead { padding-block:11px; font-size:12px; font-weight:600; letter-spacing:.4px; text-transform:uppercase; color:var(--text2); }
+.tr { padding-block:12px; border-top:1px solid var(--border); }
+.c { flex:1 1 0; min-width:0; overflow-wrap:anywhere; }
+.c.sel-c { flex:0 0 44px; }
+.c.act { flex:0 0 136px; display:flex; gap:6px; }
+.box { width:44px; height:44px; padding:0; border:0; background:transparent; display:flex; align-items:center; justify-content:center; }
+.box i { width:18px; height:18px; border:1px solid var(--text2); border-radius:4px; display:block; }
+.badge { display:inline-block; padding:2px 10px; border-radius:999px; background:var(--ok-bg); color:var(--ok); font-size:12px; font-weight:600; }
+.lbl { display:none; }
+
+/* before: the live state, siblings with no gap */
+/* A: opt-in spacing */
+.v-A .pager { margin-block:12px; }
+/* B: toolbar joined to the frame */
+.v-B .filters, .v-C .filters { margin-bottom:12px; }
+.v-B .joined, .v-C .joined { border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.joined .table { border:0; border-radius:0; }
+.joined .pager { padding:8px 14px; }
+.v-B .joined .pager { border-bottom:1px solid var(--border); background:var(--surface); }
+.v-C .joined .pager { border-top:1px solid var(--border); background:var(--surface); }
+/* D: one panel */
+.v-D .panel { border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.v-D .panel .filters { border:0; border-radius:0; border-bottom:1px solid var(--border); }
+.v-D .panel .pager { padding:8px 14px; border-bottom:1px solid var(--border); background:var(--surface); }
+.v-D .panel .table { border:0; border-radius:0; }
+
+@media (max-width:639px) {
+  .side { display:none; }
+  .top { display:flex; }
+  .app { flex-direction:column; }
+  main { padding:12px; }
+  [data-item="rows"], [data-item="first"], [data-item="last"], .nav .rows { display:none; }
+  .thead { display:none; }
+  .tr { flex-direction:column; align-items:stretch; }
+  .c { flex:none; display:flex; flex-direction:column; gap:3px; padding-block:5px; }
+  .c.sel-c { display:block; padding:0; }
+  .c.act { flex:none; flex-direction:row; flex-wrap:wrap; }
+  .lbl { display:block; font-size:12px; font-weight:600; letter-spacing:.3px; text-transform:uppercase; color:var(--text2); }
+  .c.act .lbl { width:100%; }
+  .field { flex:1 1 130px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">FinReg</div>
+  <nav class="side"><div class="brand">FinReg</div><a href="#" class="on">People</a><a href="#">Organizations</a><a href="#">Tags</a></nav>
+  <main id="m"></main>
+</div>
+<script>
+const v = new URLSearchParams(location.search).get('v') || 'before';
+document.body.className = 'v-' + v;
+const people = [
+  ['Eleni Sample','Person','eleni.sample@example.test','+000 555 0101'],
+  ['Marios Fixture','Person','marios.fixture@example.test','+000 555 0102'],
+  ['Anna Placeholder','Person','anna.placeholder@example.test','+000 555 0103'],
+  ['Northwind Testing Ltd','Organization','office@northwind.example.test','+000 555 0104'],
+  ['Petros Example','Person','petros.example@example.test','+000 555 0105'],
+  ['Sofia Demo','Person','sofia.demo@example.test','+000 555 0106'],
+];
+const cell = (l, x, cls = '') => `<div class="c ${cls}"><span class="lbl">${l}</span><span>${x}</span></div>`;
+const row = (p) => `<div class="tr"><div class="c sel-c"><button class="box" aria-label="Select ${p[0]}"><i></i></button></div>${cell('Name', p[0])}${cell('Kind', p[1])}${cell('Email', p[2])}${cell('Phone', p[3])}${cell('Status', '<span class="badge">Active</span>')}<div class="c act"><span class="lbl">Actions</span><button>View</button><button>Edit</button></div></div>`;
+const table = `<div class="table" data-part="table"><div class="thead"><div class="c sel-c"></div><div class="c">Name</div><div class="c">Kind</div><div class="c">Email</div><div class="c">Phone</div><div class="c">Status</div><div class="c act">Actions</div></div>${people.map(row).join('')}</div>`;
+const pager = `<div class="pager" data-part="pager"><div class="info" data-item="count">Showing <b>26</b>–<b>31</b> of <b>31</b> contacts</div><div class="nav"><span class="rows">Rows</span><button data-item="rows">25 ▾</button><button data-item="first">First</button><button data-item="prev">Previous</button><button data-item="next" disabled>Next</button><button data-item="last" disabled>Last</button></div></div>`;
+const field = (l, x, grow = '') => `<div class="field ${grow}"><label>${l}</label>${x}</div>`;
+const filters = `<div class="filters" data-part="filters">${field('Search', '<input placeholder="Name, email, phone or organization" aria-label="Search">', 'grow')}${field('Organization', '<button class="sel">All organizations ▾</button>')}${field('Kind', '<button class="sel">All kinds ▾</button>')}${field('Status', '<button class="sel">All statuses ▾</button>')}<div class="results">31 results</div><button>Mine only</button></div>`;
+const head = `<div class="head"><div><h1>Contacts</h1><p class="sub">Every person and organization your tenant deals with</p></div><button class="new">New contact</button></div>`;
+const body = {
+  before: filters + pager + table,
+  A: filters + pager + table,
+  B: filters + `<div class="joined">${pager}${table}</div>`,
+  C: filters + `<div class="joined">${table}${pager}</div>`,
+  D: `<div class="panel">${filters}${pager}${table}</div>`,
+}[v];
+document.getElementById('m').innerHTML = head + body;
+</script>
+</body>
+</html>

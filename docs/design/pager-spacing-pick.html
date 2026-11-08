@@ -1,0 +1,681 @@
+<!doctype html><html lang="en" data-before-after="before picture per option"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Pager spacing pick</title><meta name="generator" content="pick-page-template"><meta name="pick-template" content="PICK-TEMPLATE-1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap"><style>:root{--page:#FFFFFF;--ink:#343434;--quiet:#555555;--rule:#C8C8C8;--edge:#7A7A7A;--plate:#C8C8C8;--focus:#343434;--on:#FFFFFF;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#343434;--ink:#F3F3F3;--quiet:#C8C8C8;--rule:#7A7A7A;--edge:#A0A0A0;--plate:#5A5A5A;--focus:#F3F3F3;--on:#343434;color-scheme:dark}}
+:root[data-theme="dark"]{--page:#343434;--ink:#F3F3F3;--quiet:#C8C8C8;--rule:#7A7A7A;--edge:#A0A0A0;--plate:#5A5A5A;--focus:#F3F3F3;--on:#343434;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--page);color:var(--ink);font:400 16px/1.4 'Hanken Grotesk',system-ui,sans-serif}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+button{font:600 14px 'Hanken Grotesk',system-ui,sans-serif;color:var(--ink);background:none;border:1px solid var(--edge);border-radius:4px;min-height:44px;min-width:44px;padding:0 10px;cursor:pointer}
+button.prim{background:var(--ink);border-color:var(--ink);color:var(--on)}
+button:disabled{opacity:.45;cursor:default}
+.bar{position:sticky;top:0;z-index:6;background:var(--page);border-bottom:1px solid var(--rule);padding:4px 16px}
+.barin{max-width:1200px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;align-items:center}
+.count{font-size:13px;line-height:1.2;color:var(--quiet);font-variant-numeric:tabular-nums;grid-column:1;grid-row:1}
+.count b{color:var(--ink)}
+.brand{display:none;font-weight:700;font-size:14px;white-space:nowrap}
+.acts{display:flex;gap:6px}
+.meter{height:3px;background:var(--rule);grid-column:1/-1}
+.meter i{display:block;height:100%;background:var(--ink);width:0}
+main{max-width:1232px;margin:auto;padding:6px 16px 32px}
+.intro{margin:0 0 4px;font-size:14px;color:var(--quiet)}
+h2{font-size:17px;line-height:1.2;margin:0;font-weight:700}
+h2:focus{outline:none}
+section[data-pick-step]:not([hidden]){display:flex;flex-direction:column}
+section[data-pick-step] h2{order:0}
+section[data-pick-step] .q{order:1}
+section[data-pick-step] .vbar{order:2}
+section[data-pick-step] .swipe{order:3}
+section[data-pick-step] .frames{order:4}
+.q{margin:2px 0 6px;position:relative}
+.qn{font-size:15px;margin:0 0 4px}
+.qi{display:none}
+.opts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+body .q .opts li{grid-column:span 2;min-height:44px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 4px;padding:3px 5px;border:1px solid var(--edge);border-radius:4px;cursor:pointer;text-align:center;font-size:14px;line-height:1.15;font-weight:600}
+body .q .opts li:nth-child(n+4){grid-column:span 3}
+body .q .opts li::before{display:none}
+body .q .opts li[aria-checked="true"]{background:var(--ink);border-color:var(--ink);color:var(--on)}
+body .q .opts li[aria-checked="true"] .nm2::after{content:" \2713"}
+body .q .opts li:hover{background:var(--rule)}
+body .q .opts li[aria-checked="true"]:hover{background:var(--ink)}
+.lt{font-weight:700}
+body .q .ansbox{margin:0;padding:0;border:0}
+body .q .ansbox .st{display:none}
+body .q .note-in{display:none;min-height:60px;margin-top:6px;border:1px solid var(--edge);font-size:16px}
+body .q.wantnote .note-in{display:block}
+.vbar{position:sticky;top:56px;z-index:4;background:var(--page);display:flex;gap:4px;padding:4px 0;align-items:center}
+.vtab{flex:1;background:none}
+.vtab[aria-selected="true"]{box-shadow:inset 0 -3px 0 var(--ink);border-color:var(--ink);font-weight:700}
+.vtab.chosen::after{content:" \2713"}
+.whole{flex:none;font-weight:500}
+.frames{display:block}
+.frame{margin:0;display:none;min-width:0}
+.frame.shown{display:block}
+.fhead{font-size:14px;margin:2px 0 4px;color:var(--quiet)}
+.fhead b{color:var(--ink);font-size:15px}
+.stage{border:1px solid var(--edge);overflow:hidden}
+.frame.picked .stage{box-shadow:0 0 0 2px var(--ink)}
+.stage img{display:block;width:100%;height:auto}
+.stage img.full{display:none}
+.showwhole .stage img.full{display:block}
+.showwhole .stage img.fold{display:none}
+.wstage{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.wstage img{width:760px;max-width:none}
+.swipe{font-size:13px;color:var(--quiet);margin:0 0 4px}
+.saveline{margin:8px 0 0;font-size:13px;color:var(--quiet)}
+.sumlist{list-style:none;margin:6px 0;padding:0}
+.sumlist button{display:grid;gap:1px;width:100%;min-height:52px;text-align:left;padding:6px 4px;border:0;border-top:1px solid var(--rule);border-radius:0;font-weight:600}
+.ans{color:var(--quiet);font-size:14px;font-weight:400}
+.qbar{display:none!important}
+.expwrap button{min-height:44px}
+@media (min-width:760px){
+ .bar{padding:4px 16px}
+ .barin{grid-template-columns:auto minmax(0,1fr) auto;column-gap:16px}
+ .brand{display:inline}
+ .count{grid-column:2;grid-row:1}
+ .meter{grid-row:2}
+ section[data-pick-step]:not([hidden]){display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:20px;align-items:start}
+ section[data-pick-step] .vbar,section[data-pick-step] .frames{grid-column:1/-1}
+ h2{font-size:18px;padding-top:2px}
+ .qn{font-weight:400;color:var(--quiet);margin:0}
+ .opts{grid-template-columns:repeat(var(--n,5),minmax(0,1fr));margin-top:4px}
+ body .q .opts li,body .q .opts li:nth-child(n+4){grid-column:auto}
+ .vbar{top:56px}
+ .wstage img{width:100%}
+ .swipe{display:none}
+ section[data-viewport="mobile"] .vtab{display:none}
+ section[data-viewport="mobile"] .vbar{position:static;justify-content:flex-end;padding:0;margin-top:-2px}
+ section[data-viewport="mobile"] .frames{display:grid;grid-template-columns:repeat(3,minmax(0,360px));gap:12px;justify-content:space-between}
+ section[data-viewport="mobile"] .frame{display:block}
+ section[data-viewport="mobile"] .whole{min-height:36px}
+}
+
+  /* ---- answer-UI token defaults --------------------------------------
+     Zero-specificity (:where) so ANY host declaration on :root / html
+     (specificity 0,1,0) overrides every value below. Self-sufficient on a
+     host palette that defines none of these. Light is declared on the bare
+     selector first; the dark blocks only REDEFINE, so no colour has its
+     sole definition inside a media query or [data-theme] rule. -------- */
+  :where(html){
+    --paper:#ffffff; --ink-1:#111111; --ink-2:#555555; --ink-3:#8a8a8a;
+    --rule-1:rgba(0,0,0,.05); --rule-2:#e2e2de;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace}
+  @media (prefers-color-scheme:dark){
+    :where(html:not([data-theme="light"])){
+      --paper:#141414; --ink-1:#f0efec; --ink-2:#a8a49c; --ink-3:#6f6b64;
+      --rule-1:rgba(255,255,255,.06); --rule-2:#333029}
+  }
+  :where(html[data-theme="dark"]){
+    --paper:#141414; --ink-1:#f0efec; --ink-2:#a8a49c; --ink-3:#6f6b64;
+    --rule-1:rgba(255,255,255,.06); --rule-2:#333029}
+  :where(html[data-theme="light"]){
+    --paper:#ffffff; --ink-1:#111111; --ink-2:#555555; --ink-3:#8a8a8a;
+    --rule-1:rgba(0,0,0,.05); --rule-2:#e2e2de}
+
+  /* ---- answerable questions ---- */
+  .q{position:relative}
+  .q.answered{border-color:var(--ink-3)}
+  .q .opts li{cursor:pointer; padding-left:34px; position:relative;
+    transition:background .12s ease}
+  .q .opts li:hover{background:var(--rule-1, rgba(0,0,0,.03))}
+  .q .opts li::before{content:''; position:absolute; left:6px; top:13px;
+    width:13px; height:13px; border:1.5px solid var(--ink-3); border-radius:50%}
+  .q .opts li[aria-checked="true"]::before{border-color:var(--ink-1, #111);
+    background:var(--ink-1, #111); box-shadow:inset 0 0 0 3px var(--paper, #fff)}
+  .q .opts li[aria-checked="true"]{background:var(--rule-1, rgba(0,0,0,.05))}
+  .q .opts li:focus-visible{outline:2px solid var(--ink-2); outline-offset:-2px}
+  .q .ansbox{margin:14px 0 0; padding-top:12px; border-top:1px solid var(--rule-2)}
+  .q .ansbox .st{font-family:var(--mono); font-size:12px; color:var(--ink-3)}
+  .q .ansbox .st b{color:var(--ink-1, #111)}
+  .q .note-in{display:block; width:100%; box-sizing:border-box; margin-top:9px;
+    font-family:inherit; font-size:14px; color:inherit; caret-color:currentColor;
+    background:transparent; border:1px solid var(--rule-2); border-radius:0;
+    padding:8px 10px; resize:vertical; min-height:2.4em}
+  .q .note-in:focus{outline:none; border-color:var(--ink-3)}
+  .qbar{border:1px solid var(--rule-2); padding:10px 14px; margin:20px 0;
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    justify-content:space-between; position:sticky; top:0; z-index:5;
+    background:var(--paper, #fff)}
+  .qbar .prog{font-family:var(--mono); font-size:13px; color:var(--ink-2)}
+  .qbar .prog b{color:var(--ink-1, #111); font-size:15px}
+  .qbar .acts{display:flex; gap:9px; flex-wrap:wrap}
+  .qbar button{font-family:inherit; font-size:13px; padding:7px 14px;
+    border:1px solid var(--ink-3); background:transparent; color:var(--ink-1, #111);
+    cursor:pointer; border-radius:0}
+  .qbar button:hover{background:var(--rule-1, rgba(0,0,0,.05))}
+  .qbar button.prim{background:var(--ink-1, #111); color:var(--paper, #fff);
+    border-color:var(--ink-1, #111)}
+  .qbar .mode{font-family:var(--mono); font-size:11.5px; color:var(--ink-3);
+    flex-basis:100%}
+  .expwrap{display:none; position:fixed; z-index:50; left:50%; top:50%;
+    transform:translate(-50%,-50%); width:min(720px, calc(100vw - 32px));
+    max-height:calc(100vh - 32px); box-sizing:border-box; overflow:auto;
+    padding:16px; background:var(--paper, #fff); color:var(--ink-1, #111);
+    border:1px solid var(--ink-3); box-shadow:0 12px 40px rgba(0,0,0,.35)}
+  .expwrap.on{display:block}
+  .expwrap .exphead{display:flex; justify-content:space-between; align-items:center;
+    gap:10px; margin:0 0 10px; font-weight:600}
+  .expwrap .exphead span{display:flex; gap:8px}
+  .expwrap button{font-family:inherit; font-size:13px; padding:7px 14px; min-height:44px;
+    border:1px solid var(--ink-3); background:transparent; color:var(--ink-1, #111);
+    cursor:pointer; border-radius:0}
+  .expwrap button.prim{background:var(--ink-1, #111); color:var(--paper, #fff);
+    border-color:var(--ink-1, #111)}
+  .expwrap textarea{width:100%; box-sizing:border-box; min-height:190px; height:50vh;
+    font-family:var(--mono); font-size:12px; line-height:1.55; padding:12px;
+    border:1px solid var(--rule-2); background:transparent; color:inherit}
+  .expwrap .hint{font-size:13px; color:var(--ink-2); margin:8px 0 0}
+</style></head><body><div class="bar"><div class="barin"><span class="brand">Shared pager spacing</span><span class="count" id="count" aria-live="polite"></span><span class="acts"><button type="button" class="copyall">Copy answers</button><button type="button" id="back">Back</button><button type="button" id="next" class="prim">Next</button></span><div class="meter"><i id="meterFill"></i></div></div></div><main><div id="stepsWrap"><p class="intro" id="intro">The pager touches the filters and the table on Contacts. Every option is opt-in, so screens that place it in a header row, such as AML Cases, do not move. Sample data only.</p><section id="step-sec-1" data-pick-step data-screen="contacts" data-viewport="mobile" data-title="Contacts on a phone (360x640)" hidden><h2 tabindex="-1">Contacts on a phone (360x640)</h2><div class="vbar"><button type="button" class="vtab" data-show="A" aria-selected="false">View A</button><button type="button" class="vtab" data-show="B" aria-selected="false">View B</button><button type="button" class="vtab" data-show="C" aria-selected="false">View C</button><button type="button" class="vtab" data-show="D" aria-selected="false">View D</button><button type="button" class="whole" aria-pressed="false">Whole screen</button></div><div class="frames"><figure class="frame" data-letter="A" data-option="contacts-mobile-A" data-result="pager-spacing/checks-mobile.json" data-inventory="7/7" data-aligned="pass"><figcaption class="fhead"><b>A Space above and below.</b> The pager stays its own row, with 12px clear on each side.</figcaption><div class="stage" data-visual="before"><img src="pager-spacing/mobile-before.png" width="360" height="640" alt="Before: Contacts on a phone (360x640), option A Space above and below. The pager stays its own row, with 12px clear on each side."></div><div class="stage" data-visual="after"><img class="fold" src="pager-spacing/mobile-A.png" width="360" height="640" alt="Contacts on a phone (360x640), option A Space above and below. The pager stays its own row, with 12px clear on each side."><img class="full" src="pager-spacing/mobile-A-full.png" width="360" height="2969" alt="Contacts on a phone (360x640), option A Space above and below. The pager stays its own row, with 12px clear on each side. Whole screen." loading="lazy"></div></figure><figure class="frame" data-letter="B" data-option="contacts-mobile-B" data-result="pager-spacing/checks-mobile.json" data-inventory="7/7" data-aligned="pass"><figcaption class="fhead"><b>B Toolbar on the table.</b> The pager becomes the top row of the table's frame, 12px clear of the filters.</figcaption><div class="stage" data-visual="before"><img src="pager-spacing/mobile-before.png" width="360" height="640" alt="Before: Contacts on a phone (360x640), option B Toolbar on the table. The pager becomes the top row of the table's frame, 12px clear of the filters."></div><div class="stage" data-visual="after"><img class="fold" src="pager-spacing/mobile-B.png" width="360" height="640" alt="Contacts on a phone (360x640), option B Toolbar on the table. The pager becomes the top row of the table's frame, 12px clear of the filters."><img class="full" src="pager-spacing/mobile-B-full.png" width="360" height="2974" alt="Contacts on a phone (360x640), option B Toolbar on the table. The pager becomes the top row of the table's frame, 12px clear of the filters. Whole screen." loading="lazy"></div></figure><figure class="frame" data-letter="C" data-option="contacts-mobile-C" data-result="pager-spacing/checks-mobile.json" data-inventory="7/7" data-aligned="pass"><figcaption class="fhead"><b>C Footer on the table.</b> The pager becomes the bottom row of the frame, so on a phone it sits below every card. Tap Whole screen to see it.</figcaption><div class="stage" data-visual="before"><img src="pager-spacing/mobile-before.png" width="360" height="640" alt="Before: Contacts on a phone (360x640), option C Footer on the table. The pager becomes the bottom row of the frame, so on a phone it sits below every card. Tap Whole screen to see it."></div><div class="stage" data-visual="after"><img class="fold" src="pager-spacing/mobile-C.png" width="360" height="640" alt="Contacts on a phone (360x640), option C Footer on the table. The pager becomes the bottom row of the frame, so on a phone it sits below every card. Tap Whole screen to see it."><img class="full" src="pager-spacing/mobile-C-full.png" width="360" height="2974" alt="Contacts on a phone (360x640), option C Footer on the table. The pager becomes the bottom row of the frame, so on a phone it sits below every card. Tap Whole screen to see it. Whole screen." loading="lazy"></div></figure><figure class="frame" data-letter="D" data-option="contacts-mobile-D" data-result="pager-spacing/checks-mobile.json" data-inventory="7/7" data-aligned="pass"><figcaption class="fhead"><b>D One panel.</b> Filters, pager and table share one frame, split by hairlines.</figcaption><div class="stage" data-visual="before"><img src="pager-spacing/mobile-before.png" width="360" height="640" alt="Before: Contacts on a phone (360x640), option D One panel. Filters, pager and table share one frame, split by hairlines."></div><div class="stage" data-visual="after"><img class="fold" src="pager-spacing/mobile-D.png" width="360" height="640" alt="Contacts on a phone (360x640), option D One panel. Filters, pager and table share one frame, split by hairlines."><img class="full" src="pager-spacing/mobile-D-full.png" width="360" height="2961" alt="Contacts on a phone (360x640), option D One panel. Filters, pager and table share one frame, split by hairlines. Whole screen." loading="lazy"></div></figure></div><div class="q" data-qid="q1"><p class="qn"><span class="qi">Q1</span> On a phone, how should the pager sit between the filters and the contacts?</p><ul class="opts" style="--n:6"><li data-letter="A"><span class="lt">A</span> <span class="nm2">Space above and below</span></li><li data-letter="B"><span class="lt">B</span> <span class="nm2">Toolbar on the table</span></li><li data-letter="C"><span class="lt">C</span> <span class="nm2">Footer on the table</span></li><li data-letter="D"><span class="lt">D</span> <span class="nm2">One panel</span></li><li data-letter="E"><span class="nm2">Changes needed</span></li><li data-letter="F"><span class="nm2">None of these</span></li></ul></div></section><section id="step-sec-2" data-pick-step data-screen="contacts" data-viewport="desktop" data-title="Contacts on a computer (1280x800)" hidden><h2 tabindex="-1">Contacts on a computer (1280x800)</h2><div class="vbar"><button type="button" class="vtab" data-show="A" aria-selected="false">View A</button><button type="button" class="vtab" data-show="B" aria-selected="false">View B</button><button type="button" class="vtab" data-show="C" aria-selected="false">View C</button><button type="button" class="vtab" data-show="D" aria-selected="false">View D</button></div><p class="swipe">This picture is a computer screen: swipe sideways inside it.</p><div class="frames"><figure class="frame" data-letter="A" data-option="contacts-desktop-A" data-result="pager-spacing/checks-desktop.json" data-inventory="7/7" data-aligned="pass"><figcaption class="fhead"><b>A Space above and below.</b> The pager stays its own row, with 12px clear on each side.</figcaption><div class="stage wstage" data-visual="before"><img src="pager-spacing/desktop-before.png" width="1280" height="800" alt="Before: Contacts on a computer (1280x800), option A Space above and below. The pager stays its own row, with 12px clear on each side."></div><div class="stage wstage" data-visual="after" tabindex="0" role="group" aria-label="Screen picture, scrolls sideways"><img class="fold" src="pager-spacing/desktop-A.png" width="1280" height="800" alt="Contacts on a computer (1280x800), option A Space above and below. The pager stays its own row, with 12px clear on each side."></div></figure><figure class="frame" data-letter="B" data-option="contacts-desktop-B" data-result="pager-spacing/checks-desktop.json" data-inventory="7/7" data-aligned="pass"><figcaption class="fhead"><b>B Toolbar on the table.</b> The pager becomes the top row of the table's frame, 12px clear of the filters.</figcaption><div class="stage wstage" data-visual="before"><img src="pager-spacing/desktop-before.png" width="1280" height="800" alt="Before: Contacts on a computer (1280x800), option B Toolbar on the table. The pager becomes the top row of the table's frame, 12px clear of the filters."></div><div class="stage wstage" data-visual="after" tabindex="0" role="group" aria-label="Screen picture, scrolls sideways"><img class="fold" src="pager-spacing/desktop-B.png" width="1280" height="800" alt="Contacts on a computer (1280x800), option B Toolbar on the table. The pager becomes the top row of the table's frame, 12px clear of the filters."></div></figure><figure class="frame" data-letter="C" data-option="contacts-desktop-C" data-result="pager-spacing/checks-desktop.json" data-inventory="7/7" data-aligned="pass"><figcaption class="fhead"><b>C Footer on the table.</b> The pager becomes the bottom row of the frame. On a full page of 25 you scroll past every row to reach it.</figcaption><div class="stage wstage" data-visual="before"><img src="pager-spacing/desktop-before.png" width="1280" height="800" alt="Before: Contacts on a computer (1280x800), option C Footer on the table. The pager becomes the bottom row of the frame. On a full page of 25 you scroll past every row to reach it."></div><div class="stage wstage" data-visual="after" tabindex="0" role="group" aria-label="Screen picture, scrolls sideways"><img class="fold" src="pager-spacing/desktop-C.png" width="1280" height="800" alt="Contacts on a computer (1280x800), option C Footer on the table. The pager becomes the bottom row of the frame. On a full page of 25 you scroll past every row to reach it."></div></figure><figure class="frame" data-letter="D" data-option="contacts-desktop-D" data-result="pager-spacing/checks-desktop.json" data-inventory="7/7" data-aligned="pass"><figcaption class="fhead"><b>D One panel.</b> Filters, pager and table share one frame, split by hairlines.</figcaption><div class="stage wstage" data-visual="before"><img src="pager-spacing/desktop-before.png" width="1280" height="800" alt="Before: Contacts on a computer (1280x800), option D One panel. Filters, pager and table share one frame, split by hairlines."></div><div class="stage wstage" data-visual="after" tabindex="0" role="group" aria-label="Screen picture, scrolls sideways"><img class="fold" src="pager-spacing/desktop-D.png" width="1280" height="800" alt="Contacts on a computer (1280x800), option D One panel. Filters, pager and table share one frame, split by hairlines."></div></figure></div><div class="q" data-qid="q2"><p class="qn"><span class="qi">Q2</span> On a computer, how should the pager sit between the filters and the contacts table?</p><ul class="opts" style="--n:6"><li data-letter="A"><span class="lt">A</span> <span class="nm2">Space above and below</span></li><li data-letter="B"><span class="lt">B</span> <span class="nm2">Toolbar on the table</span></li><li data-letter="C"><span class="lt">C</span> <span class="nm2">Footer on the table</span></li><li data-letter="D"><span class="lt">D</span> <span class="nm2">One panel</span></li><li data-letter="E"><span class="nm2">Changes needed</span></li><li data-letter="F"><span class="nm2">None of these</span></li></ul></div></section><section id="summary" hidden><h2 tabindex="-1" id="sumHead">Your picks</h2><p id="sumSub"></p><ul class="sumlist" id="sumList"></ul><button type="button" class="copyall prim">Copy answers</button></section></div><p class="saveline" id="saveLine"></p></main><script>(function () {
+  'use strict';
+  if (window.KeepPlace) return;
+  var PREFIX = 'keep-place.v1:', STEP_MS = 100, STABLE_MS = 1200, MAX_MS = 15000, SAVE_MS = 150;
+  var key = null, saved = null, sameView = false, armed = false, restored = false, timer = 0;
+  var boxes = {};
+
+  function read() {
+    try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+  }
+  function write(state) {
+    try { localStorage.setItem(key, JSON.stringify(state)); } catch (e) {}
+  }
+  function tabsOf(list) { return list.querySelectorAll('[role="tab"]'); }
+  function selectedTabs() {
+    return Array.prototype.map.call(document.querySelectorAll('[role="tablist"]'), function (list) {
+      return Array.prototype.findIndex.call(tabsOf(list), function (t) {
+        return t.getAttribute('aria-selected') === 'true';
+      });
+    });
+  }
+  function openDetails() {
+    return Array.prototype.map.call(document.querySelectorAll('details'), function (d) { return d.open ? 1 : 0; });
+  }
+  function save() {
+    if (!armed) return;
+    Object.keys(boxes).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) boxes[id] = el.scrollTop;
+    });
+    write({ hash: location.hash, y: window.scrollY, boxes: boxes, tabs: selectedTabs(), details: openDetails() });
+  }
+  function saveSoon() {
+    clearTimeout(timer);
+    timer = setTimeout(save, SAVE_MS);
+  }
+  function applyTabs() {
+    if (!sameView) return;
+    (saved.tabs || []).forEach(function (index, i) {
+      var list = document.querySelectorAll('[role="tablist"]')[i];
+      var tab = list && tabsOf(list)[index];
+      if (tab && tab.getAttribute('aria-selected') !== 'true') tab.click();
+    });
+    (saved.details || []).forEach(function (open, i) {
+      var d = document.querySelectorAll('details')[i];
+      if (d) d.open = !!open;
+    });
+  }
+  function applyScroll() {
+    Object.keys(saved.boxes || {}).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && Math.abs(el.scrollTop - saved.boxes[id]) > 2) el.scrollTop = saved.boxes[id];
+    });
+    if (sameView && Math.abs(window.scrollY - saved.y) > 2) window.scrollTo(0, saved.y);
+  }
+  function runLoop(until) {
+    var started = Date.now(), changed = started, height = -1, ready = !until, loop = 0;
+    var inputs = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+    function finish() {
+      clearInterval(loop);
+      inputs.forEach(function (name) { window.removeEventListener(name, finish, true); });
+      window.removeEventListener('hashchange', finish);
+      armed = true;
+      saveSoon();
+    }
+    function tick() {
+      var h = document.documentElement.scrollHeight;
+      if (h !== height) { height = h; changed = Date.now(); }
+      applyScroll();
+      var now = Date.now();
+      if ((ready && now - changed >= STABLE_MS) || now - started >= MAX_MS) finish();
+    }
+    if (until && until.then) {
+      var done = function () { ready = true; changed = Date.now(); };
+      until.then(done, done);
+    }
+    loop = setInterval(tick, STEP_MS);
+    inputs.forEach(function (name) { window.addEventListener(name, finish, true); });
+    window.addEventListener('hashchange', finish);
+    tick();
+  }
+  function restore(until) {
+    if (!key || restored) return;
+    restored = true;
+    if (!saved) { armed = true; return; }
+    boxes = saved.boxes || {};
+    applyTabs();
+    runLoop(until);
+  }
+  function start(options) {
+    if (key) return;
+    var o = options || {};
+    key = PREFIX + (o.key || location.pathname);
+    saved = read();
+    try { history.scrollRestoration = 'manual'; } catch (e) {}
+    if (saved && saved.hash && !location.hash) {
+      try { history.replaceState(null, '', saved.hash); } catch (e) { location.hash = saved.hash; }
+    }
+    sameView = !!saved && (saved.hash || '') === location.hash;
+    document.addEventListener('scroll', function (e) {
+      if (e.target && e.target.id) boxes[e.target.id] = e.target.scrollTop;
+      saveSoon();
+    }, { passive: true, capture: true });
+    document.addEventListener('click', saveSoon, true);
+    document.addEventListener('toggle', saveSoon, true);
+    window.addEventListener('hashchange', saveSoon);
+    window.addEventListener('pagehide', save);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') save();
+    });
+    if (!o.defer) restore();
+  }
+  window.KeepPlace = { start: start, restore: restore };
+  function autoStart() { start(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', autoStart);
+  else setTimeout(autoStart, 0);
+})();
+</script>
+</body></html>
+
+<script>
+(function () {
+  'use strict';
+  // Contrast guard: a host page forced dark (or light) while the OS scheme differs left
+  // --ink-1 #111 on a dark background, so typed notes were invisible (2026-10-01).
+  (function () {
+    function lum(c) {
+      var m = (c || '').match(/[\d.]+/g); if (!m || m.length < 3) return null;
+      var v = m.slice(0, 3).map(function (x) { x = x / 255;
+        return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+      return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    }
+    var el = document.body, bg = null;
+    while (el && el.nodeType === 1) {
+      var c = getComputedStyle(el).backgroundColor;
+      if (c && !/rgba\([^)]*,\s*0\)|transparent/.test(c)) { bg = c; break; }
+      el = el.parentElement;
+    }
+    var root = document.documentElement;
+    var probe = document.createElement('span');
+    probe.style.color = 'var(--ink-1, #111)'; document.body.appendChild(probe);
+    var lb = lum(bg || 'rgb(255,255,255)'), li = lum(getComputedStyle(probe).color);
+    probe.remove();
+    if (lb === null || li === null) return;
+    if ((Math.max(lb, li) + 0.05) / (Math.min(lb, li) + 0.05) >= 4.5) return;
+    var dark = lb < 0.2, set = dark
+      ? ['#141414', '#f0efec', '#a8a49c', '#6f6b64', 'rgba(255,255,255,.06)', '#333029']
+      : ['#ffffff', '#111111', '#555555', '#8a8a8a', 'rgba(0,0,0,.05)', '#e2e2de'];
+    ['--paper', '--ink-1', '--ink-2', '--ink-3', '--rule-1', '--rule-2'].forEach(
+      function (k, i) { root.style.setProperty(k, set[i]); });
+  })();
+  var DOCKEY = 'pager-space-1-spacing-pick';
+  var DOCTITLE = 'Pager spacing pick';
+  var LS = 'answers:' + DOCKEY;
+  var state = {};
+  var db = null;
+
+  function load() {
+    try {
+      var raw = window.localStorage.getItem(LS);
+      if (raw) state = JSON.parse(raw) || {};
+    } catch (e) { state = {}; }
+  }
+
+  function persistLocal() {
+    try { window.localStorage.setItem(LS, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function persistDb(qid) {
+    if (!db) return;
+    var v = state[qid] || {};
+    db.doc('answers/' + qid).set({
+      question: v.question || '',
+      choice: v.choice || '',
+      choiceText: v.choiceText || '',
+      note: v.note || '',
+      doc: DOCKEY,
+      updatedAt: new Date().toISOString()
+    }).catch(function () { /* keep the local copy; export still works */ });
+  }
+
+  function save(qid) { persistLocal(); persistDb(qid); }
+
+  var blocks = [];
+
+  function render() {
+    var done = 0;
+    blocks.forEach(function (b) {
+      var v = state[b.qid] || {};
+      b.el.classList.toggle('answered', !!v.choice);
+      if (v.choice) done++;
+      b.opts.forEach(function (li) {
+        var on = li.getAttribute('data-letter') === v.choice;
+        li.setAttribute('aria-checked', on ? 'true' : 'false');
+        li.setAttribute('tabindex', on || (!v.choice && li === b.opts[0]) ? '0' : '-1');
+      });
+      b.status.textContent = v.choice ? 'answered — ' : 'not answered yet';
+      if (v.choice) {
+        var bb = document.createElement('b');
+        bb.textContent = v.choice;
+        b.status.appendChild(bb);
+      }
+      if (b.note.value !== (v.note || '')) b.note.value = v.note || '';
+    });
+    if (bar) {
+      bar.prog.innerHTML = '<b>' + done + '</b> of ' + blocks.length + ' answered';
+    }
+  }
+
+  function choose(b, letter, text) {
+    var v = state[b.qid] || {};
+    if (v.choice === letter) { delete v.choice; delete v.choiceText; }
+    else { v.choice = letter; v.choiceText = text; }
+    v.question = b.question;
+    state[b.qid] = v;
+    save(b.qid);
+    render();
+  }
+
+  function buildExport() {
+    var out = ['# Answers \u2014 ' + DOCTITLE,
+               'recorded ' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC',
+               ''];
+    blocks.forEach(function (b) {
+      var v = state[b.qid] || {};
+      out.push('## ' + b.qid.toUpperCase() + ' \u2014 ' + b.question);
+      out.push(v.choice
+        ? '**Answer: ' + v.choice + '** \u2014 ' + (v.choiceText || '')
+        : '**Answer: (not answered)**');
+      if (v.note) out.push('Note: ' + v.note);
+      out.push('');
+    });
+    return out.join('\n');
+  }
+
+  var bar = null;
+
+  function buildBar(firstQ) {
+    var el = document.createElement('div');
+    el.className = 'qbar';
+    el.innerHTML =
+      '<span class="prog"></span>' +
+      '<span class="acts">' +
+      '<button type="button" class="clr">Clear all</button>' +
+      '<button type="button" class="prim exp">Export answers</button>' +
+      '</span>' +
+      '<span class="mode"></span>';
+    var wrap = document.createElement('div');
+    wrap.className = 'expwrap';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-label', 'Exported answers');
+    wrap.innerHTML = '<div class="exphead">Your answers' +
+      '<span><button type="button" class="prim cpy">Copy</button>' +
+      '<button type="button" class="cls">Close</button></span></div>' +
+      '<textarea readonly aria-label="Answers for export"></textarea>' +
+      '<p class="hint">Press Copy, then paste the text into the conversation.</p>';
+    var section = firstQ.closest ? firstQ.closest('section') : null;
+    var anchor = section && section.parentNode ? section : firstQ;
+    anchor.parentNode.insertBefore(el, anchor);
+    document.body.appendChild(wrap);
+
+    bar = {
+      el: el,
+      prog: el.querySelector('.prog'),
+      mode: el.querySelector('.mode'),
+      exportBtn: el.querySelector('.exp'),
+      wrap: wrap,
+      ta: wrap.querySelector('textarea'),
+      hint: wrap.querySelector('.hint')
+    };
+
+    function closeExport() { wrap.classList.remove('on'); bar.exportBtn.focus(); }
+    wrap.querySelector('.cls').addEventListener('click', closeExport);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && wrap.classList.contains('on')) closeExport();
+    });
+    wrap.querySelector('.cpy').addEventListener('click', function () {
+      bar.ta.focus();
+      bar.ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText)
+          navigator.clipboard.writeText(bar.ta.value).then(function () {
+            bar.hint.textContent = 'Copied. Paste it into the conversation.';
+          }, function () {});
+      } catch (e) {}
+      bar.hint.textContent = ok ? 'Copied. Paste it into the conversation.'
+        : 'The text is selected: press Ctrl+C (Cmd+C on a Mac), then paste it into the conversation.';
+    });
+
+    el.querySelector('.clr').addEventListener('click', function () {
+      blocks.forEach(function (b) {
+        state[b.qid] = { question: b.question, note: (state[b.qid] || {}).note || '' };
+        delete state[b.qid].choice;
+        save(b.qid);
+      });
+      render();
+    });
+
+    bar.exportBtn.addEventListener('click', function () {
+      var txt = buildExport();
+      bar.ta.value = txt;
+      bar.wrap.classList.add('on');
+      bar.hint.textContent = 'Press Copy, then paste the text into the conversation.';
+      bar.ta.focus();
+      bar.ta.select();
+    });
+  }
+
+  function init() {
+    var qs = Array.prototype.slice.call(document.querySelectorAll('.q[data-qid]'));
+    if (!qs.length) return;
+
+    qs.forEach(function (el) {
+      var qid = el.getAttribute('data-qid');
+      var qn = el.querySelector('.qn');
+      var question = qn ? qn.textContent.replace(/\s+/g, ' ').replace(/^\s*Q\d+\s*/, '').trim() : qid;
+      var opts = Array.prototype.slice.call(el.querySelectorAll('.opts li[data-letter]'));
+      var group = el.querySelector('.opts');
+      if (group) group.setAttribute('role', 'radiogroup');
+
+      var box = document.createElement('div');
+      box.className = 'ansbox';
+      box.innerHTML = '<span class="st"></span>' +
+        '<textarea class="note-in" rows="2" placeholder="Optional \u2014 a caveat, a ' +
+        'condition, or why not the recommendation."></textarea>';
+      var oldAns = el.querySelector('.ans');
+      if (oldAns) oldAns.parentNode.replaceChild(box, oldAns);
+      else el.appendChild(box);
+
+      var b = {
+        el: el, qid: qid, question: question, opts: opts,
+        status: box.querySelector('.st'), note: box.querySelector('.note-in')
+      };
+
+      opts.forEach(function (li) {
+        li.setAttribute('role', 'radio');
+        li.setAttribute('aria-checked', 'false');
+        var span = li.querySelector('span:last-child');
+        var text = (span ? span.textContent : li.textContent)
+          .replace(/\s+/g, ' ').replace(/\s*recommended\s*$/i, '').trim();
+        li.addEventListener('click', function () {
+          choose(b, li.getAttribute('data-letter'), text);
+        });
+        li.addEventListener('keydown', function (ev) {
+          if (ev.key === ' ' || ev.key === 'Enter') {
+            ev.preventDefault();
+            choose(b, li.getAttribute('data-letter'), text);
+          }
+        });
+      });
+
+      b.note.addEventListener('input', function () {
+        var v = state[qid] || {};
+        v.note = b.note.value;
+        v.question = question;
+        state[qid] = v;
+        persistLocal();
+      });
+      b.note.addEventListener('blur', function () { persistDb(qid); });
+
+      blocks.push(b);
+    });
+
+    load();
+    buildBar(qs[0]);
+    render();
+
+    if (window.claude && typeof window.claude.use === 'function') {
+      window.claude.use('db').then(function (d) {
+        if (!d) { setMode('saved in this browser only'); return; }
+        db = d;
+        setMode('saved to this page \u2014 Claude can read these answers back');
+        d.collection('answers').get().then(function (snap) {
+          var touched = false;
+          snap.docs.forEach(function (doc) {
+            var data = doc.data() || {};
+            var cur = state[doc.id] || {};
+            if (!cur.choice && !cur.note && (data.choice || data.note)) {
+              state[doc.id] = {
+                question: data.question || cur.question || '',
+                choice: data.choice || '', choiceText: data.choiceText || '',
+                note: data.note || ''
+              };
+              touched = true;
+            }
+          });
+          if (touched) { persistLocal(); render(); }
+        }).catch(function () {});
+      }).catch(function () { setMode('saved in this browser only'); });
+    } else {
+      setMode('saved in this browser only');
+    }
+  }
+
+  function setMode(t) { if (bar) bar.mode.textContent = t; }
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+<script>document.addEventListener('DOMContentLoaded', function () {
+  var steps = [].slice.call(document.querySelectorAll('[data-pick-step]'));
+  var n = steps.length, cur = 0, acted = false;
+  var summary = document.getElementById('summary'), intro = document.getElementById('intro');
+  var count = document.getElementById('count'), fill = document.getElementById('meterFill');
+  var back = document.getElementById('back'), next = document.getElementById('next'), saveLine = document.getElementById('saveLine');
+
+  function picked(s) { return s.querySelector('.opts li[aria-checked="true"]'); }
+  function answered() { return steps.filter(picked).length; }
+  function firstOpen() { for (var i = 0; i < n; i += 1) if (!picked(steps[i])) return i; return n; }
+  function idx(hash) {
+    if (hash === '#summary') return n;
+    var m = /^#step-(\d+)$/.exec(hash), v = m ? +m[1] - 1 : -1;
+    return v >= 0 && v < n ? v : -1;
+  }
+  function view(s, letter) {
+    s.querySelectorAll('.vtab').forEach(function (t) { t.setAttribute('aria-selected', t.getAttribute('data-show') === letter ? 'true' : 'false'); });
+    s.querySelectorAll('.frame').forEach(function (f) { f.classList.toggle('shown', f.getAttribute('data-letter') === letter); });
+  }
+  function nameOf(li) { return li.querySelector('.nm2').textContent.trim(); }
+  function refresh() {
+    var done = answered();
+    count.innerHTML = (cur >= n ? '<b>Your picks</b>' : '<b>Step ' + (cur + 1) + ' of ' + n + '</b>') + ' &middot; ' + done + ' answered';
+    fill.style.width = (Math.min(cur + 1, n) / n * 100) + '%';
+    back.disabled = cur <= 0;
+    next.hidden = cur >= n;
+    if (cur < n) {
+      var has = picked(steps[cur]);
+      next.textContent = cur === n - 1 ? 'See picks' : (has ? 'Next' : 'Skip');
+      next.classList.toggle('prim', !!has);
+      steps[cur].querySelectorAll('.frame').forEach(function (f) { f.classList.toggle('picked', !!has && f.getAttribute('data-letter') === has.getAttribute('data-letter')); });
+      steps[cur].querySelectorAll('.vtab').forEach(function (t) { t.classList.toggle('chosen', !!has && t.getAttribute('data-show') === has.getAttribute('data-letter')); });
+      var q = steps[cur].querySelector('.q');
+      q.classList.toggle('wantnote', !!has && /Changes needed/.test(has.textContent));
+    }
+    var mode = document.querySelector('.qbar .mode');
+    saveLine.textContent = mode && /browser only/.test(mode.textContent) ? 'Picks are saved in this browser only. Copy answers sends them to Claude.' : 'Picks save as you make them.';
+    if (cur >= n) renderSummary(done);
+  }
+  function renderSummary(done) {
+    document.getElementById('sumSub').textContent = done + ' of ' + n + ' steps answered. Open any step to change it.';
+    var list = document.getElementById('sumList');
+    list.textContent = '';
+    steps.forEach(function (s, i) {
+      var li = document.createElement('li'), b = document.createElement('button'), t = document.createElement('span'), a = document.createElement('span'), p = picked(s);
+      b.type = 'button'; t.textContent = (i + 1) + '. ' + s.getAttribute('data-title');
+      a.className = 'ans';
+      a.textContent = p ? nameOf(p) : 'Not answered';
+      b.appendChild(t); b.appendChild(a);
+      b.addEventListener('click', function () { go(i, true); });
+      li.appendChild(b); list.appendChild(li);
+    });
+  }
+  function show(i, focus) {
+    cur = i;
+    steps.forEach(function (s, k) { s.hidden = k !== i; });
+    summary.hidden = i < n;
+    intro.hidden = i !== 0;
+    window.scrollTo(0, 0);
+    refresh();
+    if (focus) { var h = (i < n ? steps[i] : summary).querySelector('h2'); if (h) h.focus({ preventScroll: true }); }
+  }
+  function go(i, focus) {
+    show(i, focus);
+    var h = i >= n ? '#summary' : '#step-' + (i + 1);
+    if (location.hash !== h) location.hash = h;
+  }
+  back.addEventListener('click', function () { acted = true; go(cur - 1, true); });
+  next.addEventListener('click', function () { acted = true; go(cur + 1, true); });
+  window.addEventListener('hashchange', function () { var i = idx(location.hash); if (i >= 0 && i !== cur) show(i, true); });
+  document.addEventListener('pointerdown', function () { acted = true; }, true);
+  document.addEventListener('keydown', function () { acted = true; }, true);
+
+  steps.forEach(function (s) {
+    view(s, 'A');
+    var note = s.querySelector('.note-in'), qn = s.querySelector('.qn'), group = s.querySelector('.opts');
+    if (group && qn) group.setAttribute('aria-label', qn.textContent);
+    if (note) { note.placeholder = 'What should change?'; note.setAttribute('aria-label', 'What should change on this screen'); }
+    s.querySelectorAll('.vtab').forEach(function (t) {
+      t.addEventListener('click', function () { view(s, t.getAttribute('data-show')); });
+    });
+    var whole = s.querySelector('.whole');
+    if (whole) whole.addEventListener('click', function () {
+      var on = s.classList.toggle('showwhole');
+      whole.setAttribute('aria-pressed', on ? 'true' : 'false');
+      whole.textContent = on ? 'First screen only' : 'Whole screen';
+    });
+    s.querySelectorAll('.opts li').forEach(function (li) {
+      li.addEventListener('click', function () {
+        if (s.querySelector('.frame[data-letter="' + li.getAttribute('data-letter') + '"]')) view(s, li.getAttribute('data-letter'));
+        if (note && /Changes needed/.test(li.textContent)) setTimeout(function () { refresh(); note.focus(); }, 0);
+      });
+      li.addEventListener('keydown', function (e) {
+        var to = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? li.nextElementSibling : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? li.previousElementSibling : null;
+        if (to) { e.preventDefault(); to.focus(); }
+      });
+    });
+  });
+  function copyAll() {
+    var e = document.querySelector('.qbar .exp'), c = document.querySelector('.expwrap .cpy');
+    if (e) e.click();
+    if (c) c.click();
+  }
+  document.querySelectorAll('.copyall').forEach(function (b) { b.addEventListener('click', copyAll); });
+  new MutationObserver(function () {
+    if (!acted && !location.hash) { var f = firstOpen(); if (f !== cur) { show(f, false); return; } }
+    refresh();
+  }).observe(document.body, { attributes: true, attributeFilter: ['aria-checked'], subtree: true });
+  var start = idx(location.hash);
+  show(start >= 0 ? start : 0, false);
+});
+</script>

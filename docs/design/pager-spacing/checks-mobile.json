@@ -1,0 +1,376 @@
+{
+  "viewport": "360x640",
+  "method": "Static fixture carrying ui-tables styles.ts values; Playwright device descriptor; not the react-native-web build",
+  "checks": {
+    "contrast": "pass",
+    "cvd": "n/a -- spacing and placement only; no option adds or changes a colour meaning",
+    "textFit": "pass",
+    "tapSize": "pass",
+    "formAlignment": "pass",
+    "smallSize": "n/a -- no logo, mark or icon in this change"
+  },
+  "pairMethod": "same-steps",
+  "inventoryScope": "rows, First and Last hidden by the unchanged compact layout (item 7)",
+  "options": {
+    "contacts-mobile-A": {
+      "inventory": "7/7",
+      "items": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      },
+      "gaps": {
+        "filtersToPager": 12,
+        "pagerToTable": 12,
+        "tableToPager": -2448
+      },
+      "minContrast": 4.74
+    },
+    "contacts-mobile-B": {
+      "inventory": "7/7",
+      "items": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      },
+      "gaps": {
+        "filtersToPager": 13,
+        "pagerToTable": 0,
+        "tableToPager": -2451
+      },
+      "minContrast": 4.74
+    },
+    "contacts-mobile-C": {
+      "inventory": "7/7",
+      "items": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      },
+      "gaps": {
+        "filtersToPager": 2377,
+        "pagerToTable": -2451,
+        "tableToPager": 0
+      },
+      "minContrast": 4.74
+    },
+    "contacts-mobile-D": {
+      "inventory": "7/7",
+      "items": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      },
+      "gaps": {
+        "filtersToPager": 0,
+        "pagerToTable": 0,
+        "tableToPager": -2451
+      },
+      "minContrast": 4.74
+    }
+  },
+  "beforeGaps": {
+    "filtersToPager": 0,
+    "pagerToTable": 0,
+    "tableToPager": -2436
+  },
+  "frames": [
+    {
+      "option": "contacts-mobile-A",
+      "shot": "contacts",
+      "side": "before",
+      "build": "current",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "360x640",
+        "scrollAnchor": "filters bottom edge at y=140",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      }
+    },
+    {
+      "option": "contacts-mobile-A",
+      "shot": "contacts",
+      "side": "after",
+      "build": "option-A",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "360x640",
+        "scrollAnchor": "filters bottom edge at y=140",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      }
+    },
+    {
+      "option": "contacts-mobile-B",
+      "shot": "contacts",
+      "side": "before",
+      "build": "current",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "360x640",
+        "scrollAnchor": "filters bottom edge at y=140",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      }
+    },
+    {
+      "option": "contacts-mobile-B",
+      "shot": "contacts",
+      "side": "after",
+      "build": "option-B",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "360x640",
+        "scrollAnchor": "filters bottom edge at y=140",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      }
+    },
+    {
+      "option": "contacts-mobile-C",
+      "shot": "contacts",
+      "side": "before",
+      "build": "current",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "360x640",
+        "scrollAnchor": "filters bottom edge at y=140",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      }
+    },
+    {
+      "option": "contacts-mobile-C",
+      "shot": "contacts",
+      "side": "after",
+      "build": "option-C",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "360x640",
+        "scrollAnchor": "filters bottom edge at y=140",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      }
+    },
+    {
+      "option": "contacts-mobile-D",
+      "shot": "contacts",
+      "side": "before",
+      "build": "current",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "360x640",
+        "scrollAnchor": "filters bottom edge at y=140",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      }
+    },
+    {
+      "option": "contacts-mobile-D",
+      "shot": "contacts",
+      "side": "after",
+      "build": "option-D",
+      "pair": {
+        "route": "fixture.html (contacts screen)",
+        "state": "page 2 of 2, 25 rows per page, no selection, no filter",
+        "fixture": "6 sample contacts of 31",
+        "viewport": "360x640",
+        "scrollAnchor": "filters bottom edge at y=140",
+        "crop": "viewport"
+      },
+      "visibleItems": {
+        "before": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ],
+        "after": [
+          "count",
+          "prev",
+          "next",
+          "compact"
+        ]
+      }
+    }
+  ],
+  "failures": {
+    "before": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    },
+    "A": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    },
+    "B": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    },
+    "C": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    },
+    "D": {
+      "contrast": [],
+      "overflow": [],
+      "small": [],
+      "misaligned": [],
+      "hScroll": false
+    }
+  }
+}

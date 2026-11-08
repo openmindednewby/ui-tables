@@ -1,0 +1,33 @@
+{
+  "docKey": "pager-space-1-spacing-pick",
+  "title": "Pager spacing pick",
+  "brand": "Shared pager spacing",
+  "intro": "The pager touches the filters and the table on Contacts. Every option is opt-in, so screens that place it in a header row, such as AML Cases, do not move. Sample data only.",
+  "beforeAfter": "before picture per option",
+  "steps": [
+    {
+      "screen": "contacts",
+      "viewport": "mobile",
+      "title": "Contacts on a phone (360x640)",
+      "question": "On a phone, how should the pager sit between the filters and the contacts?",
+      "options": [
+        { "name": "Space above and below", "why": "The pager stays its own row, with 12px clear on each side.", "image": "pager-spacing/mobile-A.png", "beforeImage": "pager-spacing/mobile-before.png", "fullImage": "pager-spacing/mobile-A-full.png", "fullHeight": 2969, "inventory": "7/7", "aligned": "pass" },
+        { "name": "Toolbar on the table", "why": "The pager becomes the top row of the table's frame, 12px clear of the filters.", "image": "pager-spacing/mobile-B.png", "beforeImage": "pager-spacing/mobile-before.png", "fullImage": "pager-spacing/mobile-B-full.png", "fullHeight": 2974, "inventory": "7/7", "aligned": "pass" },
+        { "name": "Footer on the table", "why": "The pager becomes the bottom row of the frame, so on a phone it sits below every card. Tap Whole screen to see it.", "image": "pager-spacing/mobile-C.png", "beforeImage": "pager-spacing/mobile-before.png", "fullImage": "pager-spacing/mobile-C-full.png", "fullHeight": 2974, "inventory": "7/7", "aligned": "pass" },
+        { "name": "One panel", "why": "Filters, pager and table share one frame, split by hairlines.", "image": "pager-spacing/mobile-D.png", "beforeImage": "pager-spacing/mobile-before.png", "fullImage": "pager-spacing/mobile-D-full.png", "fullHeight": 2961, "inventory": "7/7", "aligned": "pass" }
+      ]
+    },
+    {
+      "screen": "contacts",
+      "viewport": "desktop",
+      "title": "Contacts on a computer (1280x800)",
+      "question": "On a computer, how should the pager sit between the filters and the contacts table?",
+      "options": [
+        { "name": "Space above and below", "why": "The pager stays its own row, with 12px clear on each side.", "image": "pager-spacing/desktop-A.png", "beforeImage": "pager-spacing/desktop-before.png", "inventory": "7/7", "aligned": "pass" },
+        { "name": "Toolbar on the table", "why": "The pager becomes the top row of the table's frame, 12px clear of the filters.", "image": "pager-spacing/desktop-B.png", "beforeImage": "pager-spacing/desktop-before.png", "inventory": "7/7", "aligned": "pass" },
+        { "name": "Footer on the table", "why": "The pager becomes the bottom row of the frame. On a full page of 25 you scroll past every row to reach it.", "image": "pager-spacing/desktop-C.png", "beforeImage": "pager-spacing/desktop-before.png", "inventory": "7/7", "aligned": "pass" },
+        { "name": "One panel", "why": "Filters, pager and table share one frame, split by hairlines.", "image": "pager-spacing/desktop-D.png", "beforeImage": "pager-spacing/desktop-before.png", "inventory": "7/7", "aligned": "pass" }
+      ]
+    }
+  ]
+}
