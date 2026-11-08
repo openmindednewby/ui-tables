@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.28.1
+
+### Fixed
+
+- `Filters` text and number fields: `accessibilityHint` now reaches the DOM input on react-native-web as `aria-describedby` pointing at a visually hidden node (`useA11y` from `@dloizides/a11y`, now a direct dependency). FINREG-CRM-ORG-1 "CRM organization column, filter and search".
+
 ## 1.28.0
 
 ### Fixed

@@ -12,8 +12,9 @@
  * there is no forked metric.
  */
 import React from 'react';
-import { TextInput } from 'react-native';
+import { TextInput, type TextInputProps } from 'react-native';
 
+import { useA11y } from '@dloizides/a11y';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { fieldTestID } from '../constants';
@@ -32,20 +33,26 @@ export function TextField({ field, barTestID, value, onChange, onSubmit }: TextF
   const { theme } = useUi();
   const { colors } = theme;
   const isNumber = field.kind === 'number';
+  const { a11yProps, hintNode } = useA11y({
+    label: field.label,
+    hint: field.accessibilityHint,
+    testID: `${field.testID ?? fieldTestID(barTestID, field.key)}-input`,
+  });
 
   return (
-    <TextInput
-      accessibilityLabel={field.label}
-      accessibilityHint={field.accessibilityHint}
-      keyboardType={isNumber ? 'numeric' : 'default'}
-      placeholder={field.placeholder}
-      placeholderTextColor={colors.textSecondary}
-      value={value}
-      onChangeText={onChange}
-      onSubmitEditing={onSubmit}
-      style={[s.input, { borderColor: colors.border, backgroundColor: colors.surface, color: colors.text }]}
-      testID={`${field.testID ?? fieldTestID(barTestID, field.key)}-input`}
-    />
+    <>
+      <TextInput
+        {...(a11yProps as TextInputProps)}
+        keyboardType={isNumber ? 'numeric' : 'default'}
+        placeholder={field.placeholder}
+        placeholderTextColor={colors.textSecondary}
+        value={value}
+        onChangeText={onChange}
+        onSubmitEditing={onSubmit}
+        style={[s.input, { borderColor: colors.border, backgroundColor: colors.surface, color: colors.text }]}
+      />
+      {hintNode}
+    </>
   );
 }
 
