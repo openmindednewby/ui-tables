@@ -1,5 +1,45 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- `DataTable` / `StatusLedger`: a clickable row (`onRowPress`, no `keyboardNavigation`) renders as a focusable `div` with `role="group"` instead of a native `<button>`, so an Edit or Delete button in a cell is no longer a button inside a button. The row keeps its pointer cursor, hover and pressed tint, focus ring and Enter to open; Space no longer opens it (Space belongs to button roles). Pressing a button inside the row calls only that button. ROW-OPEN-1 "Every list row opens its record".
+
+## 3.0.1
+
+### Changed
+
+- Peer and dev `@dloizides/ui-forms` raised to 1.31.0 (`DateInput`).
+
+### Fixed
+
+- `Filters`: the date filter renders inside the bar `Field` (control label voice, no extra 16px rhythm), so it lines up with the other fields in the bar. FINREG-DATE-2 "Every FinReg date field uses the shared input".
+
+## 3.0.0
+
+### Breaking
+
+- `StatusLedger` props require `onRowPress` or `rowAction={{ none: '<reason>' }}` (`DataTableRowAction`) and forward it to every inner `DataTable`; `StatusLedgerProps` is now a type alias over `StatusLedgerBaseProps`. ROW-OPEN-1 "Every list row opens its record".
+
+### Fixed
+
+- `DataTable`: the brand focus ring is drawn on the focused row frame on keyboard focus (it was on the inner pressable of a selectable row).
+
+## 2.0.0
+
+### Breaking
+
+- `DataTableProps` require `onRowPress` or `rowAction={{ none: '<reason>' }}`; a table with neither no longer type-checks. ROW-OPEN-1 "Every list row opens its record".
+
+### Added
+
+- Clickable rows get a pointer cursor, a pressed brand tint and a brand focus ring; the hover tint is unchanged.
+
+### Changed
+
+- The `dateRange` filter renders `DateRangeControl` from `@dloizides/ui-forms` (same testIDs); the local `DateRangeField` is gone. Peer and dev `@dloizides/ui-forms` raised to 1.30.0. FINREG-DATE-2 "Every FinReg date field uses the shared input".
+
 ## 1.29.1
 
 ### Changed

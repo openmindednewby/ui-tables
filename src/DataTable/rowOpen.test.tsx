@@ -28,7 +28,6 @@ type FailsToCompileIfAccepted = BareIsAccepted extends false ? 'rejected' : neve
 function pressEnterLikeABrowser(element: HTMLElement): void {
   element.focus();
   fireEvent.keyDown(element, { key: 'Enter', code: 'Enter' });
-  fireEvent.click(element);
   fireEvent.keyUp(element, { key: 'Enter', code: 'Enter' });
 }
 
@@ -47,14 +46,14 @@ describe('DataTable row action', () => {
     expect(verdict).toBe('rejected');
   });
 
-  it('with onRowPress, an Enter press on the focused row (keydown, native button activation, keyup) opens it once', () => {
+  it('with onRowPress, an Enter press on the focused row (keydown, keyup) opens it once', () => {
     const onRowPress = jest.fn();
     renderPressable(onRowPress);
     const row = screen.getByTestId(ROW_ID);
 
     pressEnterLikeABrowser(row);
 
-    expect(row.tagName).toBe('BUTTON');
+    expect(row.tagName).not.toBe('BUTTON');
     expect(onRowPress).toHaveBeenCalledTimes(1);
     expect(onRowPress).toHaveBeenCalledWith(rows[0]);
   });

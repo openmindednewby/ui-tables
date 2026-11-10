@@ -47,7 +47,7 @@ export interface RowA11y {
   accessibilityState?: { expanded?: boolean; selected?: boolean };
   'aria-expanded'?: boolean;
   'aria-selected'?: boolean;
-  role?: 'row';
+  role?: 'row' | 'group';
 }
 
 /** The roving-tabindex wiring for one row. Absent when keyboard navigation is off. */

@@ -100,6 +100,21 @@ use `@dloizides/ui-layout`'s responsive `ModalDropdown` (modal on mobile/native)
 />
 ```
 
+#### Row action (required)
+
+Every `DataTable` (and `StatusLedger`) declares what a row does: pass `onRowPress` to open the
+record, or `rowAction={{ none: '<reason>' }}` when a row truly opens nothing. A table with
+neither does not type-check.
+
+```tsx
+<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={(r) => open(r.id)} />
+<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} rowAction={{ none: 'read-only audit log' }} />
+```
+
+A clickable row has a pointer cursor, hover and pressed tint, a focus ring, and opens on click
+or Enter. It is a focusable `role="group"` element, not a `<button>`, so buttons in its cells
+(Edit, Delete) are valid and pressing one runs only that button.
+
 #### Expandable rows (optional)
 
 For surfaces that open a full-width detail panel under a row (e.g. an audit log's

@@ -98,6 +98,7 @@ export function DataTableRow<T>({
     // A navigable table is a real grid, so its rows are grid rows — selectable or not.
     // `role` wins over `accessibilityRole` on RNW.
     ...(keyboardNavigation ? { role: 'row' as const } : null),
+    ...(!keyboardNavigation && onRowPress ? { role: 'group' as const } : null),
   };
 
   const rowNode = (
