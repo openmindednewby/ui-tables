@@ -26,8 +26,9 @@
 import React from 'react';
 import { Pressable, View, type StyleProp, type ViewProps, type ViewStyle } from 'react-native';
 
-import { rowInteractionStyle, type RowInteractionTokens } from './rowInteraction';
+import { focusRingStyle, rowInteractionStyle, type RowInteractionTokens } from './rowInteraction';
 import { selectionStyles as sel } from './styles';
+import { useFrameFocus, type FrameFocus } from './useFrameFocus';
 import type { RowKeyEvent } from './useRovingFocus';
 
 /** Focusable programmatically but skipped by Tab — see `keyboard` below. */
@@ -91,11 +92,16 @@ function webKeyProps(onKeyDown: ((event: RowKeyEvent) => void) | undefined): Vie
 }
 
 /** The focus/keyboard props shared by every row shape. Empty when navigation is off. */
-function focusProps(keyboard: RowKeyboard | undefined): ViewProps {
+function focusProps(keyboard: RowKeyboard | undefined, frame?: FrameFocus): ViewProps {
   if (keyboard === undefined) return {};
+  const onFocus = frame === undefined ? keyboard.onFocus : (event: Parameters<FrameFocus['onFocus']>[0]) => {
+    keyboard.onFocus();
+    frame.onFocus(event);
+  };
   return {
     tabIndex: keyboard.tabIndex,
-    onFocus: keyboard.onFocus,
+    onFocus,
+    onBlur: frame?.onBlur,
     ref: (node: unknown) => keyboard.registerNode(node),
     ...webKeyProps(keyboard.onKeyDown),
   } as unknown as ViewProps;
@@ -116,6 +122,8 @@ export function TableRow({
 }: TableRowProps): React.ReactElement {
   const interactive = onPress !== undefined;
   const hover = interactive ? { onHoverIn, onHoverOut } : null;
+  const frame = useFrameFocus();
+  const frameStyle = [style, focusRingStyle(frame.focused, interaction)];
 
   // --- shapes 1 + 2: unchanged from 1.9.2 (plus the optional roving tabindex) ---
   if (selectionSlot === undefined) {
@@ -124,7 +132,7 @@ export function TableRow({
         {children}
       </Pressable>
     ) : (
-      <View style={style} testID={testID} {...a11y} {...focusProps(keyboard)}>
+      <View style={frameStyle} testID={testID} {...a11y} {...focusProps(keyboard, frame)}>
         {children}
       </View>
     );
@@ -143,7 +151,7 @@ export function TableRow({
   const contentStyle = stacked ? sel.cardContent : sel.rowContent;
   const content = interactive ? (
     <Pressable
-      style={(state) => [contentStyle, rowInteractionStyle(state, interaction)]}
+      style={(state) => [contentStyle, rowInteractionStyle(keyboard === undefined ? state : { pressed: state.pressed }, interaction)]}
       tabIndex={keyboard === undefined ? undefined : TAB_INDEX_INACTIVE}
       onPress={onPress}
       {...hover}
@@ -155,7 +163,7 @@ export function TableRow({
   );
 
   return (
-    <View style={style} testID={testID} {...a11y} {...focusProps(keyboard)}>
+    <View style={frameStyle} testID={testID} {...a11y} {...focusProps(keyboard, frame)}>
       <View style={sel.selectCell}>{selectionSlot}</View>
       {content}
     </View>

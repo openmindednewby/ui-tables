@@ -1,5 +1,6 @@
 import type React from 'react';
 
+import type { DataTableRowAction } from '../DataTable/rowAction';
 import type { DataTableColumn } from '../DataTable/types';
 import type { LedgerLayout } from './LedgerLayout';
 import type { StatusTone } from './StatusTone';
@@ -33,7 +34,7 @@ export interface StatusLedgerLabels {
 
 export type ToneColors = Partial<Record<StatusTone, string>>;
 
-export interface StatusLedgerProps<T> {
+export interface StatusLedgerBaseProps<T> {
   rows: readonly T[];
   columns: ReadonlyArray<StatusLedgerColumn<T>>;
   keyExtractor: (row: T) => string;
@@ -46,7 +47,6 @@ export interface StatusLedgerProps<T> {
   getSearchText?: (row: T) => string;
   needsLook?: (row: T) => boolean;
   getRowAccessibilityLabel?: (row: T) => string;
-  onRowPress?: (row: T) => void;
   renderActions?: (row: T) => React.ReactNode;
   /** Renders a detail region directly under the expanded row (table and card layouts); labelled by `getRowAccessibilityLabel`. */
   renderRowDetail?: (row: T) => React.ReactNode;
@@ -58,6 +58,8 @@ export interface StatusLedgerProps<T> {
   loading?: boolean;
   testID?: string;
 }
+
+export type StatusLedgerProps<T> = StatusLedgerBaseProps<T> & DataTableRowAction<T>;
 
 export interface LedgerFilter {
   status: string;

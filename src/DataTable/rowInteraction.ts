@@ -17,14 +17,13 @@ export interface RowInteractionState {
   focused?: boolean;
 }
 
+/** The brand focus ring while focused, nothing otherwise. */
+export function focusRingStyle(focused: boolean | undefined, tokens: RowInteractionTokens): StyleProp<ViewStyle> {
+  return focused === true ? { outlineStyle: 'solid', outlineWidth: FOCUS_RING_WIDTH, outlineColor: tokens.brand, outlineOffset: FOCUS_RING_OFFSET } : null;
+}
+
 /** Pointer cursor always, the pressed brand tint while pressed, the brand focus ring while focused. */
 export function rowInteractionStyle(state: RowInteractionState, tokens: RowInteractionTokens): StyleProp<ViewStyle> {
   const pressedTint = HEX_RGB.test(tokens.brand) ? `${tokens.brand}${PRESSED_TINT_ALPHA}` : tokens.fallbackTint;
-  return [
-    POINTER,
-    state.pressed ? { backgroundColor: pressedTint } : null,
-    state.focused === true
-      ? { outlineStyle: 'solid', outlineWidth: FOCUS_RING_WIDTH, outlineColor: tokens.brand, outlineOffset: FOCUS_RING_OFFSET }
-      : null,
-  ];
+  return [POINTER, state.pressed ? { backgroundColor: pressedTint } : null, focusRingStyle(state.focused, tokens)];
 }

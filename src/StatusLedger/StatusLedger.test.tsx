@@ -72,6 +72,18 @@ const sectionTable = (section: string): string => `${ledgerSectionTestID(LEDGER,
 const sectionRowTestID = (section: string, key: string): string => rowTestID(sectionTable(section), key);
 
 describe('StatusLedger', () => {
+  it('with the caller rowAction none, forwards it so the rows render static, not as buttons', () => {
+    render(
+      <UiProvider theme={theme} t={(key) => key}>
+        <StatusLedger breakpoint={WIDE_BREAKPOINT} columns={columns} getStatus={(r) => r.status} keyExtractor={(r) => r.id} labels={labels} rowAction={{ none: 'read-only ledger' }} rows={rows} statusLabel={(s) => s} statusTone={() => StatusTone.Good} testID={LEDGER} />
+      </UiProvider>,
+    );
+
+    const row = screen.getByTestId(rowTestID(`${LEDGER}-table`, 'ok-job'));
+
+    expect(row.getAttribute('role')).not.toBe('button');
+  });
+
   it('in the narrow layout, gives every card row a testID derived from its section', () => {
     renderNarrowLedger(jest.fn());
 

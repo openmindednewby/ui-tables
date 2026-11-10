@@ -21,12 +21,16 @@ const columns: ReadonlyArray<DataTableColumn<Person>> = [{ key: 'name', header: 
 const rows: Person[] = [{ id: 'a', name: 'Ada' }];
 const ROW_ID = rowTestID('grid', 'a');
 
-interface BareProps {
-  columns: ReadonlyArray<DataTableColumn<Person>>;
-  rows: readonly Person[];
-  keyExtractor: (row: Person) => string;
+const bareProps = { columns, rows, keyExtractor: (r: Person) => r.id };
+type BareIsAccepted = typeof bareProps extends DataTableProps<Person> ? true : false;
+type FailsToCompileIfAccepted = BareIsAccepted extends false ? 'rejected' : never;
+
+function pressEnterLikeABrowser(element: HTMLElement): void {
+  element.focus();
+  fireEvent.keyDown(element, { key: 'Enter', code: 'Enter' });
+  fireEvent.click(element);
+  fireEvent.keyUp(element, { key: 'Enter', code: 'Enter' });
 }
-const bareTableIsAccepted: BareProps extends DataTableProps<Person> ? true : false = false;
 
 function renderPressable(onRowPress: (row: Person) => void): void {
   render(
@@ -38,17 +42,34 @@ function renderPressable(onRowPress: (row: Person) => void): void {
 
 describe('DataTable row action', () => {
   it('without onRowPress or rowAction, is rejected by the props type', () => {
-    const accepted = bareTableIsAccepted;
+    const verdict: FailsToCompileIfAccepted = 'rejected';
 
-    expect(accepted).toBe(false);
+    expect(verdict).toBe('rejected');
   });
 
-  it('with onRowPress, renders the row as a native button so Enter and Space open it', () => {
-    renderPressable(jest.fn());
-
+  it('with onRowPress, an Enter press on the focused row (keydown, native button activation, keyup) opens it once', () => {
+    const onRowPress = jest.fn();
+    renderPressable(onRowPress);
     const row = screen.getByTestId(ROW_ID);
 
+    pressEnterLikeABrowser(row);
+
     expect(row.tagName).toBe('BUTTON');
+    expect(onRowPress).toHaveBeenCalledTimes(1);
+    expect(onRowPress).toHaveBeenCalledWith(rows[0]);
+  });
+
+  it('with selection and keyboard navigation, focusing the row frame draws the focus ring on the frame', () => {
+    render(
+      <UiProvider theme={theme} t={t}>
+        <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} animateRows={false} stackBreakpoint={0} testID="grid" keyboardNavigation onRowPress={jest.fn()} onSelectionChange={jest.fn()} selectedRowKeys={[]} />
+      </UiProvider>,
+    );
+    const frame = screen.getByTestId(ROW_ID);
+
+    fireEvent.focus(frame);
+
+    expect(frame).toHaveStyle({ outlineStyle: 'solid' });
   });
 
   it('with onRowPress, opens the row on click', () => {
