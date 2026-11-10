@@ -14,11 +14,10 @@ import React from 'react';
 
 import type { StyleProp, ViewStyle } from 'react-native';
 
-import { DateRangeControl, Field } from '@dloizides/ui-forms';
+import { DateInput, DateRangeControl, Field, type FieldChildContext, type FieldChildren } from '@dloizides/ui-forms';
 
 import { BooleanField } from './BooleanField';
 import { SelectField } from './SelectField';
-import { SingleDateField } from './SingleDateField';
 import { TextField } from './TextField';
 import { TypeaheadField } from './TypeaheadField';
 import { FIELD_MIN_WIDTH, fieldTestID } from '../constants';
@@ -28,6 +27,7 @@ import type { DateRangeValue, FilterField, FilterValue, FilterValues, SelectFilt
 
 const EMPTY_RANGE: DateRangeValue = { from: '', to: '' };
 const GROW_FLEX = 1;
+const NO_HINT = '';
 
 /** Resolved, pre-localized strings the bar passes down to every field. */
 export interface FieldStrings {
@@ -88,21 +88,26 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
 
   const containerStyle = fieldContainerStyle(field);
 
-  if (field.kind === 'date') {
-    return (
-      <SingleDateField
-        barTestID={barTestID}
-        containerStyle={containerStyle}
-        field={field}
-        value={asString(raw)}
-        onChange={(v) => setField(field.key, v)}
-        onSubmit={onSubmit}
-      />
-    );
-  }
+  const testID = field.testID ?? fieldTestID(barTestID, field.key);
 
-  const body = ((): React.ReactNode => {
+  const body = ((): FieldChildren => {
     switch (field.kind) {
+      case 'date':
+        return function renderDateInput(context: FieldChildContext): React.ReactNode {
+          return (
+            <DateInput
+              context={context}
+              fieldProps={{
+                accessibilityHint: field.accessibilityHint ?? NO_HINT,
+                label: field.label,
+                testID: `${testID}-input`,
+                value: asString(raw),
+                onChange: (v) => setField(field.key, v),
+                onSubmit,
+              }}
+            />
+          );
+        };
       case 'select':
         if (renderSelect !== undefined) {
           return renderSelect({
@@ -164,7 +169,7 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
       containerStyle={containerStyle}
       label={field.label}
       labelVariant="control"
-      testID={field.testID ?? fieldTestID(barTestID, field.key)}
+      testID={testID}
     >
       {body}
     </Field>

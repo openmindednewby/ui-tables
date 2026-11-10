@@ -86,3 +86,24 @@ describe('F2 — the label still speaks the CONTROL voice after FieldShell was d
     expect(window.getComputedStyle(screen.getByTestId(fieldTestID(FILTERS_TEST_ID, 'q'))).minWidth).toBe('42px');
   });
 });
+
+describe('FINREG-DATE-2 Sighting 2 — a date filter lines up with the other filters', () => {
+  const DATE_FIELDS: readonly FilterField[] = [...FIELDS, { key: 'on', kind: 'date', label: 'Booked on' }];
+
+  it('with a date filter, renders its label in the control voice like a text filter', () => {
+    renderBar(DATE_FIELDS);
+
+    const style = labelStyleOf('on');
+
+    expect(style.textTransform).toBe('uppercase');
+  });
+
+  it('with a date filter, adds no 16px form rhythm anywhere inside the field', () => {
+    renderBar(DATE_FIELDS);
+
+    const wrapper = screen.getByTestId(fieldTestID(FILTERS_TEST_ID, 'on'));
+    const margins = [wrapper, ...Array.from(wrapper.querySelectorAll('*'))].map((el) => window.getComputedStyle(el).marginBottom);
+
+    expect(margins).not.toContain('16px');
+  });
+});

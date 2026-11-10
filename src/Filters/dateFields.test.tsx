@@ -52,7 +52,7 @@ describe('FilterFieldView dateRange', () => {
   });
 });
 
-describe('SingleDateField', () => {
+describe('FilterFieldView date', () => {
   it('with a date field, renders a native date input', () => {
     renderFilters(EMPTY);
 
