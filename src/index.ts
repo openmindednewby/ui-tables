@@ -42,6 +42,7 @@ export type {
   SelectFilterField,
   TextFilterField,
   NumberFilterField,
+  DateFilterField,
   DateRangeFilterField,
   TypeaheadFilterField,
   BooleanFilterField,

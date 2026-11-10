@@ -12,11 +12,14 @@
  */
 import React from 'react';
 
+import type { StyleProp, ViewStyle } from 'react-native';
+
 import { Field } from '@dloizides/ui-forms';
 
 import { BooleanField } from './BooleanField';
 import { DateRangeField } from './DateRangeField';
 import { SelectField } from './SelectField';
+import { SingleDateField } from './SingleDateField';
 import { TextField } from './TextField';
 import { TypeaheadField } from './TypeaheadField';
 import { FIELD_MIN_WIDTH, fieldTestID } from '../constants';
@@ -71,11 +74,32 @@ function asRange(value: FilterValue | undefined): DateRangeValue {
   return EMPTY_RANGE;
 }
 
+function fieldContainerStyle(field: FilterField): StyleProp<ViewStyle> {
+  const minWidth = field.minWidth ?? FIELD_MIN_WIDTH[field.kind];
+  const grow = field.grow === true ? { flexGrow: GROW_FLEX } : null;
+  return [s.fieldInBar, { minWidth: clampedMinWidth(minWidth), maxWidth: '100%' as const }, grow, field.style];
+}
+
 export function FilterFieldView({ field, barTestID, values, setField, onSubmit, strings, renderSelect }: FilterFieldViewProps): React.ReactElement {
   const raw = values[field.key];
 
   if (field.kind === 'boolean') {
     return <BooleanField field={field} barTestID={barTestID} value={asBool(raw)} onChange={(v) => setField(field.key, v)} />;
+  }
+
+  const containerStyle = fieldContainerStyle(field);
+
+  if (field.kind === 'date') {
+    return (
+      <SingleDateField
+        barTestID={barTestID}
+        containerStyle={containerStyle}
+        field={field}
+        value={asString(raw)}
+        onChange={(v) => setField(field.key, v)}
+        onSubmit={onSubmit}
+      />
+    );
   }
 
   const body = ((): React.ReactNode => {
@@ -136,15 +160,9 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
     }
   })();
 
-  // The per-field width/grow reflow rules (fields wrap to new lines as the bar narrows) and the
-  // caller's own override, applied LAST. `s.fieldInBar` zeroes `Field`'s 16px form rhythm — see
-  // its comment; inheriting it would add a phantom gap under every field in six live portals.
-  const minWidth = field.minWidth ?? FIELD_MIN_WIDTH[field.kind];
-  const grow = field.grow === true ? { flexGrow: GROW_FLEX } : null;
-
   return (
     <Field
-      containerStyle={[s.fieldInBar, { minWidth: clampedMinWidth(minWidth), maxWidth: '100%' as const }, grow, field.style]}
+      containerStyle={containerStyle}
       label={field.label}
       labelVariant="control"
       testID={field.testID ?? fieldTestID(barTestID, field.key)}

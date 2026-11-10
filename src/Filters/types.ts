@@ -17,7 +17,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import type { ControlOption, DateRangeValue } from '@dloizides/ui-forms';
 
 /** The kinds of field the declarative bar can render. */
-export type FilterFieldKind = 'select' | 'text' | 'number' | 'dateRange' | 'typeahead' | 'boolean';
+export type FilterFieldKind = 'select' | 'text' | 'number' | 'date' | 'dateRange' | 'typeahead' | 'boolean';
 
 /**
  * A single choice for a `select` / `typeahead` field. Label is pre-localized.
@@ -78,6 +78,11 @@ export interface NumberFilterField extends FilterFieldBase {
   placeholder?: string;
 }
 
+/** A single calendar date (`YYYY-MM-DD`, ''=unset), rendered by `ui-forms`' `DateField`. */
+export interface DateFilterField extends FilterFieldBase {
+  kind: 'date';
+}
+
 /** An inclusive from/to date range (two `YYYY-MM-DD` inputs). */
 export interface DateRangeFilterField extends FilterFieldBase {
   kind: 'dateRange';
@@ -112,6 +117,7 @@ export type FilterField =
   | SelectFilterField
   | TextFilterField
   | NumberFilterField
+  | DateFilterField
   | DateRangeFilterField
   | TypeaheadFilterField
   | BooleanFilterField;

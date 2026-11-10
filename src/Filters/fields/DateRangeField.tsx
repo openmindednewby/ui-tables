@@ -1,18 +1,14 @@
-/**
- * DateRangeField — the ADAPTER binding this bar's {@link DateRangeFilterField} schema to
- * `@dloizides/ui-forms`' `DateRangeControl`.
- *
- * The from/to pair (web `type="date"`, one-sided patching) moved to ui-forms in F2. What stays is
- * the schema binding, the derived testID, and the per-field sub-label override — `field.fromLabel`
- * beats the bar's default, which the bar resolved from `FILTERS_I18N.from` / `.to`. Those keys
- * stay owned by this package, so the manifest is untouched.
- */
 import React from 'react';
 
-import { DateRangeControl } from '@dloizides/ui-forms';
+import { View } from 'react-native';
+
+import { DateField } from '@dloizides/ui-forms';
 
 import { fieldTestID } from '../constants';
+import { controlStyles } from '../styles';
 import type { DateRangeFilterField, DateRangeValue } from '../types';
+
+const NO_HINT = '';
 
 export interface DateRangeFieldProps {
   field: DateRangeFilterField;
@@ -24,19 +20,33 @@ export interface DateRangeFieldProps {
   toLabel: string;
 }
 
+/** Binds a `dateRange` filter to two `ui-forms` `DateField`s; editing one side keeps the other. */
 export function DateRangeField({ field, barTestID, value, onChange, onSubmit, fromLabel, toLabel }: DateRangeFieldProps): React.ReactElement {
+  const testID = field.testID ?? fieldTestID(barTestID, field.key);
+  const hint = field.accessibilityHint ?? NO_HINT;
   return (
-    <DateRangeControl
-      accessibilityHint={field.accessibilityHint}
-      fromLabel={field.fromLabel ?? fromLabel}
-      fromPlaceholder={field.fromPlaceholder}
-      testID={field.testID ?? fieldTestID(barTestID, field.key)}
-      toLabel={field.toLabel ?? toLabel}
-      toPlaceholder={field.toPlaceholder}
-      value={value}
-      onChange={onChange}
-      onSubmit={onSubmit}
-    />
+    <View style={controlStyles.dateRow} testID={`${testID}-range`}>
+      <View style={controlStyles.dateCol}>
+        <DateField
+          accessibilityHint={hint}
+          label={field.fromLabel ?? fromLabel}
+          testID={`${testID}-from`}
+          value={value.from}
+          onChange={(from) => onChange({ from, to: value.to })}
+          onSubmit={onSubmit}
+        />
+      </View>
+      <View style={controlStyles.dateCol}>
+        <DateField
+          accessibilityHint={hint}
+          label={field.toLabel ?? toLabel}
+          testID={`${testID}-to`}
+          value={value.to}
+          onChange={(to) => onChange({ from: value.from, to })}
+          onSubmit={onSubmit}
+        />
+      </View>
+    </View>
   );
 }
 

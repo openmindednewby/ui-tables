@@ -12,6 +12,7 @@ export const FIELD_MIN_WIDTH: Record<FilterFieldKind, number> = {
   select: 150,
   text: 200,
   number: 130,
+  date: 160,
   dateRange: 260,
   typeahead: 200,
   boolean: 150,
