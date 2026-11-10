@@ -27,7 +27,7 @@ const columns: ReadonlyArray<DataTableColumn<Item>> = [
 function renderTable(stackBreakpoint: number): void {
   render(
     <UiProvider theme={theme} t={(key) => key}>
-      <DataTable columns={columns} keyExtractor={(r) => r.id} rows={[{ id: 'a' }]} stackBreakpoint={stackBreakpoint} testID={TABLE} />
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} keyExtractor={(r) => r.id} rows={[{ id: 'a' }]} stackBreakpoint={stackBreakpoint} testID={TABLE} />
     </UiProvider>,
   );
 }

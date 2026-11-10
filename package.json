@@ -79,7 +79,7 @@
     "peerDependencies": {
         "@dloizides/ui-buttons": ">=1.4.0",
         "@dloizides/ui-feedback": ">=1.1.0",
-        "@dloizides/ui-forms": ">=1.27.0",
+        "@dloizides/ui-forms": ">=1.30.0",
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0",
         "react-native": ">=0.74.0"
@@ -92,7 +92,7 @@
     "devDependencies": {
         "@dloizides/ui-buttons": "^1.4.0",
         "@dloizides/ui-feedback": "^1.1.0",
-        "@dloizides/ui-forms": "^1.27.0",
+        "@dloizides/ui-forms": "^1.30.0",
         "@testing-library/dom": "^10.4.0",
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.1.0",

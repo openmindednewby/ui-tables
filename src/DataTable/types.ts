@@ -7,6 +7,8 @@
 import type React from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
+import type { DataTableRowAction } from './rowAction';
+
 /**
  * Per-slot style overrides for the DataTable, merged **LAST** into each slot's style
  * array so the consumer always wins — over the base StyleSheet AND over the inline
@@ -70,7 +72,7 @@ export interface DataTableColumn<T> {
   render: (row: T) => React.ReactNode;
 }
 
-export interface DataTableProps<T> {
+export interface DataTableBaseProps<T> {
   columns: ReadonlyArray<DataTableColumn<T>>;
   rows: readonly T[];
   keyExtractor: (row: T) => string;
@@ -80,8 +82,6 @@ export interface DataTableProps<T> {
   zebra?: boolean;
   /** Keep the header pinned while the body scrolls (web `position: sticky`). */
   stickyHeader?: boolean;
-  /** Make rows pressable (GRID.md `is-click`). Enables row accessibilityRole=button. */
-  onRowPress?: (row: T) => void;
   /** Per-row accessibility label. Falls back to the kit's `rowLabel` translation. */
   getRowAccessibilityLabel?: (row: T) => string;
   /**
@@ -191,3 +191,5 @@ export interface DataTableProps<T> {
   styleOverrides?: DataTableStyleOverrides;
   testID?: string;
 }
+
+export type DataTableProps<T> = DataTableBaseProps<T> & DataTableRowAction<T>;

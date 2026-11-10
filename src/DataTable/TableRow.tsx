@@ -26,6 +26,7 @@
 import React from 'react';
 import { Pressable, View, type StyleProp, type ViewProps, type ViewStyle } from 'react-native';
 
+import { rowInteractionStyle, type RowInteractionTokens } from './rowInteraction';
 import { selectionStyles as sel } from './styles';
 import type { RowKeyEvent } from './useRovingFocus';
 
@@ -73,6 +74,7 @@ export interface TableRowProps {
   /** Card-stack rows lay their content out as a column, not a row. */
   stacked?: boolean;
   keyboard?: RowKeyboard;
+  interaction: RowInteractionTokens;
 }
 
 /**
@@ -110,6 +112,7 @@ export function TableRow({
   selectionSlot,
   stacked,
   keyboard,
+  interaction,
 }: TableRowProps): React.ReactElement {
   const interactive = onPress !== undefined;
   const hover = interactive ? { onHoverIn, onHoverOut } : null;
@@ -117,7 +120,7 @@ export function TableRow({
   // --- shapes 1 + 2: unchanged from 1.9.2 (plus the optional roving tabindex) ---
   if (selectionSlot === undefined) {
     return interactive ? (
-      <Pressable style={style} testID={testID} onPress={onPress} {...hover} {...a11y} {...focusProps(keyboard)}>
+      <Pressable style={(state) => [style, rowInteractionStyle(state, interaction)]} testID={testID} onPress={onPress} {...hover} {...a11y} {...focusProps(keyboard)}>
         {children}
       </Pressable>
     ) : (
@@ -140,7 +143,7 @@ export function TableRow({
   const contentStyle = stacked ? sel.cardContent : sel.rowContent;
   const content = interactive ? (
     <Pressable
-      style={contentStyle}
+      style={(state) => [contentStyle, rowInteractionStyle(state, interaction)]}
       tabIndex={keyboard === undefined ? undefined : TAB_INDEX_INACTIVE}
       onPress={onPress}
       {...hover}

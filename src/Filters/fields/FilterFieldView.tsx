@@ -14,10 +14,9 @@ import React from 'react';
 
 import type { StyleProp, ViewStyle } from 'react-native';
 
-import { Field } from '@dloizides/ui-forms';
+import { DateRangeControl, Field } from '@dloizides/ui-forms';
 
 import { BooleanField } from './BooleanField';
-import { DateRangeField } from './DateRangeField';
 import { SelectField } from './SelectField';
 import { SingleDateField } from './SingleDateField';
 import { TextField } from './TextField';
@@ -137,14 +136,14 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
         );
       case 'dateRange':
         return (
-          <DateRangeField
-            field={field}
-            barTestID={barTestID}
+          <DateRangeControl
+            accessibilityHint={field.accessibilityHint}
+            fromLabel={field.fromLabel ?? strings.fromLabel}
+            testID={field.testID ?? fieldTestID(barTestID, field.key)}
+            toLabel={field.toLabel ?? strings.toLabel}
             value={asRange(raw)}
             onChange={(v) => setField(field.key, v)}
             onSubmit={onSubmit}
-            fromLabel={strings.fromLabel}
-            toLabel={strings.toLabel}
           />
         );
       default:

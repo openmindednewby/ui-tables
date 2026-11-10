@@ -57,7 +57,7 @@ const columns: ReadonlyArray<DataTableColumn<Person>> = [{ key: 'name', header: 
 const rows: Person[] = [{ id: 'a', name: 'Ada' }];
 
 function LocalTable(): React.ReactElement {
-  return <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID={TABLE_ID} />;
+  return <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID={TABLE_ID} />;
 }
 
 function LocalPager(): React.ReactElement {
@@ -192,7 +192,7 @@ describe('PagedTableLayout', () => {
 
   it('with a consumer wrap override, keeps the consumer value last', () => {
     const overridden = (
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={columns}
         rows={rows}
         keyExtractor={(r) => r.id}
@@ -210,14 +210,14 @@ describe('PagedTableLayout', () => {
 
   it('with an expanded row holding a nested table, keeps the nested table border', () => {
     const nested = (
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={columns}
         rows={rows}
         keyExtractor={(r) => r.id}
         stackBreakpoint={NO_STACK}
         expandedRowKeys={['a']}
         renderRowDetail={() => (
-          <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID={NESTED_TABLE_ID} />
+          <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID={NESTED_TABLE_ID} />
         )}
         testID={TABLE_ID}
       />
@@ -235,10 +235,10 @@ describe('PagedTableLayout', () => {
       {
         key: 'name',
         header: 'Name',
-        render: () => <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID={NESTED_TABLE_ID} />,
+        render: () => <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID={NESTED_TABLE_ID} />,
       },
     ];
-    renderLayout('toolbar', <DataTable columns={nestedColumns} rows={rows} keyExtractor={(r) => r.id} testID={TABLE_ID} />);
+    renderLayout('toolbar', <DataTable rowAction={{ none: 'test table' }} columns={nestedColumns} rows={rows} keyExtractor={(r) => r.id} testID={TABLE_ID} />);
 
     const nestedTable = screen.getByTestId(NESTED_TABLE_ID);
 

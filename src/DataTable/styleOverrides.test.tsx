@@ -61,15 +61,15 @@ function renderUi(ui: React.ReactElement): ReturnType<typeof render> {
 
 describe('DataTable — styleOverrides is purely additive (backward compatible)', () => {
   it('renders byte-identical markup with styleOverrides omitted vs explicitly undefined', () => {
-    const a = renderUi(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} zebra stackBreakpoint={NO_STACK} testID="grid" />);
+    const a = renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} zebra stackBreakpoint={NO_STACK} testID="grid" />);
     const withoutProp = a.container.innerHTML;
     a.unmount();
-    const b = renderUi(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} zebra stackBreakpoint={NO_STACK} styleOverrides={undefined} testID="grid" />);
+    const b = renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} zebra stackBreakpoint={NO_STACK} styleOverrides={undefined} testID="grid" />);
     expect(b.container.innerHTML).toBe(withoutProp);
   });
 
   it('keeps the shared defaults when no override is passed: theme background on the head, base radius class on the wrap', () => {
-    renderUi(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />);
+    renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />);
     const head = screen.getByTestId(TABLE_TEST_IDS.head);
     const wrap = screen.getByTestId('grid');
     expect(head.style.backgroundColor).toBe(THEME_HEAD_BG); // theme.colors.background — unchanged default
@@ -108,7 +108,7 @@ describe('DataTable — cellWrap reaches EVERY cell (incl. custom nodes)', () =>
 
   it('applies to a string cell AND a custom-node cell', () => {
     renderUi(
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={nodeColumns}
         rows={rows}
         keyExtractor={(r) => r.id}
@@ -127,7 +127,7 @@ describe('DataTable — cellWrap reaches EVERY cell (incl. custom nodes)', () =>
 
   it('adds no cell padding when the override is omitted (default unchanged)', () => {
     renderUi(
-      <DataTable columns={nodeColumns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={nodeColumns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />,
     );
     expect(screen.getByTestId('grid-row-a-name').style.paddingLeft).toBe('');
   });
@@ -136,7 +136,7 @@ describe('DataTable — cellWrap reaches EVERY cell (incl. custom nodes)', () =>
 describe('DataTable — an override beats the BASE style', () => {
   it('wrap: a consumer borderRadius (10) overrides the kit default (12)', () => {
     const styleOverrides: DataTableStyleOverrides = { wrap: { borderRadius: KEFI_RADIUS } };
-    renderUi(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} styleOverrides={styleOverrides} testID="grid" />);
+    renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} styleOverrides={styleOverrides} testID="grid" />);
     const wrap = screen.getByTestId('grid');
     expect(resolvedRadius(wrap)).toBe(`${KEFI_RADIUS}px`); // kefi's 10, not the kit's 12
     expect(resolvedRadius(wrap)).not.toBe(`${DEFAULT_RADIUS}px`);
@@ -144,12 +144,12 @@ describe('DataTable — an override beats the BASE style', () => {
 
   it('accepts a StyleSheet.create()d override too (same slot contract)', () => {
     const sheet = StyleSheet.create({ wrap: { borderRadius: KEFI_RADIUS } });
-    renderUi(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} styleOverrides={{ wrap: sheet.wrap }} testID="grid" />);
+    renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} styleOverrides={{ wrap: sheet.wrap }} testID="grid" />);
     expect(resolvedRadius(screen.getByTestId('grid'))).toBe(`${KEFI_RADIUS}px`);
   });
 
   it('keeps the kit default radius when no override is passed', () => {
-    renderUi(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />);
+    renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />);
     expect(resolvedRadius(screen.getByTestId('grid'))).toBe(`${DEFAULT_RADIUS}px`);
   });
 });
@@ -157,7 +157,7 @@ describe('DataTable — an override beats the BASE style', () => {
 describe('DataTable — an override beats the INLINE THEME COLOUR (the important one)', () => {
   it('headRow: surfaceMuted overrides the theme `background` the kit applies inline', () => {
     const styleOverrides: DataTableStyleOverrides = { headRow: { backgroundColor: KEFI_SURFACE_MUTED } };
-    renderUi(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} styleOverrides={styleOverrides} testID="grid" />);
+    renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} styleOverrides={styleOverrides} testID="grid" />);
     const head = screen.getByTestId(TABLE_TEST_IDS.head);
     expect(head.style.backgroundColor).toBe(KEFI_HEAD_BG);
     expect(head.style.backgroundColor).not.toBe(THEME_HEAD_BG); // the theme colour lost
@@ -170,7 +170,7 @@ describe('DataTable — an override beats the INLINE THEME COLOUR (the important
       rowDetail: { backgroundColor: OVERRIDE_ROW_BG },
     };
     renderUi(
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={columns}
         rows={rows}
         keyExtractor={(r) => r.id}
@@ -192,7 +192,7 @@ describe('DataTable — every slot is genuinely reachable', () => {
   it('cell + numCell (inside the cellContent helper) reach the desktop cells', () => {
     const NUM_COLOR = 'rgb(1, 2, 3)';
     renderUi(
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={columns}
         rows={rows}
         keyExtractor={(r) => r.id}
@@ -211,7 +211,7 @@ describe('DataTable — every slot is genuinely reachable', () => {
     const CARD_BG = 'rgb(250, 250, 250)';
     const LABEL_COLOR = 'rgb(9, 9, 9)';
     const { container } = renderUi(
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={columns}
         rows={rows}
         keyExtractor={(r) => r.id}
@@ -242,20 +242,20 @@ describe('DataTable — every slot is genuinely reachable', () => {
     const STATE_COLOR = 'rgb(20, 20, 20)';
     const overrides: DataTableStyleOverrides = { state: { backgroundColor: STATE_BG }, stateText: { color: STATE_COLOR } };
     const { container, unmount } = renderUi(
-      <DataTable columns={columns} rows={[]} keyExtractor={(r) => r.id} loading loadingLabel="Loading" styleOverrides={overrides} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={[]} keyExtractor={(r) => r.id} loading loadingLabel="Loading" styleOverrides={overrides} testID="grid" />,
     );
     expect(container.querySelector<HTMLElement>(`[style*="${STATE_BG}"]`)).not.toBeNull();
     expect(screen.getByText('Loading').style.color).toBe(STATE_COLOR);
     unmount();
 
-    renderUi(<DataTable columns={columns} rows={[]} keyExtractor={(r) => r.id} emptyLabel="Empty" styleOverrides={overrides} testID="grid" />);
+    renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={[]} keyExtractor={(r) => r.id} emptyLabel="Empty" styleOverrides={overrides} testID="grid" />);
     expect(screen.getByText('Empty').style.color).toBe(STATE_COLOR);
   });
 
   it('headCell reaches the desktop header cells', () => {
     const HEAD_COLOR = 'rgb(7, 7, 7)';
     renderUi(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} styleOverrides={{ headCell: { color: HEAD_COLOR } }} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} styleOverrides={{ headCell: { color: HEAD_COLOR } }} testID="grid" />,
     );
     expect(screen.getByText('Name').style.color).toBe(HEAD_COLOR); // beat textSecondary
   });
@@ -264,7 +264,7 @@ describe('DataTable — every slot is genuinely reachable', () => {
 describe('DataTable — the card-stack is opt-out via stackBreakpoint={0}', () => {
   it('renders the desktop grid (no card-stack) even at a tiny width', () => {
     window.innerWidth = NARROW_WIDTH;
-    renderUi(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />);
+    renderUi(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={NO_STACK} testID="grid" />);
     // `width < 0` is never true → the header row (desktop-only) is present and each
     // column header renders exactly once (a card-stack repeats it per row).
     expect(screen.getByTestId(TABLE_TEST_IDS.head)).toBeTruthy();

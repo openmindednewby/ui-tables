@@ -42,7 +42,7 @@ type Overrides = Partial<React.ComponentProps<typeof DataTable<Person>>>;
 function table(overrides: Overrides = {}): React.ReactElement {
   return (
     <UiProvider t={t} theme={theme}>
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={columns}
         keyExtractor={(r) => r.id}
         keyboardNavigation

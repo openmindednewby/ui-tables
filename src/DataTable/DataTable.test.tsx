@@ -55,7 +55,7 @@ describe('DataTable', () => {
   it('renders headers and one row per datum with a stable per-row testID', () => {
     // stackBreakpoint=0 forces the desktop path (width is always >= 0), so the
     // header appears once rather than once-per-card (jsdom reports a narrow width).
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
     expect(screen.getByText('Name')).toBeTruthy();
     expect(screen.getByTestId('grid-row-a')).toBeTruthy();
     expect(screen.getByTestId('grid-row-b')).toBeTruthy();
@@ -65,12 +65,12 @@ describe('DataTable', () => {
   it('calls each column render EXACTLY once per row (no POC double-render)', () => {
     const renderName = jest.fn((r: Person) => r.name);
     const spyColumns: ReadonlyArray<DataTableColumn<Person>> = [{ key: 'name', header: 'Name', render: renderName }];
-    renderTable(<DataTable columns={spyColumns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={spyColumns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />);
     expect(renderName).toHaveBeenCalledTimes(rows.length);
   });
 
   it('shows the translated loading state via `t`', () => {
-    renderTable(<DataTable columns={columns} rows={[]} keyExtractor={(r) => r.id} loading testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={[]} keyExtractor={(r) => r.id} loading testID="grid" />);
     expect(screen.getByText('Loading')).toBeTruthy();
   });
 
@@ -79,7 +79,7 @@ describe('DataTable', () => {
   // back when the next page lands. These three lock the rule: the state view is for when there is
   // nothing to show; rows that already exist survive the re-fetch.
   it('KEEPS the current rows visible while a re-fetch is in flight', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />);
 
     expect(screen.getByText('Ada')).toBeTruthy();
     expect(screen.getByText('Bo')).toBeTruthy();
@@ -87,19 +87,19 @@ describe('DataTable', () => {
   });
 
   it('marks the table busy while a re-fetch is in flight, since the rows no longer vanish', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />);
     expect(screen.getByTestId('grid').getAttribute('aria-busy')).toBe('true');
   });
 
   it('swaps to the NEXT page rows once the re-fetch resolves', () => {
     const { rerender } = renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} loading testID="grid" />,
     );
     const page2: Person[] = [{ id: 'c', name: 'Cy', score: 30 }];
 
     rerender(
       <UiProvider theme={theme} t={t}>
-        <DataTable columns={columns} rows={page2} keyExtractor={(r) => r.id} testID="grid" />
+        <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={page2} keyExtractor={(r) => r.id} testID="grid" />
       </UiProvider>,
     );
 
@@ -108,18 +108,18 @@ describe('DataTable', () => {
   });
 
   it('shows the translated empty state via `t` when there are no rows', () => {
-    renderTable(<DataTable columns={columns} rows={[]} keyExtractor={(r) => r.id} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={[]} keyExtractor={(r) => r.id} testID="grid" />);
     expect(screen.getByText('No rows')).toBeTruthy();
   });
 
   it('prefers a caller-supplied (already-translated) empty label over the key', () => {
-    renderTable(<DataTable columns={columns} rows={[]} keyExtractor={(r) => r.id} emptyLabel="Nothing here" testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={[]} keyExtractor={(r) => r.id} emptyLabel="Nothing here" testID="grid" />);
     expect(screen.getByText('Nothing here')).toBeTruthy();
   });
 
   it('fires onRowPress with the pressed row', () => {
     const onRowPress = jest.fn();
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={onRowPress} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={onRowPress} testID="grid" />);
     fireEvent.click(screen.getByTestId('grid-row-b'));
     expect(onRowPress).toHaveBeenCalledWith(rows[1]);
   });
@@ -127,20 +127,20 @@ describe('DataTable', () => {
   it('collapses to the label:value card-stack below the breakpoint', () => {
     // jsdom width is 1024; a huge breakpoint forces the stacked branch.
     const HUGE = 5000;
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={HUGE} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={HUGE} testID="grid" />);
     // One label PER CARD proves the stacked branch (the desktop header renders it just once).
     expect(screen.getAllByText('Name').length).toBe(rows.length);
   });
 
   it('renders the desktop sticky header region when stickyHeader is set', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stickyHeader stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stickyHeader stackBreakpoint={0} testID="grid" />);
     expect(screen.getByTestId(TABLE_TEST_IDS.head)).toBeTruthy();
   });
 });
 
 describe('DataTable — row-hover highlight (v1 `.clickable:hover`)', () => {
   it('tints an interactive row on hover-in and reverts on hover-out', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={jest.fn()} stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={jest.fn()} stackBreakpoint={0} testID="grid" />);
     const row = screen.getByTestId('grid-row-a');
     const before = row.getAttribute('style');
     fireEvent.mouseEnter(row);
@@ -151,7 +151,7 @@ describe('DataTable — row-hover highlight (v1 `.clickable:hover`)', () => {
   });
 
   it('does NOT tint a static (non-interactive) row on hover — only clickable rows highlight', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
     const row = screen.getByTestId('grid-row-a');
     const before = row.getAttribute('style');
     fireEvent.mouseEnter(row);
@@ -159,7 +159,7 @@ describe('DataTable — row-hover highlight (v1 `.clickable:hover`)', () => {
   });
 
   it('highlights only the hovered row, not its siblings', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={jest.fn()} zebra stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={jest.fn()} zebra stackBreakpoint={0} testID="grid" />);
     const rowA = screen.getByTestId('grid-row-a');
     const rowB = screen.getByTestId('grid-row-b');
     const beforeB = rowB.getAttribute('style');
@@ -187,7 +187,7 @@ describe('DataTable — raw text is always wrapped (native-safe)', () => {
   ])('emits no unexpected-text-node error in %s mode', (_mode, stackBreakpoint) => {
     const spy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
     renderTable(
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={rawColumns}
         rows={rows}
         keyExtractor={(r) => r.id}
@@ -204,7 +204,7 @@ describe('DataTable — raw text is always wrapped (native-safe)', () => {
 
   it('still renders the string and numeric values in card-stack mode', () => {
     renderTable(
-      <DataTable
+      <DataTable rowAction={{ none: 'test table' }}
         columns={rawColumns}
         rows={rows}
         keyExtractor={(r) => r.id}
@@ -223,20 +223,20 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
   it('renders NO detail panel when renderRowDetail is omitted (backward compatible)', () => {
     // Even with expandedRowKeys set, no renderRowDetail means a plain table.
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
     );
     expect(screen.queryByTestId('grid-row-detail-a')).toBeNull();
     expect(screen.getByTestId('grid-row-a')).toBeTruthy();
   });
 
   it('adds no expanded accessibilityState to rows of a plain (non-expandable) table', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
     expect(screen.getByTestId('grid-row-a').getAttribute('aria-expanded')).toBeNull();
   });
 
   it('renders NO detail panel for rows whose key is not in expandedRowKeys', () => {
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
     );
     expect(screen.queryByTestId('grid-row-detail-b')).toBeNull();
     expect(screen.queryByText('detail:Bo')).toBeNull();
@@ -244,7 +244,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
 
   it('renders NO detail panel when expandedRowKeys is empty or omitted', () => {
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} stackBreakpoint={0} testID="grid" />,
     );
     expect(screen.queryByTestId('grid-row-detail-a')).toBeNull();
     expect(screen.queryByTestId('grid-row-detail-b')).toBeNull();
@@ -252,7 +252,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
 
   it('renders the detail panel for an expanded row, with the derived testID and the a11y label', () => {
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
     );
     const panel = screen.getByTestId('grid-row-detail-a');
     expect(panel).toBeTruthy();
@@ -264,7 +264,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
 
   it('with getRowDetailAccessibilityLabel, names the panel after its row', () => {
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} getRowDetailAccessibilityLabel={(r) => `Row ${r.id}`} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} getRowDetailAccessibilityLabel={(r) => `Row ${r.id}`} expandedRowKeys={['a']} stackBreakpoint={0} testID="grid" />,
     );
 
     const label = screen.getByTestId('grid-row-detail-a').getAttribute('aria-label');
@@ -277,7 +277,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
     // asserts the flat row/panel/row sibling chain (with animateRows a row+panel share one
     // FadeIn wrapper — covered by the entrance suite below).
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} animateRows={false} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a']} animateRows={false} stackBreakpoint={0} testID="grid" />,
     );
     const rowA = screen.getByTestId('grid-row-a');
     const panel = screen.getByTestId('grid-row-detail-a');
@@ -289,7 +289,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
 
   it('supports multiple expanded rows at once, each panel under its own row', () => {
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a', 'b']} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['a', 'b']} stackBreakpoint={0} testID="grid" />,
     );
     expect(screen.getByTestId('grid-row-a').nextElementSibling).toBe(screen.getByTestId('grid-row-detail-a'));
     expect(screen.getByTestId('grid-row-b').nextElementSibling).toBe(screen.getByTestId('grid-row-detail-b'));
@@ -300,7 +300,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
   it('renders the panel beneath the card in the responsive card-stack mode too', () => {
     const HUGE = 5000;
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['b']} stackBreakpoint={HUGE} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={['b']} stackBreakpoint={HUGE} testID="grid" />,
     );
     expect(screen.getAllByText('Name').length).toBe(rows.length); // one label per card ⇒ stacked branch
     expect(screen.getByTestId('grid-row-b').nextElementSibling).toBe(screen.getByTestId('grid-row-detail-b'));
@@ -310,7 +310,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
   it('leaves expansion to the caller — pressing a row does not open a panel by itself', () => {
     const onRowPress = jest.fn();
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={[]} onRowPress={onRowPress} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={renderDetail} expandedRowKeys={[]} onRowPress={onRowPress} stackBreakpoint={0} testID="grid" />,
     );
     fireEvent.click(screen.getByTestId('grid-row-a'));
     expect(onRowPress).toHaveBeenCalledWith(rows[0]);
@@ -320,7 +320,7 @@ describe('DataTable — expandable rows (renderRowDetail + expandedRowKeys)', ()
   it('calls renderRowDetail only for expanded rows', () => {
     const spy = jest.fn(renderDetail);
     renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={spy} expandedRowKeys={['b']} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} renderRowDetail={spy} expandedRowKeys={['b']} stackBreakpoint={0} testID="grid" />,
     );
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(rows[1]);
@@ -344,7 +344,7 @@ describe('DataTable — E2E test hooks survive BOTH layouts', () => {
     ['desktop grid', DESKTOP],
     ['card-stack', PHONE],
   ])('resolves the head test id in %s mode', (_mode, stackBreakpoint) => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={stackBreakpoint} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={stackBreakpoint} testID="grid" />);
     expect(screen.getByTestId(TABLE_TEST_IDS.head)).toBeTruthy();
   });
 
@@ -352,7 +352,7 @@ describe('DataTable — E2E test hooks survive BOTH layouts', () => {
     ['desktop grid', DESKTOP],
     ['card-stack', PHONE],
   ])('resolves the row + per-cell `${row}-${colKey}` test ids in %s mode', (_mode, stackBreakpoint) => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={stackBreakpoint} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={stackBreakpoint} testID="grid" />);
     expect(screen.getByTestId('grid-row-a')).toBeTruthy();
     expect(screen.getByTestId('grid-row-a-name')).toBeTruthy();
     expect(screen.getByTestId('grid-row-a-score')).toBeTruthy();
@@ -360,7 +360,7 @@ describe('DataTable — E2E test hooks survive BOTH layouts', () => {
   });
 
   it('keeps the head test-id carrier out of the accessibility tree in card-stack mode', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
     // Present for E2E (queryable by test id) but a11y-inert — it announces no phantom header.
     expect(screen.getByTestId(TABLE_TEST_IDS.head).getAttribute('aria-hidden')).toBe('true');
   });
@@ -370,7 +370,7 @@ describe('DataTable — E2E test hooks survive BOTH layouts', () => {
       { key: 'name', header: 'Name', render: (r) => r.name },
       { key: 'actions', header: 'Actions', render: (r) => <button type="button">{`edit-${r.id}`}</button> },
     ];
-    renderTable(<DataTable columns={actionColumns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={actionColumns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
     // The per-cell test id resolves to the card line, and the action button renders within it.
     expect(screen.getByTestId('grid-row-a-actions')).toBeTruthy();
     expect(screen.getByText('edit-a')).toBeTruthy();
@@ -394,7 +394,7 @@ describe('DataTable — row entrance animation (ui-motion FadeIn)', () => {
   });
 
   it('wraps each row in a keyed FadeIn by default, with the row still inside it', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
     const fadeA = screen.getByTestId(rowFadeTestID('grid', 'a'));
     expect(fadeA).toBeTruthy();
     expect(screen.getByTestId(rowFadeTestID('grid', 'b'))).toBeTruthy();
@@ -403,14 +403,14 @@ describe('DataTable — row entrance animation (ui-motion FadeIn)', () => {
   });
 
   it('renders rows plainly with NO fade wrapper when animateRows is false', () => {
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} animateRows={false} stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} animateRows={false} stackBreakpoint={0} testID="grid" />);
     expect(screen.queryByTestId(rowFadeTestID('grid', 'a'))).toBeNull();
     expect(screen.getByTestId('grid-row-a')).toBeTruthy(); // row itself unaffected
   });
 
   it('still fires onRowPress for a row rendered through the FadeIn wrapper', () => {
     const onRowPress = jest.fn();
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={onRowPress} stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} onRowPress={onRowPress} stackBreakpoint={0} testID="grid" />);
     fireEvent.click(screen.getByTestId('grid-row-b'));
     expect(onRowPress).toHaveBeenCalledWith(rows[1]);
   });
@@ -420,12 +420,12 @@ describe('DataTable — row entrance animation (ui-motion FadeIn)', () => {
     // loading toggle that resolves to the SAME row keys) must reuse the existing wrapper node,
     // so FadeIn keeps its mounted identity and does not replay its mount-only fade.
     const { rerender } = renderTable(
-      <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />,
     );
     const before = screen.getByTestId(rowFadeTestID('grid', 'a'));
     rerender(
       <UiProvider theme={theme} t={t}>
-        <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} loading stackBreakpoint={0} testID="grid" />
+        <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} loading stackBreakpoint={0} testID="grid" />
       </UiProvider>,
     );
     expect(screen.getByTestId(rowFadeTestID('grid', 'a'))).toBe(before); // identical DOM node
@@ -433,7 +433,7 @@ describe('DataTable — row entrance animation (ui-motion FadeIn)', () => {
 
   it('wraps cards in the responsive card-stack layout too', () => {
     const PHONE = 100_000;
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={PHONE} testID="grid" />);
     expect(screen.getByTestId(rowFadeTestID('grid', 'a'))).toBeTruthy();
     expect(screen.getByTestId(rowFadeTestID('grid', 'b'))).toBeTruthy();
   });

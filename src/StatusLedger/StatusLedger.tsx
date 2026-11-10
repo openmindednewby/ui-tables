@@ -14,6 +14,8 @@ import { LedgerLayout } from './LedgerLayout';
 import { SortDirection } from './SortDirection';
 import type { StatusLedgerProps } from './types';
 
+const LEDGER_ROW_ACTION_FALLBACK = { none: 'status ledger caller passed no onRowPress' };
+
 const GAP = 12;
 const HEADING_FONT = 15;
 const HEADING_WEIGHT = '700' as const;
@@ -50,6 +52,7 @@ function LedgerSection<T>({ title, rows, columns, emptyLabel, testID, ledger }: 
           getRowDetailAccessibilityLabel={ledger.getRowAccessibilityLabel}
           keyExtractor={ledger.keyExtractor}
           onRowPress={ledger.onRowPress}
+          rowAction={LEDGER_ROW_ACTION_FALLBACK}
           renderRowDetail={ledger.renderRowDetail}
           rows={rows}
           stackBreakpoint={ledger.breakpoint ?? CARD_STACK_BREAKPOINT}
@@ -107,6 +110,7 @@ export function StatusLedger<T>(props: StatusLedgerProps<T>): React.ReactElement
           keyExtractor={props.keyExtractor}
           loading={loading}
           onRowPress={props.onRowPress}
+          rowAction={LEDGER_ROW_ACTION_FALLBACK}
           renderRowDetail={props.renderRowDetail}
           rows={view.visible}
           stackBreakpoint={feed ? breakpoint : 0}

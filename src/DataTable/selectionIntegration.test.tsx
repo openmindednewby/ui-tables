@@ -62,7 +62,7 @@ function renderTable(ui: React.ReactElement): ReturnType<typeof render> {
 type Overrides = Partial<React.ComponentProps<typeof DataTable<Person>>>;
 function renderSelectable(overrides: Overrides = {}): void {
   renderTable(
-    <DataTable
+    <DataTable rowAction={{ none: 'test table' }}
       columns={columns}
       keyExtractor={(r) => r.id}
       rows={rows}
@@ -261,14 +261,14 @@ describe('DataTable — selection across a filter change', () => {
    */
   it('shows nothing selected once the caller clears the selection', () => {
     const { rerender } = renderTable(
-      <DataTable columns={columns} keyExtractor={(r) => r.id} rows={rows} selectedRowKeys={ALL_KEYS} stackBreakpoint={0} testID="grid" onSelectionChange={jest.fn()} />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} keyExtractor={(r) => r.id} rows={rows} selectedRowKeys={ALL_KEYS} stackBreakpoint={0} testID="grid" onSelectionChange={jest.fn()} />,
     );
     expect(screen.getByTestId('grid-select-all').getAttribute('aria-checked')).toBe('true');
 
     const filtered = [rows[0]] as Person[];
     rerender(
       <UiProvider t={t} theme={theme}>
-        <DataTable columns={columns} keyExtractor={(r) => r.id} rows={filtered} selectedRowKeys={[]} stackBreakpoint={0} testID="grid" onSelectionChange={jest.fn()} />
+        <DataTable rowAction={{ none: 'test table' }} columns={columns} keyExtractor={(r) => r.id} rows={filtered} selectedRowKeys={[]} stackBreakpoint={0} testID="grid" onSelectionChange={jest.fn()} />
       </UiProvider>,
     );
     expect(screen.getByTestId('grid-select-all').getAttribute('aria-checked')).toBe('false');
@@ -282,14 +282,14 @@ describe('DataTable — selection across a filter change', () => {
    */
   it('intersects a kept selection with the NEW page rather than counting it', () => {
     renderTable(
-      <DataTable columns={columns} keyExtractor={(r) => r.id} rows={[rows[1]] as Person[]} selectedRowKeys={ALL_KEYS} stackBreakpoint={0} testID="grid" onSelectionChange={jest.fn()} />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} keyExtractor={(r) => r.id} rows={[rows[1]] as Person[]} selectedRowKeys={ALL_KEYS} stackBreakpoint={0} testID="grid" onSelectionChange={jest.fn()} />,
     );
     expect(screen.getByTestId('grid-select-all').getAttribute('aria-checked')).toBe('true');
   });
 
   it('reads None when the kept selection has nothing in common with the new page', () => {
     renderTable(
-      <DataTable columns={columns} keyExtractor={(r) => r.id} rows={rows} selectedRowKeys={['x', 'y', 'z']} stackBreakpoint={0} testID="grid" onSelectionChange={jest.fn()} />,
+      <DataTable rowAction={{ none: 'test table' }} columns={columns} keyExtractor={(r) => r.id} rows={rows} selectedRowKeys={['x', 'y', 'z']} stackBreakpoint={0} testID="grid" onSelectionChange={jest.fn()} />,
     );
     expect(screen.getByTestId('grid-select-all').getAttribute('aria-checked')).toBe('false');
   });

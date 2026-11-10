@@ -134,6 +134,7 @@ export function DataTableRow<T>({
       testID={rowID}
       onHoverIn={onHoverIn}
       onHoverOut={onHoverOut}
+      interaction={{ brand: theme.palette.primary['500'], fallbackTint: colors.border }}
       onPress={pressRow}
     >
       <RowPressProvider value={pressRow}>

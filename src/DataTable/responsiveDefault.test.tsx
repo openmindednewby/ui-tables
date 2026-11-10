@@ -96,7 +96,7 @@ describe('DataTable — DEFAULT breakpoint responsive behaviour (no stackBreakpo
     // The regression the FINREG bug represents: at 390px with the default breakpoint the grid
     // must collapse to cards, NOT compress its columns into the viewport.
     mockWidth = PHONE_WIDTH;
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />);
 
     // One column header PER CARD (2 cards ⇒ 2 "Provider" labels) proves the stacked branch;
     // the desktop layout renders each header exactly once.
@@ -111,7 +111,7 @@ describe('DataTable — DEFAULT breakpoint responsive behaviour (no stackBreakpo
 
   it('keeps the DESKTOP grid at wide width with the same default (headers render once)', () => {
     mockWidth = DESKTOP_WIDTH;
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />);
 
     // Desktop header row ⇒ each column header appears exactly once (not once-per-row).
     expect(screen.getAllByText('Provider').length).toBe(1);
@@ -125,13 +125,13 @@ describe('DataTable — DEFAULT breakpoint responsive behaviour (no stackBreakpo
 
   it('re-evaluates the layout when the window width crosses the breakpoint (no stackBreakpoint)', () => {
     mockWidth = DESKTOP_WIDTH;
-    const { rerender } = renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />);
+    const { rerender } = renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />);
     expect(screen.getAllByText('Provider').length).toBe(1); // desktop: single header
 
     mockWidth = PHONE_WIDTH;
     rerender(
       <UiProvider theme={theme} t={t}>
-        <DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />
+        <DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} testID="grid" />
       </UiProvider>,
     );
     expect(screen.getAllByText('Provider').length).toBe(rows.length); // phone: one header per card
@@ -141,7 +141,7 @@ describe('DataTable — DEFAULT breakpoint responsive behaviour (no stackBreakpo
     // The documented escape hatch: a consumer that deliberately never wants the card-stack.
     // This guards that the default-path work above did not remove the opt-out.
     mockWidth = PHONE_WIDTH;
-    renderTable(<DataTable columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
+    renderTable(<DataTable rowAction={{ none: 'test table' }} columns={columns} rows={rows} keyExtractor={(r) => r.id} stackBreakpoint={0} testID="grid" />);
     expect(screen.getAllByText('Provider').length).toBe(1); // desktop grid despite phone width
   });
 });

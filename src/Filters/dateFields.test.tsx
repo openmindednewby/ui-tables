@@ -26,7 +26,7 @@ function renderFilters(values: FilterValues, onChange: (v: FilterValues) => void
   render(<UiProvider theme={theme} t={t}><Filters fields={FIELDS} values={values} onChange={onChange} /></UiProvider>);
 }
 
-describe('DateRangeField', () => {
+describe('FilterFieldView dateRange', () => {
   it('with a dateRange field, renders the from side as a native date input', () => {
     renderFilters(EMPTY);
 
