@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+- `ReportFilters`: report filter preset over `Filters` (scope select, date range, multi status, currency) with typed values, URL query helpers (`reportFiltersFromQuery` / `reportFiltersToQuery` / `reportFiltersToSearch`), an inverted-range error that withholds `onChange`, and a compact mode below 768 px: one Filters button opening a `FilterSidePanel`.
+- `ExportCsvAction`: an Export CSV button over `toCsv` from `@dloizides/utils` with a Blob download, the shared `Button` loading state, and `csvFilename` / `runCsvExport` helpers.
+- `Filters`: a `multiSelect` field kind and an `error` on `dateRange` fields.
+
 ### Fixed
 
 - `DataTable` / `StatusLedger`: a clickable row (`onRowPress`, no `keyboardNavigation`) renders as a focusable `div` with `role="group"` instead of a native `<button>`, so an Edit or Delete button in a cell is no longer a button inside a button. The row keeps its pointer cursor, hover and pressed tint, focus ring and Enter to open; Space no longer opens it (Space belongs to button roles). Pressing a button inside the row calls only that button. ROW-OPEN-1 "Every list row opens its record".

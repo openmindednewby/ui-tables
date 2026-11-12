@@ -1,0 +1,53 @@
+import { toCsv, type CsvColumn } from '@dloizides/utils';
+
+import type { DateRangeValue } from '../../Filters/types';
+import { ExportOutcome } from '../ExportOutcome';
+
+const CSV_MIME = 'text/csv;charset=utf-8';
+const UTF8_BOM = '﻿';
+const CSV_EXTENSION = '.csv';
+const UNSAFE_FILENAME_CHARS = /[^A-Za-z0-9._-]+/g;
+const SAFE_REPLACEMENT = '-';
+const RANGE_JOINER = '--';
+const PART_JOINER = '_';
+
+export type CsvRowsSource<T> = readonly T[] | (() => Promise<readonly T[]>);
+
+export type CsvDownloader = (csv: string, filename: string) => boolean;
+
+export function csvFilename(base: string, range?: DateRangeValue): string {
+  const safeBase = base.trim().replace(UNSAFE_FILENAME_CHARS, SAFE_REPLACEMENT);
+  if (range === undefined) return `${safeBase}${CSV_EXTENSION}`;
+  const hasRange = range.from !== '' || range.to !== '';
+  const name = hasRange ? `${safeBase}${PART_JOINER}${range.from}${RANGE_JOINER}${range.to}` : safeBase;
+  return `${name}${CSV_EXTENSION}`;
+}
+
+export function downloadCsv(csv: string, filename: string): boolean {
+  const hasDom = typeof document !== 'undefined' && typeof URL !== 'undefined';
+  if (!hasDom || typeof URL.createObjectURL !== 'function') return false;
+  const url = URL.createObjectURL(new Blob([UTF8_BOM, csv], { type: CSV_MIME }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  return true;
+}
+
+export async function runCsvExport<T>(
+  rows: CsvRowsSource<T>,
+  columns: ReadonlyArray<CsvColumn<T>>,
+  filename: string,
+  download: CsvDownloader = downloadCsv,
+): Promise<ExportOutcome> {
+  try {
+    const data = typeof rows === 'function' ? await rows() : rows;
+    return download(toCsv(data, columns), filename) ? ExportOutcome.Downloaded : ExportOutcome.Unsupported;
+  } catch {
+    return ExportOutcome.Failed;
+  }
+}

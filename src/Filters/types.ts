@@ -17,7 +17,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import type { ControlOption, DateRangeValue } from '@dloizides/ui-forms';
 
 /** The kinds of field the declarative bar can render. */
-export type FilterFieldKind = 'select' | 'text' | 'number' | 'date' | 'dateRange' | 'typeahead' | 'boolean';
+export type FilterFieldKind = 'select' | 'multiSelect' | 'text' | 'number' | 'date' | 'dateRange' | 'typeahead' | 'boolean';
 
 /**
  * A single choice for a `select` / `typeahead` field. Label is pre-localized.
@@ -36,7 +36,7 @@ export type FilterOption = ControlOption;
 export type { DateRangeValue };
 
 /** The runtime value a field holds, by kind. */
-export type FilterValue = string | boolean | DateRangeValue;
+export type FilterValue = string | boolean | DateRangeValue | readonly string[];
 
 /** The applied/draft value map, keyed by each field's `key`. */
 export type FilterValues = Record<string, FilterValue>;
@@ -92,6 +92,12 @@ export interface DateRangeFilterField extends FilterFieldBase {
   toLabel?: string;
   fromPlaceholder?: string;
   toPlaceholder?: string;
+  error?: string;
+}
+
+export interface MultiSelectFilterField extends FilterFieldBase {
+  kind: 'multiSelect';
+  options: readonly FilterOption[];
 }
 
 /** A search-as-you-type combobox (the country-picker pattern). */
@@ -115,6 +121,7 @@ export interface BooleanFilterField extends FilterFieldBase {
 /** The discriminated union of every declarative filter field. */
 export type FilterField =
   | SelectFilterField
+  | MultiSelectFilterField
   | TextFilterField
   | NumberFilterField
   | DateFilterField

@@ -22,6 +22,7 @@ export type {
   DateRangeFilterField,
   TypeaheadFilterField,
   BooleanFilterField,
+  MultiSelectFilterField,
 } from './types';
 
 export {

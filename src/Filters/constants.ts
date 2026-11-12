@@ -10,6 +10,7 @@ export const FILTERS_TEST_ID = 'ui-filters-declarative';
 /** Default minimum widths (px) per field kind before it wraps. */
 export const FIELD_MIN_WIDTH: Record<FilterFieldKind, number> = {
   select: 150,
+  multiSelect: 200,
   text: 200,
   number: 130,
   date: 160,

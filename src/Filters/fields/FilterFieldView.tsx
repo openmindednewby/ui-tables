@@ -17,6 +17,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { DateInput, DateRangeControl, Field, type FieldChildContext, type FieldChildren } from '@dloizides/ui-forms';
 
 import { BooleanField } from './BooleanField';
+import { MultiSelectField } from './MultiSelectField';
 import { SelectField } from './SelectField';
 import { TextField } from './TextField';
 import { TypeaheadField } from './TypeaheadField';
@@ -67,6 +68,9 @@ function asString(value: FilterValue | undefined): string {
 }
 function asBool(value: FilterValue | undefined): boolean {
   return value === true;
+}
+function asList(value: FilterValue | undefined): readonly string[] {
+  return Array.isArray(value) ? (value as readonly string[]) : [];
 }
 function asRange(value: FilterValue | undefined): DateRangeValue {
   if (typeof value === 'object' && value !== null && 'from' in value && 'to' in value) return value;
@@ -128,6 +132,15 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
             optionHint={strings.optionHint}
           />
         );
+      case 'multiSelect':
+        return (
+          <MultiSelectField
+            field={field}
+            barTestID={barTestID}
+            value={asList(raw)}
+            onChange={(v) => setField(field.key, v)}
+          />
+        );
       case 'typeahead':
         return (
           <TypeaheadField
@@ -167,6 +180,7 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
   return (
     <Field
       containerStyle={containerStyle}
+      error={field.kind === 'dateRange' ? field.error : undefined}
       label={field.label}
       labelVariant="control"
       testID={testID}
