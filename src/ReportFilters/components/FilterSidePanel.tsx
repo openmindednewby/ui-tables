@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { MODAL_OVERLAY_COLOR, useUi } from '@dloizides/ui-feedback';
@@ -26,6 +26,7 @@ export function FilterSidePanel({ visible, onClose, title, closeLabel, closeHint
   const { theme } = useUi();
   const { width } = useWindowDimensions();
   const panelWidth = Math.min(PANEL_MAX_WIDTH, Math.round(width * PANEL_SCREEN_SHARE));
+  const focusTitleOnOpen = useCallback((node: View | null) => node?.focus(), []);
 
   return (
     <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
@@ -44,9 +45,11 @@ export function FilterSidePanel({ visible, onClose, title, closeLabel, closeHint
           testID={testID}
         >
           <View style={styles.header}>
-            <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.text }]}>
-              {title}
-            </Text>
+            <View ref={focusTitleOnOpen} focusable style={styles.titleBox} testID={`${testID}-title`}>
+              <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.text }]}>
+                {title}
+              </Text>
+            </View>
             <ActionButton label={closeLabel} hint={closeHint} tone="primary" onPress={onClose} testID={`${testID}-close`} />
           </View>
           <ScrollView>{children}</ScrollView>
@@ -60,6 +63,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, flexDirection: 'row', justifyContent: 'flex-end' },
   panel: { height: '100%', padding: PANEL_PAD, borderLeftWidth: PANEL_BORDER },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: HEADER_GAP, marginBottom: HEADER_BOTTOM },
+  titleBox: { flexShrink: 1 },
   title: { flexShrink: 1, fontSize: TITLE_FONT, fontWeight: '700' },
 });
 
