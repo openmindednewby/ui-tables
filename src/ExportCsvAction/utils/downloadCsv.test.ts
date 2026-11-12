@@ -57,6 +57,36 @@ describe('runCsvExport', () => {
     expect(download).toHaveBeenCalledWith('Merchant,Total\r\nBeta,3', 'r.csv');
   });
 
+  it('with a loader reporting truncated rows, downloads them and returns Truncated', async () => {
+    const download = jest.fn().mockReturnValue(true);
+    const loadRows = (): Promise<{ rows: Row[]; truncated: boolean }> =>
+      Promise.resolve({ rows: [{ merchant: 'Beta', total: 3 }], truncated: true });
+
+    const outcome = await runCsvExport(loadRows, COLUMNS, 'r.csv', download);
+
+    expect(outcome).toBe(ExportOutcome.Truncated);
+    expect(download).toHaveBeenCalledWith('Merchant,Total\r\nBeta,3', 'r.csv');
+  });
+
+  it('with a loader reporting complete rows, returns Downloaded', async () => {
+    const download = jest.fn().mockReturnValue(true);
+    const loadRows = (): Promise<{ rows: Row[]; truncated: boolean }> =>
+      Promise.resolve({ rows: [{ merchant: 'Beta', total: 3 }], truncated: false });
+
+    const outcome = await runCsvExport(loadRows, COLUMNS, 'r.csv', download);
+
+    expect(outcome).toBe(ExportOutcome.Downloaded);
+  });
+
+  it('with truncated rows and a downloader that cannot download, returns Unsupported', async () => {
+    const download = jest.fn().mockReturnValue(false);
+    const loadRows = (): Promise<{ rows: Row[]; truncated: boolean }> => Promise.resolve({ rows: [], truncated: true });
+
+    const outcome = await runCsvExport(loadRows, COLUMNS, 'r.csv', download);
+
+    expect(outcome).toBe(ExportOutcome.Unsupported);
+  });
+
   it('with a downloader that cannot download, returns Unsupported', async () => {
     const download = jest.fn().mockReturnValue(false);
 

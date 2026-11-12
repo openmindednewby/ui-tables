@@ -4,7 +4,10 @@ export { FilterSidePanel } from './components/FilterSidePanel';
 export type { FilterSidePanelProps } from './components/FilterSidePanel';
 export { useReportDraft } from './hooks/useReportDraft';
 export type { ReportDraft } from './hooks/useReportDraft';
+export { useReportFilterQuery } from './hooks/useReportFilterQuery';
+export type { ReportFilterQuery, ReportParamsSetter, UseReportFilterQueryOptions } from './hooks/useReportFilterQuery';
 export {
+  reportFiltersToParams,
   isIsoDate,
   isRangeInverted,
   countActiveReportFilters,

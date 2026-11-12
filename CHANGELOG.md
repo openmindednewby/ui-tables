@@ -4,6 +4,9 @@
 
 ### Added
 
+- `fetchAllPages(fetchPage, { pageSize, maxPages, concurrency = 2 })`: reads every page from page 1 in batches of `concurrency`, stops at `maxPages`, returns `{ rows, truncated }`.
+- `useReportFilterQuery({ params, setParams, keys })`: router-agnostic URL state for `ReportFilters`, plus `reportFiltersToParams` (every key, `undefined` clears).
+- `ExportCsvAction` / `runCsvExport`: a row loader may return `{ rows, truncated }`; a truncated download reports `ExportOutcome.Truncated`.
 - `ReportFilters`: report filter preset over `Filters` (scope select, date range, multi status, currency) with typed values, URL query helpers (`reportFiltersFromQuery` / `reportFiltersToQuery` / `reportFiltersToSearch`), an inverted-range error that withholds `onChange`, and a compact mode below 768 px: one Filters button opening a `FilterSidePanel`.
 - `ExportCsvAction`: an Export CSV button over `toCsv` from `@dloizides/utils` with a Blob download, the shared `Button` loading state, and `csvFilename` / `runCsvExport` helpers.
 - `Filters`: a `multiSelect` field kind and an `error` on `dateRange` fields.

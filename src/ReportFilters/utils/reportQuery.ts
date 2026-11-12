@@ -71,6 +71,16 @@ export function reportFiltersToQuery(
   return Object.fromEntries(entries.filter(([, value]) => value !== ''));
 }
 
+/** Route params that name every filter key, `undefined` for a key without a value so a router clears it. */
+export function reportFiltersToParams(
+  values: ReportFilterValues,
+  keys: ReportQueryKeys = DEFAULT_REPORT_QUERY_KEYS,
+): Record<string, string | undefined> {
+  const query: Record<string, string | undefined> = reportFiltersToQuery(values, keys);
+  const allKeys = [keys.scope, keys.from, keys.to, keys.statuses, keys.currency];
+  return Object.fromEntries(allKeys.map((key): [string, string | undefined] => [key, query[key]]));
+}
+
 export function reportFiltersToSearch(
   values: ReportFilterValues,
   keys: ReportQueryKeys = DEFAULT_REPORT_QUERY_KEYS,
