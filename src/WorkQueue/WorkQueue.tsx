@@ -6,7 +6,8 @@ import { StatusLedger } from '../StatusLedger/StatusLedger';
 import { sortOldestFirst } from '../StatusLedger/utils/ageBands';
 import { elapsedMs } from '../StatusLedger/utils/duration';
 import { AgeBandQueue } from './components/AgeBandQueue';
-import { WORK_QUEUE_TEST_ID, workQueueLedgerTestID } from './constants';
+import { AgeBarCell, AgeLabelCell } from './components/AgeCells';
+import { AGE_BAR_MIN_WIDTH, AGE_MIN_WIDTH, WORK_QUEUE_TEST_ID, workQueueLedgerTestID } from './constants';
 import type { WorkQueueProps } from './types';
 import { buildAgeColumn } from './utils/ageColumn';
 import { WorkQueueVariant } from './WorkQueueVariant';
@@ -19,7 +20,8 @@ export function WorkQueue<T>(props: WorkQueueProps<T>): React.ReactElement {
   const limit = limitMs ?? Math.max(0, ...bands.map((band) => band.minAgeMs));
 
   const queueLedger = useMemo(() => {
-    const ageColumn = buildAgeColumn({ asBar: variant === WorkQueueVariant.Bar, ageOf, bands, strings: durationStrings, labels, limitMs: limit, toneColor, largestUnit });
+    const asBar = variant === WorkQueueVariant.Bar;
+    const ageColumn = buildAgeColumn({ Cell: asBar ? AgeBarCell : AgeLabelCell, minWidth: asBar ? AGE_BAR_MIN_WIDTH : AGE_MIN_WIDTH, ageOf, bands, strings: durationStrings, labels, limitMs: limit, toneColor, largestUnit });
     return { ...ledger, rows: sortOldestFirst(ledger.rows, ageOf), columns: [ageColumn, ...ledger.columns], testID: workQueueLedgerTestID(testID) };
   }, [ledger, ageOf, bands, durationStrings, labels, limit, toneColor, largestUnit, variant, testID]);
 

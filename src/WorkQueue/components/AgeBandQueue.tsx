@@ -11,7 +11,7 @@ import { useLedgerView, useToneColor } from '../../StatusLedger/hooks/useLedgerV
 import type { StatusLedgerProps } from '../../StatusLedger/types';
 import { groupByAgeBand, type AgeBand } from '../../StatusLedger/utils/ageBands';
 import { fillTemplate } from '../../StatusLedger/utils/duration';
-import { workQueueBandTestID } from '../constants';
+import { EMPTY_QUEUE_NO_ROW_ACTION, workQueueBandTestID } from '../constants';
 
 const GAP = 12;
 const COUNT_FONT = 13;
@@ -43,7 +43,7 @@ export function AgeBandQueue<T>({ ledger, ageOf, bands, bandCountLabel, testID }
     <View style={styles.root} testID={testID}>
       <LedgerFilterBar labels={labels} resultsCount={view.visible.length} testID={ledger.testID} view={view} />
       {nothingToGroup ? (
-        <DataTable columns={view.tableColumns} emptyLabel={labels.empty} keyExtractor={ledger.keyExtractor} loading={ledger.loading} rowAction={{ none: labels.empty }} rows={[]} testID={`${ledger.testID}-table`} />
+        <DataTable columns={view.tableColumns} emptyLabel={labels.empty} keyExtractor={ledger.keyExtractor} loading={ledger.loading} rowAction={{ none: EMPTY_QUEUE_NO_ROW_ACTION }} rows={[]} testID={`${ledger.testID}-table`} />
       ) : (
         groups.map(({ band, rows }) => (
           <LedgerSection
