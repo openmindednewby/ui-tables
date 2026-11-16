@@ -83,6 +83,16 @@ export {
   isAttentionTone,
   formatRelativeTime,
   toEpochMs,
+  AgeLabel,
+  AgeBar,
+  DurationUnit,
+  ageFraction,
+  elapsedMs,
+  fillTemplate,
+  formatDuration,
+  assignAgeBand,
+  groupByAgeBand,
+  sortOldestFirst,
 } from './StatusLedger';
 export type {
   StatusLedgerProps,
@@ -96,7 +106,15 @@ export type {
   ToneColors,
   SortValue,
   LedgerFilter,
+  AgeLabelProps,
+  AgeBarProps,
+  DurationStrings,
+  AgeBand,
+  AgeBandGroup,
 } from './StatusLedger';
+
+export { WorkQueue, WorkQueueVariant, WORK_QUEUE_TEST_ID, workQueueBandTestID, workQueueLedgerTestID } from './WorkQueue';
+export type { WorkQueueLabels, WorkQueueProps } from './WorkQueue';
 
 export { MonthStatusGrid, MonthGridColumns, MONTH_STATUS_GRID_TEST_ID, monthCellTestID, fitMonthGridColumns } from './MonthStatusGrid';
 export type { MonthStatusGridProps, MonthStatusCell } from './MonthStatusGrid';

@@ -17,7 +17,8 @@ const readText = (values: FilterValues, key: LedgerFilterKey): string => {
   return typeof value === 'string' ? value : ALL_VALUE;
 };
 
-function useToneColor(toneColors: StatusLedgerProps<unknown>['toneColors']): (tone: StatusTone) => string {
+/** Tone to colour: a `toneColors` override first, then the theme. */
+export function useToneColor(toneColors: StatusLedgerProps<unknown>['toneColors']): (tone: StatusTone) => string {
   const { theme } = useUi();
   return useCallback(
     (tone: StatusTone) => {

@@ -11,3 +11,12 @@ export { filterLedgerRows, sortLedgerRows, splitNeedsLook, distinctValues, isAtt
 export { formatRelativeTime, toEpochMs } from './utils/relativeTime';
 export type { RelativeTimeStrings, RelativeUnitStrings, TimeInput } from './utils/relativeTime';
 export type { StatusLedgerProps, StatusLedgerColumn, StatusLedgerLabels, ToneColors, SortValue, LedgerFilter } from './types';
+export { AgeLabel } from './components/AgeLabel';
+export type { AgeLabelProps } from './components/AgeLabel';
+export { AgeBar } from './components/AgeBar';
+export type { AgeBarProps } from './components/AgeBar';
+export { DurationUnit } from './DurationUnit';
+export { ageFraction, elapsedMs, fillTemplate, formatDuration } from './utils/duration';
+export type { DurationStrings } from './utils/duration';
+export { assignAgeBand, groupByAgeBand, sortOldestFirst } from './utils/ageBands';
+export type { AgeBand, AgeBandGroup } from './utils/ageBands';
