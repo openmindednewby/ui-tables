@@ -31,7 +31,7 @@ export function BooleanField({ field, barTestID, value, onChange }: BooleanField
   const testID = field.testID ?? fieldTestID(barTestID, field.key);
 
   return (
-    <View style={s.switchRow} testID={testID}>
+    <View style={s.switchRow} testID={field.wrapperTestID ?? testID}>
       <Text style={[controlStyles.subLabel, { color: colors.text }]}>{field.label}</Text>
       {/* The Pressable is the 44x44 pointer target; the Switch keeps its visual size, its focus and
           its a11y role. `accessible={false}` + `focusable={false}` keep the wrapper out of the

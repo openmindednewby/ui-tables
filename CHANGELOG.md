@@ -4,6 +4,7 @@
 
 ### Added
 
+- `Filters`: optional `wrapperTestID` on every field puts an id on the field's outer wrapper only; control ids (`-input`, `-from`, `-to`) keep deriving from `testID`. Default unchanged.
 - `WorkQueue`: a StatusLedger of waiting work, oldest first, in three variants (`WorkQueueVariant.Bands` default, `Table` with a toned age label, `Bar` with an age bar against `limitMs`); age band headings with counts, `buildAgeColumn` takes the cell component (`AgeLabelCell` / `AgeBarCell`).
 - `fetchAllPages(fetchPage, { pageSize, maxPages, concurrency = 2 })`: reads every page from page 1 in batches of `concurrency`, stops at `maxPages`, returns `{ rows, truncated }`.
 - `useReportFilterQuery({ params, setParams, keys })`: router-agnostic URL state for `ReportFilters`, plus `reportFiltersToParams` (every key, `undefined` clears).

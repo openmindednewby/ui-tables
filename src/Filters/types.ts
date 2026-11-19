@@ -48,6 +48,8 @@ interface FilterFieldBase {
   label: string;
   /** Override the derived testID (`${barTestID}-field-${key}` by default). */
   testID?: string;
+  /** testID of the field's outer wrapper only; defaults to the field testID. Control ids keep deriving from `testID`. */
+  wrapperTestID?: string;
   /** Let the field grow to fill spare width (search boxes usually do). Default false. */
   grow?: boolean;
   /** Minimum width (px) before the field wraps to the next line. Sensible per-kind default. */

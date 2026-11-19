@@ -52,6 +52,32 @@ describe('FilterFieldView dateRange', () => {
   });
 });
 
+describe('FilterFieldView wrapperTestID', () => {
+  it('with a wrapperTestID, puts that id on the field wrapper', () => {
+    render(<UiProvider theme={theme} t={t}><Filters fields={[{ ...FIELDS[0], wrapperTestID: 'wrap-dates' } as FilterField]} values={EMPTY} onChange={() => undefined} /></UiProvider>);
+
+    const wrapper = screen.getByTestId('wrap-dates');
+
+    expect(wrapper.contains(screen.getByTestId(`${RANGE_ID}-from`))).toBe(true);
+  });
+
+  it('with a wrapperTestID, keeps the range side ids derived from the field testID', () => {
+    render(<UiProvider theme={theme} t={t}><Filters fields={[{ ...FIELDS[0], wrapperTestID: 'wrap-dates' } as FilterField]} values={EMPTY} onChange={() => undefined} /></UiProvider>);
+
+    const to = screen.getByTestId(`${RANGE_ID}-to`);
+
+    expect(to.getAttribute('type')).toBe('date');
+  });
+
+  it('without a wrapperTestID, the wrapper keeps the field testID', () => {
+    renderFilters(EMPTY);
+
+    const wrappers = screen.getAllByTestId(RANGE_ID);
+
+    expect(wrappers.length).toBeGreaterThan(0);
+  });
+});
+
 describe('FilterFieldView date', () => {
   it('with a date field, renders a native date input', () => {
     renderFilters(EMPTY);

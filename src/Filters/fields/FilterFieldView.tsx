@@ -183,7 +183,7 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
       error={field.kind === 'dateRange' ? field.error : undefined}
       label={field.label}
       labelVariant="control"
-      testID={testID}
+      testID={field.wrapperTestID ?? testID}
     >
       {body}
     </Field>
