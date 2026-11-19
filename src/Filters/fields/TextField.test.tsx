@@ -29,4 +29,28 @@ describe('TextField', () => {
     const describedById = screen.getByTestId(`${fieldTestID('bar', 'search')}-input`).getAttribute('aria-describedby') ?? '';
     expect(document.getElementById(describedById)?.textContent).toBe(hint);
   });
+
+  it('with an inputTestID, puts that testID on the input', () => {
+    const field: TextFilterField = { key: 'q', kind: 'text', label: 'Search', testID: 'bar-q', inputTestID: 'cases-search' };
+
+    render(
+      <UiProvider theme={theme} t={translateKey}>
+        <TextField field={field} barTestID="bar" value="" onChange={noop} onSubmit={noop} />
+      </UiProvider>,
+    );
+
+    expect(screen.getByTestId('cases-search').tagName).toBe('INPUT');
+  });
+
+  it('without an inputTestID, keeps the field testID with an -input suffix', () => {
+    const field: TextFilterField = { key: 'q', kind: 'text', label: 'Search', testID: 'bar-q' };
+
+    render(
+      <UiProvider theme={theme} t={translateKey}>
+        <TextField field={field} barTestID="bar" value="" onChange={noop} onSubmit={noop} />
+      </UiProvider>,
+    );
+
+    expect(screen.getByTestId('bar-q-input').tagName).toBe('INPUT');
+  });
 });

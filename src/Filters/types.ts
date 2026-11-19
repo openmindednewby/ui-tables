@@ -70,6 +70,8 @@ export interface SelectFilterField extends FilterFieldBase {
 export interface TextFilterField extends FilterFieldBase {
   kind: 'text';
   placeholder?: string;
+  /** testID of the input itself; defaults to `<field testID>-input`. */
+  inputTestID?: string;
 }
 
 /** A numeric text input (`keyboardType="numeric"`). Value stays a string (''=unset). */
