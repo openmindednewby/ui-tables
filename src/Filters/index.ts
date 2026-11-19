@@ -1,6 +1,6 @@
 // Filters — the declarative, configurable filter bar (superset of every portal's filters).
 export { Filters } from './Filters';
-export type { FiltersProps } from './Filters';
+export type { FilterActionTestIDs, FiltersProps } from './Filters';
 export type { RenderSelectArgs, FieldStrings } from './fields/FilterFieldView';
 
 export { useFilterDraft } from './hooks/useFilterDraft';

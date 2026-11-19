@@ -28,6 +28,7 @@ export {
 // hand-rolled filters; only the theme changes per app.
 export { Filters, useFilterDraft, suggestOptions, isUnmatched } from './Filters';
 export type {
+  FilterActionTestIDs,
   FiltersProps,
   RenderSelectArgs,
   FieldStrings,

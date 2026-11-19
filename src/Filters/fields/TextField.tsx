@@ -36,6 +36,7 @@ export function TextField({ field, barTestID, value, onChange, onSubmit }: TextF
     <>
       <TextInput
         {...(a11yProps as TextInputProps)}
+        ref={field.kind === 'text' ? field.inputRef : undefined}
         keyboardType={isNumber ? 'numeric' : 'default'}
         placeholder={field.placeholder}
         placeholderTextColor={colors.textSecondary}

@@ -12,7 +12,8 @@
  * error text) is a PRE-LOCALIZED string passed in by the caller — the package never
  * calls FM/i18n for content and never touches a router or store.
  */
-import type { StyleProp, ViewStyle } from 'react-native';
+import type React from 'react';
+import type { StyleProp, TextInput, ViewStyle } from 'react-native';
 
 import type { ControlOption, DateRangeValue } from '@dloizides/ui-forms';
 
@@ -74,6 +75,8 @@ export interface TextFilterField extends FilterFieldBase {
   placeholder?: string;
   /** testID of the input itself; defaults to `<field testID>-input`. */
   inputTestID?: string;
+  /** Opt-in ref to the input, e.g. so the screen can give it initial focus. */
+  inputRef?: React.Ref<TextInput>;
 }
 
 /** A numeric text input (`keyboardType="numeric"`). Value stays a string (''=unset). */

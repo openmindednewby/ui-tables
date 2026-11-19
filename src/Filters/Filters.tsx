@@ -61,6 +61,13 @@ export interface FiltersProps {
   /** FilterBar per-slot style overrides — merged LAST, so a consumer always wins. */
   styleOverrides?: FilterBarStyleOverrides;
   testID?: string;
+  /** Caller testIDs for the Apply / Clear buttons; each defaults to `<testID>-apply` / `<testID>-clear`. */
+  actionTestIDs?: FilterActionTestIDs;
+}
+
+export interface FilterActionTestIDs {
+  apply?: string;
+  clear?: string;
 }
 
 export function Filters({
@@ -83,6 +90,7 @@ export function Filters({
   renderSelect,
   styleOverrides,
   testID = FILTERS_TEST_ID,
+  actionTestIDs,
 }: FiltersProps): React.ReactElement {
   const { t } = useUi();
 
@@ -118,7 +126,7 @@ export function Filters({
           hint={clearHint ?? t(FILTERS_I18N.clearHint)}
           tone="ghost"
           onPress={onClear}
-          testID={clearTestID(testID)}
+          testID={actionTestIDs?.clear ?? clearTestID(testID)}
         />
       )}
       {onApply !== undefined && (
@@ -128,7 +136,7 @@ export function Filters({
           tone="primary"
           disabled={applyDisabled}
           onPress={onApply}
-          testID={applyTestID(testID)}
+          testID={actionTestIDs?.apply ?? applyTestID(testID)}
         />
       )}
     </>
