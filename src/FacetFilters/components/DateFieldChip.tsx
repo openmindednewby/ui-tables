@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
-import { FACET_TEST_IDS, dateFieldTestID, dateRangeTestID } from '../constants';
+import { facetTestIds } from '../testIds';
 import type { DateFieldChipLabels, DateFilterValue, FacetOption } from '../types';
 import { TextButton } from './TextButton';
 import { ToggleOption } from './ToggleOption';
@@ -16,6 +16,7 @@ export interface DateFieldChipProps {
   onChange: (value: DateFilterValue | null) => void;
   labels: DateFieldChipLabels;
   testID?: string;
+  testIDPrefix?: string;
 }
 
 function pick(value: DateFilterValue | null, fields: readonly FacetOption[], ranges: readonly FacetOption[]): DateFilterValue | null {
@@ -26,12 +27,13 @@ function pick(value: DateFilterValue | null, fields: readonly FacetOption[], ran
 }
 
 /** The which-date chip editor: choose the date (updated, created, reviewed) and the range it filters on. */
-export function DateFieldChip({ fields, ranges, value, onChange, labels, testID = FACET_TEST_IDS.dateChip }: DateFieldChipProps): React.ReactElement {
+export function DateFieldChip({ fields, ranges, value, onChange, labels, testID, testIDPrefix }: DateFieldChipProps): React.ReactElement {
   const { theme } = useUi();
+  const ids = facetTestIds(testIDPrefix);
   const current = pick(value, fields, ranges);
   const muted = { color: theme.colors.textSecondary };
   return (
-    <View accessibilityLabel={labels.title} style={[s.panel, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]} testID={testID}>
+    <View accessibilityLabel={labels.title} style={[s.panel, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]} testID={testID ?? ids.dateChip}>
       <Text style={[s.panelTitle, muted]}>{labels.fieldGroup}</Text>
       <View accessibilityLabel={labels.fieldGroup} accessibilityRole="radiogroup">
         {fields.map((f) => (
@@ -42,7 +44,7 @@ export function DateFieldChip({ fields, ranges, value, onChange, labels, testID 
             onPress={() => onChange({ field: f.value, range: current?.range ?? f.value })}
             role="radio"
             selected={value !== null && value.field === f.value}
-            testID={dateFieldTestID(f.value)}
+            testID={ids.dateField(f.value)}
           />
         ))}
       </View>
@@ -56,11 +58,11 @@ export function DateFieldChip({ fields, ranges, value, onChange, labels, testID 
             onPress={() => onChange({ field: current?.field ?? r.value, range: r.value })}
             role="radio"
             selected={value !== null && value.range === r.value}
-            testID={dateRangeTestID(r.value)}
+            testID={ids.dateRange(r.value)}
           />
         ))}
       </View>
-      {value !== null && <TextButton hint={labels.clearHint} label={labels.clear} onPress={() => onChange(null)} testID={FACET_TEST_IDS.dateClear} />}
+      {value !== null && <TextButton hint={labels.clearHint} label={labels.clear} onPress={() => onChange(null)} testID={ids.dateClear} />}
     </View>
   );
 }

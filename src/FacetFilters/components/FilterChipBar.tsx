@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
-import { FACET_TEST_IDS, addFacetTestID } from '../constants';
+import { facetTestIds } from '../testIds';
 import type { FacetDefinition, FacetValues, FilterChipBarLabels } from '../types';
 import { activeFacetKeys, facetSummary, isSameFacets, removeFacet, toggleFacetValue } from '../utils/facetState';
 import { FacetChipEditor } from './FacetChipEditor';
@@ -20,15 +20,28 @@ export interface FilterChipBarProps {
   labels: FilterChipBarLabels;
   leading?: React.ReactNode;
   testID?: string;
+  testIDPrefix?: string;
+  pinnedKeys?: readonly string[];
+  alwaysShowReset?: boolean;
+  onReset?: () => void;
+}
+
+const NO_KEYS: readonly string[] = [];
+
+function shownKeys(active: readonly string[], pinned: readonly string[], openKey: string | null): readonly string[] {
+  const keys = new Set([...pinned, ...active]);
+  if (openKey !== null) keys.add(openKey);
+  return [...keys];
 }
 
 /** One wrapping row of facet chips with Add filter and Reset; the open chip's editor shows under the row. */
-export function FilterChipBar({ facets, values, onChange, defaultValues = {}, labels, leading, testID = FACET_TEST_IDS.bar }: FilterChipBarProps): React.ReactElement {
+export function FilterChipBar({ facets, values, onChange, defaultValues = {}, labels, leading, testID, testIDPrefix, pinnedKeys = NO_KEYS, alwaysShowReset = false, onReset }: FilterChipBarProps): React.ReactElement {
   const { theme } = useUi();
+  const ids = facetTestIds(testIDPrefix);
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const active = activeFacetKeys(facets, values);
-  const shown = openKey !== null && !active.includes(openKey) ? [...active, openKey] : active;
+  const shown = shownKeys(active, pinnedKeys, openKey);
   const addable = facets.filter((f) => !shown.includes(f.key));
   const openFacet = facets.find((f) => f.key === openKey);
 
@@ -36,52 +49,52 @@ export function FilterChipBar({ facets, values, onChange, defaultValues = {}, la
     setAdding(false);
     setOpenKey(key);
   };
+  const removeKey = (key: string): void => {
+    setOpenKey(null);
+    onChange(removeFacet(values, key));
+  };
+  const resetAll = (): void => {
+    setOpenKey(null);
+    if (onReset === undefined) onChange(defaultValues);
+    else onReset();
+  };
 
   return (
-    <View style={s.stack} testID={testID}>
+    <View style={s.stack} testID={testID ?? ids.bar}>
       <View style={s.bar}>
         {leading}
         {facets.filter((f) => shown.includes(f.key)).map((f) => (
           <FilterChip
+            active={active.includes(f.key)}
             editHint={labels.editHint}
             facetKey={f.key}
             key={f.key}
             label={f.label}
             onPress={() => setOpenKey(openKey === f.key ? null : f.key)}
-            onRemove={() => {
-              setOpenKey(null);
-              onChange(removeFacet(values, f.key));
-            }}
+            onRemove={active.includes(f.key) || !pinnedKeys.includes(f.key) ? () => removeKey(f.key) : undefined}
             open={openKey === f.key}
             removeHint={labels.removeHint}
             removeLabel={labels.remove(f.label)}
             summary={facetSummary(f, values[f.key] ?? [], labels)}
+            testIDPrefix={testIDPrefix}
           />
         ))}
         {addable.length > 0 && (
-          <TextButton expanded={adding} hint={labels.addFilterHint} label={labels.addFilter} onPress={() => setAdding(!adding)} testID={FACET_TEST_IDS.addFilter} />
+          <TextButton expanded={adding} hint={labels.addFilterHint} label={labels.addFilter} onPress={() => setAdding(!adding)} testID={ids.addFilter} />
         )}
-        {!isSameFacets(values, defaultValues) && (
-          <TextButton
-            hint={labels.resetHint}
-            label={labels.reset}
-            onPress={() => {
-              setOpenKey(null);
-              onChange(defaultValues);
-            }}
-            testID={FACET_TEST_IDS.reset}
-          />
+        {(alwaysShowReset || !isSameFacets(values, defaultValues)) && (
+          <TextButton hint={labels.resetHint} label={labels.reset} onPress={resetAll} testID={ids.reset} />
         )}
       </View>
       {adding && (
-        <View style={[s.panel, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]} testID={FACET_TEST_IDS.addMenu}>
+        <View style={[s.panel, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]} testID={ids.addMenu}>
           {addable.map((f) => (
-            <ToggleOption hint={labels.addFilterHint} key={f.key} label={f.label} onPress={() => startFacet(f.key)} role="checkbox" selected={false} testID={addFacetTestID(f.key)} />
+            <ToggleOption hint={labels.addFilterHint} key={f.key} label={f.label} onPress={() => startFacet(f.key)} role="checkbox" selected={false} testID={ids.addFacet(f.key)} />
           ))}
         </View>
       )}
       {openFacet !== undefined && (
-        <FacetChipEditor facet={openFacet} onToggle={(v) => onChange(toggleFacetValue(values, openFacet.key, v))} optionHint={labels.optionHint} selected={values[openFacet.key] ?? []} />
+        <FacetChipEditor facet={openFacet} onToggle={(v) => onChange(toggleFacetValue(values, openFacet.key, v))} optionHint={labels.optionHint} selected={values[openFacet.key] ?? []} testIDPrefix={testIDPrefix} />
       )}
     </View>
   );

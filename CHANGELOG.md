@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- FacetFilters (all opt-in, 3.8.0 output unchanged without them): `testIDPrefix` on FilterChipBar, FacetChipEditor, DateFieldChip, ColumnPicker, DateFilterChip and CursorFooter builds `<prefix>-chip-<key>`, `-add-filter[-<key>]`, `-filter-option-<value>`, `-reset`, `-chip-date`, `-date-mode-<f>`, `-date-range-<r>`, `-column-toggle-<key>`, `-columns`, `-found`, `-page-size`, `-prev`, `-next` (`facetTestIds`); FilterChipBar `pinnedKeys` (always-shown chips, no cross while empty), `alwaysShowReset`, `onReset`; every chip carries `data-active`; `DateFilterChip` (date chip in the row naming the mode and range, for the `leading` slot); `CursorFooter` (Found N, page size, Previous / Next, no offset); `UrlStateDefaults.extraKeys` (passthrough params such as `q`), `ListFilterState.after` with `setAfter` / `setExtra` in `useListUrlState` (facet, date, size, search and reset clear the cursor) (MODC-1 step 5c).
+
 - FacetFilters: FilterChipBar (Add filter, Reset, remove), FacetChipEditor, DateFieldChip (which date + range), ColumnPicker, useListUrlState (filters, date, page, size, columns in the URL; back/forward), IdentityCell (name, then ID · country), DateStampCell (exact + relative). Strings come in through props; colours from the UiProvider theme. Status cell reuses StatusPill; pager with page size reuses Pager (MODC-1 D-MC-663).
 
 ### Added

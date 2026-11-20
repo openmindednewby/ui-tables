@@ -5,6 +5,7 @@ export interface UrlStateDefaults {
   facetKeys: readonly string[];
   size?: number;
   allowedSizes?: readonly number[];
+  extraKeys?: readonly string[];
 }
 
 const splitList = (raw: string | null): string[] => (raw === null ? [] : raw.split(VALUE_SEPARATOR).filter((v) => v !== ''));
@@ -18,6 +19,18 @@ function parseDate(raw: string | null): DateFilterValue | null {
   if (raw === null) return null;
   const [field, range] = raw.split(DATE_SEPARATOR);
   return field !== undefined && field !== '' && range !== undefined && range !== '' ? { field, range } : null;
+}
+
+function parseExtras(params: URLSearchParams, keys: readonly string[]): Record<string, string> {
+  return Object.fromEntries(keys.map((k) => [k, params.get(k) ?? ''] as const).filter(([, v]) => v !== ''));
+}
+
+function optionalParts(params: URLSearchParams, defaults: UrlStateDefaults): Pick<ListFilterState, 'extras' | 'after'> {
+  const after = params.get(URL_PARAM.after);
+  return {
+    ...(defaults.extraKeys === undefined ? {} : { extras: parseExtras(params, defaults.extraKeys) }),
+    ...(after === null || after === '' ? {} : { after }),
+  };
 }
 
 /** Reads a query string into list state; unknown keys, bad numbers and unlisted sizes fall back to defaults. */
@@ -36,6 +49,7 @@ export function parseListQuery(search: string, defaults: UrlStateDefaults): List
     page: parsePositive(params.get(URL_PARAM.page), FIRST_PAGE),
     size: allowed === undefined || allowed.includes(size) ? size : fallbackSize,
     columns: columns.length > 0 ? columns : null,
+    ...optionalParts(params, defaults),
   };
 }
 
@@ -49,5 +63,9 @@ export function serializeListQuery(state: ListFilterState, defaultSize: number =
   if (state.page !== FIRST_PAGE) params.set(URL_PARAM.page, String(state.page));
   if (state.size !== defaultSize) params.set(URL_PARAM.size, String(state.size));
   if (state.columns !== null) params.set(URL_PARAM.columns, state.columns.join(VALUE_SEPARATOR));
+  Object.entries(state.extras ?? {}).forEach(([k, v]) => {
+    if (v !== undefined && v !== '') params.set(k, v);
+  });
+  if (state.after !== undefined && state.after !== null && state.after !== '') params.set(URL_PARAM.after, state.after);
   return params.toString();
 }

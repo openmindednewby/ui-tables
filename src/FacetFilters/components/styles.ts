@@ -34,4 +34,6 @@ export const facetStyles = StyleSheet.create({
   stack: { gap: GAP / 2 },
   primary: { fontSize: FONT, fontWeight: WEIGHT },
   secondary: { fontSize: SMALL_FONT },
+  footer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: GAP * 2 },
+  footerNav: { flexDirection: 'row', marginLeft: 'auto', gap: GAP },
 });

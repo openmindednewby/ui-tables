@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
-import { FACET_TEST_IDS, columnToggleTestID } from '../constants';
+import { facetTestIds } from '../testIds';
 import type { ColumnOption, ColumnPickerLabels } from '../types';
 import { toggleColumn } from '../utils/columns';
 import { ToggleOption } from './ToggleOption';
@@ -15,13 +15,15 @@ export interface ColumnPickerProps {
   onChange: (visible: string[]) => void;
   labels: ColumnPickerLabels;
   testID?: string;
+  testIDPrefix?: string;
 }
 
 /** Shows or hides table columns; locked columns stay on and say so in their hint. */
-export function ColumnPicker({ columns, visible, onChange, labels, testID = FACET_TEST_IDS.columnPicker }: ColumnPickerProps): React.ReactElement {
+export function ColumnPicker({ columns, visible, onChange, labels, testID, testIDPrefix }: ColumnPickerProps): React.ReactElement {
   const { theme } = useUi();
+  const ids = facetTestIds(testIDPrefix);
   return (
-    <View accessibilityLabel={labels.title} style={[s.panel, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]} testID={testID}>
+    <View accessibilityLabel={labels.title} style={[s.panel, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]} testID={testID ?? ids.columnPicker}>
       <Text style={[s.panelTitle, { color: theme.colors.textSecondary }]}>{labels.title}</Text>
       {columns.map((c) => (
         <ToggleOption
@@ -32,7 +34,7 @@ export function ColumnPicker({ columns, visible, onChange, labels, testID = FACE
           onPress={() => onChange(toggleColumn(columns, visible, c.key))}
           role="checkbox"
           selected={c.locked === true || visible.includes(c.key)}
-          testID={columnToggleTestID(c.key)}
+          testID={ids.columnToggle(c.key)}
         />
       ))}
     </View>

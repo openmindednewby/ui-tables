@@ -25,6 +25,8 @@ export interface ListFilterState {
   page: number;
   size: number;
   columns: readonly string[] | null;
+  extras?: Readonly<Record<string, string | undefined>>;
+  after?: string | null;
 }
 
 /** Already-translated copy for the chip bar and its chips. */
@@ -62,4 +64,19 @@ export interface ColumnPickerLabels {
   title: string;
   toggleHint: string;
   lockedHint: string;
+}
+
+export interface DateFilterChipLabels {
+  title: string;
+  anyDate: string;
+  editHint: string;
+}
+
+export interface CursorFooterLabels {
+  found: (total: number) => string;
+  pageSize: (size: number) => string;
+  prev: string;
+  prevHint: string;
+  next: string;
+  nextHint: string;
 }

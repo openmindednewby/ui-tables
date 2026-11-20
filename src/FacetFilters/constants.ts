@@ -11,6 +11,7 @@ export const URL_PARAM = {
   page: 'page',
   size: 'size',
   columns: 'cols',
+  after: 'after',
 } as const;
 
 export const FACET_TEST_IDS = {
