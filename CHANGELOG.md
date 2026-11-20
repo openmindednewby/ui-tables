@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- FacetFilters: FilterChipBar (Add filter, Reset, remove), FacetChipEditor, DateFieldChip (which date + range), ColumnPicker, useListUrlState (filters, date, page, size, columns in the URL; back/forward), IdentityCell (name, then ID · country), DateStampCell (exact + relative). Strings come in through props; colours from the UiProvider theme. Status cell reuses StatusPill; pager with page size reuses Pager (MODC-1 D-MC-663).
+
+## Unreleased
+
 ### Added
 
 - `Filters`: optional `wrapperTestID` on every field puts an id on the field's outer wrapper only; control ids (`-input`, `-from`, `-to`) keep deriving from `testID`. Default unchanged.
