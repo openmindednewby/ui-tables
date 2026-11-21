@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.9.2
+
+### Changed
+
+- `FilterChipBar`: `alwaysShowReset` and `onReset` are replaced by a `trailing` slot; when the caller passes `trailing`, the built-in Reset is not drawn and the caller owns its Reset (for example `TextButton`, now exported, calling `useListUrlState().reset`). Body split into `useChipBarState` and `AddFilterMenu`.
+- FacetFilters: the four filter panels share one `panelStyle`; `ToggleOption.role` takes the exported `ToggleRole` const enum (the string values still type-check); spacing ratios in the shared styles are named constants.
+
+### Fixed
+
+- `useListUrlState`: setters are stable across renders and read the latest state, so two setters in one handler no longer drop the first change.
+- `Pager`: the active rows-per-page pill label takes its ink from `resolveOnBrand` against the brand fill instead of `colors.surface` (was below 4.5:1 on a pale brand fill).
+
 ## 3.9.1
 
 ### Fixed
