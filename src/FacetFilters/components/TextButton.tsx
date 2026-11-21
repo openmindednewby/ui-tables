@@ -3,6 +3,7 @@ import { Pressable, Text } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
+import { readableInk } from './readableInk';
 import { facetStyles as s } from './styles';
 
 const DISABLED_OPACITY = 0.5;
@@ -30,7 +31,7 @@ export function TextButton({ label, hint, onPress, expanded, disabled = false, t
       style={[s.textButton, disabled && { opacity: DISABLED_OPACITY }]}
       testID={testID}
     >
-      <Text style={[s.chipText, s.chipLabel, { color: theme.palette.primary['500'] }]}>{label}</Text>
+      <Text style={[s.chipText, s.chipLabel, { color: readableInk(theme.palette.primary['500'], [theme.colors.background, theme.colors.surface], theme.colors.text) }]}>{label}</Text>
     </Pressable>
   );
 }
