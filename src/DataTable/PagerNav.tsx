@@ -6,6 +6,7 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { resolveOnBrand } from '@dloizides/design-tokens';
 import { useUi, type UiTranslate } from '@dloizides/ui-feedback';
 
 import { accessibleName } from '../accessibleName';
@@ -123,7 +124,7 @@ function RowsControl({ pageSize, pageSizeOptions, onPageSizeChange, isDropdown, 
                 onPress={() => onPageSizeChange(size)}
                 style={[c.sizePill, { borderColor: active ? brand : colors.border, backgroundColor: active ? brand : TRANSPARENT }, o?.sizePill]}
               >
-                <Text style={[c.sizePillText, { color: active ? colors.surface : colors.textSecondary }, o?.sizePillText]}>{size}</Text>
+                <Text style={[c.sizePillText, { color: active ? resolveOnBrand(brand) : colors.textSecondary }, o?.sizePillText]}>{size}</Text>
               </Pressable>
             );
           })}

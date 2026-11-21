@@ -65,20 +65,19 @@ describe('FilterChipBar options', () => {
     expect(onChange).toHaveBeenCalledWith({ risk: ['high'] });
   });
 
-  it('with alwaysShowReset on the default values, still offers Reset', () => {
-    const values = {};
+  it('with a trailing slot on changed values, hides the built-in Reset', () => {
+    const values = { risk: ['high'] };
 
-    renderBar(values, { alwaysShowReset: true, testIDPrefix: PREFIX });
+    renderBar(values, { trailing: <span data-testid="own-reset" />, testIDPrefix: PREFIX });
 
-    expect(screen.queryByTestId(ids.reset)).not.toBeNull();
+    expect([screen.queryByTestId(ids.reset), screen.queryByTestId('own-reset')].map((el) => el !== null)).toEqual([false, true]);
   });
 
-  it('with onReset, Reset calls onReset and not onChange', () => {
-    const onReset = jest.fn();
-    const onChange = renderBar({ risk: ['high'] }, { onReset });
+  it('with no trailing slot on changed values, built-in Reset emits the default values', () => {
+    const onChange = renderBar({ risk: ['high'] }, { defaultValues: { vs: ['review'] } });
 
     fireEvent.click(screen.getByTestId(FACET_TEST_IDS.reset));
 
-    expect([onReset.mock.calls.length, onChange.mock.calls.length]).toEqual([1, 0]);
+    expect(onChange).toHaveBeenCalledWith({ vs: ['review'] });
   });
 });

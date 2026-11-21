@@ -11,6 +11,9 @@ const SMALL_FONT = 12;
 const WEIGHT = '600' as const;
 const PANEL_RADIUS = 8;
 const PANEL_PAD = 8;
+const HALF_GAP = GAP / 2;
+const WIDE_GAP = GAP * 2;
+const MARK_WIDTH = FONT + GAP;
 
 export const facetStyles = StyleSheet.create({
   bar: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: GAP },
@@ -27,13 +30,13 @@ export const facetStyles = StyleSheet.create({
   chipLabel: { fontWeight: WEIGHT },
   iconButton: { minHeight: MIN_TARGET_PX, minWidth: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center' },
   textButton: { minHeight: MIN_TARGET_PX, justifyContent: 'center', paddingHorizontal: PAD_H },
-  panel: { borderWidth: BORDER, borderRadius: PANEL_RADIUS, padding: PANEL_PAD, gap: GAP / 2, width: '100%' },
+  panel: { borderWidth: BORDER, borderRadius: PANEL_RADIUS, padding: PANEL_PAD, gap: HALF_GAP, width: '100%' },
   panelTitle: { fontSize: SMALL_FONT, fontWeight: WEIGHT },
   option: { flexDirection: 'row', alignItems: 'center', gap: GAP, minHeight: MIN_TARGET_PX, paddingHorizontal: PANEL_PAD },
-  mark: { width: FONT + GAP, textAlign: 'center', fontSize: FONT, fontWeight: WEIGHT },
-  stack: { gap: GAP / 2 },
+  mark: { width: MARK_WIDTH, textAlign: 'center', fontSize: FONT, fontWeight: WEIGHT },
+  stack: { gap: HALF_GAP },
   primary: { fontSize: FONT, fontWeight: WEIGHT },
   secondary: { fontSize: SMALL_FONT },
-  footer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: GAP * 2 },
+  footer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: WIDE_GAP },
   footerNav: { flexDirection: 'row', marginLeft: 'auto', gap: GAP },
 });

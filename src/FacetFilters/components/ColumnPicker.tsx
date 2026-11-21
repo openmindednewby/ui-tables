@@ -7,6 +7,8 @@ import { facetTestIds } from '../testIds';
 import type { ColumnOption, ColumnPickerLabels } from '../types';
 import { toggleColumn } from '../utils/columns';
 import { ToggleOption } from './ToggleOption';
+import { ToggleRole } from '../ToggleRole';
+import { panelStyle } from './panelStyle';
 import { facetStyles as s } from './styles';
 
 export interface ColumnPickerProps {
@@ -23,7 +25,7 @@ export function ColumnPicker({ columns, visible, onChange, labels, testID, testI
   const { theme } = useUi();
   const ids = facetTestIds(testIDPrefix);
   return (
-    <View accessibilityLabel={labels.title} style={[s.panel, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]} testID={testID ?? ids.columnPicker}>
+    <View accessibilityLabel={labels.title} style={panelStyle(theme.colors)} testID={testID ?? ids.columnPicker}>
       <Text style={[s.panelTitle, { color: theme.colors.textSecondary }]}>{labels.title}</Text>
       {columns.map((c) => (
         <ToggleOption
@@ -32,7 +34,7 @@ export function ColumnPicker({ columns, visible, onChange, labels, testID, testI
           key={c.key}
           label={c.label}
           onPress={() => onChange(toggleColumn(columns, visible, c.key))}
-          role="checkbox"
+          role={ToggleRole.Checkbox}
           selected={c.locked === true || visible.includes(c.key)}
           testID={ids.columnToggle(c.key)}
         />

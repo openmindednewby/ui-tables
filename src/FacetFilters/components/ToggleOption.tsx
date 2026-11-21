@@ -3,6 +3,7 @@ import { Pressable, Text } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
+import { ToggleRole } from '../ToggleRole';
 import { facetStyles as s } from './styles';
 
 const CHECK_MARK = '✓';
@@ -15,13 +16,13 @@ export interface ToggleOptionProps {
   selected: boolean;
   onPress: () => void;
   hint: string;
-  role: 'checkbox' | 'radio';
+  role: ToggleRole | `${ToggleRole}`;
   disabled?: boolean;
   testID: string;
 }
 
 function markFor(role: ToggleOptionProps['role'], selected: boolean): string {
-  if (role === 'radio') return selected ? RADIO_ON : RADIO_OFF;
+  if (role === ToggleRole.Radio) return selected ? RADIO_ON : RADIO_OFF;
   return selected ? CHECK_MARK : '';
 }
 

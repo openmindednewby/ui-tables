@@ -7,6 +7,8 @@ import { facetTestIds } from '../testIds';
 import type { DateFieldChipLabels, DateFilterValue, FacetOption } from '../types';
 import { TextButton } from './TextButton';
 import { ToggleOption } from './ToggleOption';
+import { ToggleRole } from '../ToggleRole';
+import { panelStyle } from './panelStyle';
 import { facetStyles as s } from './styles';
 
 export interface DateFieldChipProps {
@@ -33,7 +35,7 @@ export function DateFieldChip({ fields, ranges, value, onChange, labels, testID,
   const current = pick(value, fields, ranges);
   const muted = { color: theme.colors.textSecondary };
   return (
-    <View accessibilityLabel={labels.title} style={[s.panel, { borderColor: theme.colors.border, backgroundColor: theme.colors.surface }]} testID={testID ?? ids.dateChip}>
+    <View accessibilityLabel={labels.title} style={panelStyle(theme.colors)} testID={testID ?? ids.dateChip}>
       <Text style={[s.panelTitle, muted]}>{labels.fieldGroup}</Text>
       <View accessibilityLabel={labels.fieldGroup} accessibilityRole="radiogroup">
         {fields.map((f) => (
@@ -42,7 +44,7 @@ export function DateFieldChip({ fields, ranges, value, onChange, labels, testID,
             key={f.value}
             label={f.label}
             onPress={() => onChange({ field: f.value, range: current?.range ?? f.value })}
-            role="radio"
+            role={ToggleRole.Radio}
             selected={value !== null && value.field === f.value}
             testID={ids.dateField(f.value)}
           />
@@ -56,7 +58,7 @@ export function DateFieldChip({ fields, ranges, value, onChange, labels, testID,
             key={r.value}
             label={r.label}
             onPress={() => onChange({ field: current?.field ?? r.value, range: r.value })}
-            role="radio"
+            role={ToggleRole.Radio}
             selected={value !== null && value.range === r.value}
             testID={ids.dateRange(r.value)}
           />

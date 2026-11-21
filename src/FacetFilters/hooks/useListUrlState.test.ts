@@ -63,4 +63,26 @@ describe('useListUrlState', () => {
 
     expect(adapter.writes).toEqual(['cols=name']);
   });
+
+  it('with two setters in one handler, the second keeps the first change', () => {
+    const adapter = fakeAdapter('');
+    const { result } = renderHook(() => useListUrlState(DEFAULTS, adapter));
+
+    act(() => {
+      result.current.setFacets({ vs: ['review'] });
+      result.current.setPage(2);
+    });
+
+    expect(adapter.writes.at(-1)).toBe('vs=review&page=2');
+  });
+
+  it('with a rerender and no change, keeps the same setters', () => {
+    const adapter = fakeAdapter('');
+    const { result, rerender } = renderHook(() => useListUrlState(DEFAULTS, adapter));
+    const before = result.current.setFacets;
+
+    rerender();
+
+    expect(result.current.setFacets).toBe(before);
+  });
 });
