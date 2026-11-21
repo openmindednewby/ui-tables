@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 3.9.1
+
+### Fixed
+
+- `Filters`: the primary Apply label takes its ink from `resolveOnBrand` (`@dloizides/design-tokens`) against the brand fill instead of `colors.surface`, so it meets 4.5:1 in light and dark (was 2.1:1 on a pale brand fill).
+
+## 3.9.0
 
 - FacetFilters (all opt-in, 3.8.0 output unchanged without them): `testIDPrefix` on FilterChipBar, FacetChipEditor, DateFieldChip, ColumnPicker, DateFilterChip and CursorFooter builds `<prefix>-chip-<key>`, `-add-filter[-<key>]`, `-filter-option-<value>`, `-reset`, `-chip-date`, `-date-mode-<f>`, `-date-range-<r>`, `-column-toggle-<key>`, `-columns`, `-found`, `-page-size`, `-prev`, `-next` (`facetTestIds`); FilterChipBar `pinnedKeys` (always-shown chips, no cross while empty), `alwaysShowReset`, `onReset`; every chip carries `data-active`; `DateFilterChip` (date chip in the row naming the mode and range, for the `leading` slot); `CursorFooter` (Found N, page size, Previous / Next, no offset); `UrlStateDefaults.extraKeys` (passthrough params such as `q`), `ListFilterState.after` with `setAfter` / `setExtra` in `useListUrlState` (facet, date, size, search and reset clear the cursor) (MODC-1 step 5c).
 

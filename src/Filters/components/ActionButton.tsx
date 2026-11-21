@@ -7,6 +7,7 @@
 import React from 'react';
 import { Pressable, Text } from 'react-native';
 
+import { resolveOnBrand } from '@dloizides/design-tokens';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { filterStyles as s } from '../styles';
@@ -48,7 +49,7 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
       ]}
       testID={testID}
     >
-      <Text style={[s.actionText, { color: isPrimary ? colors.surface : colors.text }]}>{label}</Text>
+      <Text style={[s.actionText, { color: isPrimary ? resolveOnBrand(brand) : colors.text }]}>{label}</Text>
     </Pressable>
   );
 }
