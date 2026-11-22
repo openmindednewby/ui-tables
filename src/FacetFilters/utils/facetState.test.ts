@@ -107,4 +107,20 @@ describe('facetSummary', () => {
 
     expect(result).toBe('All');
   });
+
+  it('with nothing picked and no none label, returns the all label', () => {
+    const picked: string[] = [];
+
+    const result = facetSummary(STATUS, picked, LABELS);
+
+    expect(result).toBe('All');
+  });
+
+  it('with nothing picked and a none label, returns the none label', () => {
+    const labels: FilterChipBarLabels = { ...LABELS, noneSelected: 'Any' };
+
+    const result = facetSummary(STATUS, [], labels);
+
+    expect(result).toBe('Any');
+  });
 });

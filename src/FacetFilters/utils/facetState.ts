@@ -26,8 +26,9 @@ export function isSameFacets(a: FacetValues, b: FacetValues): boolean {
   });
 }
 
-/** The chip's value text: the picked labels when few, else a count; every option picked reads as "all". */
+/** The chip's value text: the picked labels when few, else a count; every option or none picked reads as "all". */
 export function facetSummary(facet: FacetDefinition, picked: readonly string[], labels: FilterChipBarLabels): string {
+  if (picked.length === 0) return labels.noneSelected ?? labels.allSelected;
   if (picked.length === facet.options.length) return labels.allSelected;
   if (picked.length > MAX_SUMMARY_LABELS) return labels.countSelected(picked.length);
   return facet.options.filter((o) => picked.includes(o.value)).map((o) => o.label).join(SUMMARY_JOINER);

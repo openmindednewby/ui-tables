@@ -40,6 +40,8 @@ export interface FilterChipBarLabels {
   editHint: string;
   optionHint: string;
   allSelected: string;
+  /** Value text of a pinned chip with nothing picked; defaults to `allSelected`. */
+  noneSelected?: string;
   countSelected: (count: number) => string;
 }
 
