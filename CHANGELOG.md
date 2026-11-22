@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.9.4
+
+### Fixed
+
+- `FilterChipBar`: a pinned chip with nothing picked read `Type:` with no value because `facetSummary` returned an empty string; it now reads the new optional `FilterChipBarLabels.noneSelected`, which defaults to `allSelected`.
+
 ## 3.9.2
 
 ### Changed
