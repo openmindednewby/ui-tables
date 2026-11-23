@@ -5,8 +5,11 @@ import { CARD_STACK_BREAKPOINT } from '../DataTable/constants';
 import { DataTable } from '../DataTable/DataTable';
 import { pickRowAction } from '../DataTable/rowAction';
 import { LedgerFilterBar } from './components/LedgerFilterBar';
+import { LedgerFiltersCard } from './components/LedgerFiltersCard';
 import { LedgerSection, expandedKeys } from './components/LedgerSection';
-import { ledgerSectionTestID, STATUS_LEDGER_TEST_ID } from './constants';
+import { ledgerFiltersCardTestID, ledgerSectionTestID, STATUS_LEDGER_TEST_ID } from './constants';
+import { FiltersVariant } from '../Filters/FiltersVariant';
+import { LedgerFiltersPlacement } from './LedgerFiltersPlacement';
 import { useLedgerView } from './hooks/useLedgerView';
 import { LedgerLayout } from './LedgerLayout';
 import type { StatusLedgerProps } from './types';
@@ -22,11 +25,21 @@ export function StatusLedger<T>(props: StatusLedgerProps<T>): React.ReactElement
   const { labels, layout = LedgerLayout.Auto, breakpoint = CARD_STACK_BREAKPOINT, loading, testID = STATUS_LEDGER_TEST_ID } = props;
   const { width } = useWindowDimensions();
   const view = useLedgerView(props);
+  const inCard = props.filtersPlacement === LedgerFiltersPlacement.Card;
+  const filterBar = (
+    <LedgerFilterBar labels={labels} resultsCount={view.visible.length} testID={testID} variant={inCard ? FiltersVariant.Bare : FiltersVariant.Boxed} view={view} />
+  );
   const feed = layout === LedgerLayout.Feed || (layout === LedgerLayout.Auto && width < breakpoint);
 
   return (
     <View style={styles.root} testID={testID}>
-      <LedgerFilterBar labels={labels} resultsCount={view.visible.length} testID={testID} view={view} />
+      {inCard ? (
+        <LedgerFiltersCard testID={ledgerFiltersCardTestID(testID)} title={labels.filtersTitle}>
+          {filterBar}
+        </LedgerFiltersCard>
+      ) : (
+        filterBar
+      )}
       {feed && !loading ? (
         <>
           <LedgerSection columns={view.tableColumns} emptyLabel={labels.allClear} ledger={props} rows={view.split.attention} testID={ledgerSectionTestID(testID, 'attention')} title={labels.needsLook} />
@@ -35,6 +48,7 @@ export function StatusLedger<T>(props: StatusLedgerProps<T>): React.ReactElement
       ) : (
         <DataTable
           columns={view.tableColumns}
+          density={props.density}
           emptyLabel={labels.empty}
           expandedRowKeys={expandedKeys(props.expandedRowKey)}
           getRowAccessibilityLabel={props.getRowAccessibilityLabel}

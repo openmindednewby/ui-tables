@@ -2,6 +2,7 @@ import React from 'react';
 
 import { ActionButton } from '../../Filters/components/ActionButton';
 import { Filters } from '../../Filters/Filters';
+import { FiltersVariant } from '../../Filters/FiltersVariant';
 import { ledgerSortDirectionTestID } from '../constants';
 import type { useLedgerView } from '../hooks/useLedgerView';
 import { SortDirection } from '../SortDirection';
@@ -14,10 +15,11 @@ export interface LedgerFilterBarProps {
   labels: StatusLedgerLabels;
   resultsCount: number;
   testID: string;
+  variant?: FiltersVariant;
 }
 
 /** The ledger's search, status, group and sort filters plus the sort-direction toggle. */
-export function LedgerFilterBar({ view, labels, resultsCount, testID }: LedgerFilterBarProps): React.ReactElement {
+export function LedgerFilterBar({ view, labels, resultsCount, testID, variant = FiltersVariant.Boxed }: LedgerFilterBarProps): React.ReactElement {
   const ascending = view.direction === SortDirection.Asc;
   return (
     <Filters
@@ -39,6 +41,7 @@ export function LedgerFilterBar({ view, labels, resultsCount, testID }: LedgerFi
       resultsLabel={labels.results}
       testID={`${testID}-filters`}
       values={view.values}
+      variant={variant}
     />
   );
 }

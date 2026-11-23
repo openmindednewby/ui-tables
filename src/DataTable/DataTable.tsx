@@ -48,6 +48,8 @@ import { DataTableRow } from './DataTableRow';
 import { JoinedFrameContext } from './joinedFrameContext';
 import { SelectAllBanner } from './SelectAllBanner';
 import { selectionStyles as sel, softBrandTint, tableStyles as s } from './styles';
+import { TableDensity } from './TableDensity';
+import { densitySlotStyles, TableDensityContext } from './density';
 import { TableHeader } from './TableHeader';
 import { useRovingFocus } from './useRovingFocus';
 import { useTableSelection } from './useTableSelection';
@@ -63,7 +65,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     getRowAccessibilityLabel, loading, loadingLabel, emptyLabel,
     renderRowDetail, getRowDetailAccessibilityLabel, expandedRowKeys, styleOverrides: o,
     selectedRowKeys, onSelectionChange, matchingCount, allMatchingSelected, onSelectAllMatchingChange,
-    keyboardNavigation = false, animateRows = true,
+    keyboardNavigation = false, animateRows = true, density = TableDensity.Comfortable,
     stackBreakpoint = CARD_STACK_BREAKPOINT, testID = TABLE_TEST_IDS.root,
   } = props;
 
@@ -78,6 +80,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const stacked = width < stackBreakpoint;
   const frame = { backgroundColor: colors.surface, borderColor: colors.border };
   const joined = useContext(JoinedFrameContext);
+  const dense = densitySlotStyles(density);
 
   // Web row-hover highlight (v1 `.ui-table tr.clickable:hover`): only interactive rows
   // (those with `onRowPress`) tint on hover, so static rows never light up. The tint is
@@ -265,6 +268,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
       {banner}
       <TableHeader
         columns={columns}
+        density={density}
         inGrid={keyboardNavigation}
         selection={
           selection.selectable
@@ -274,11 +278,13 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
         stickyHeader={stickyHeader}
         styleOverrides={o}
       />
+      <TableDensityContext.Provider value={density}>
       {rows.map((row, i) => {
         const key = rowKeys[i] ?? keyExtractor(row);
         const bg = rowBg(row, i, key);
-        return renderRow(row, key, i, [s.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]);
+        return renderRow(row, key, i, [s.row, dense?.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]);
       })}
+      </TableDensityContext.Provider>
     </View>
   );
 }

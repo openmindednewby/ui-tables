@@ -14,14 +14,18 @@
  * i18n KEY, never a hardcoded literal). No FM/router/store; customisation is style + slots only.
  */
 import React, { useCallback, useMemo } from 'react';
+import { useWindowDimensions } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
+import { CARD_STACK_BREAKPOINT } from '../DataTable/constants';
 import { FilterBar, type FilterBarStyleOverrides } from '../DataTable/FilterBar';
 import { ActionButton } from './components/ActionButton';
 import { FILTERS_I18N, FILTERS_TEST_ID, applyTestID, clearTestID } from './constants';
 import { FilterFieldView, type FieldStrings, type RenderSelectArgs } from './fields/FilterFieldView';
+import { FiltersVariant } from './FiltersVariant';
 import type { FilterField, FilterValue, FilterValues } from './types';
+import { isStackedVariant, variantFields, variantShell } from './utils/variantLayout';
 
 export interface FiltersProps {
   /** The declarative field schema — the SUPERSET of every portal's filters, as data. */
@@ -60,6 +64,10 @@ export interface FiltersProps {
   renderSelect?: (args: RenderSelectArgs) => React.ReactNode;
   /** FilterBar per-slot style overrides — merged LAST, so a consumer always wins. */
   styleOverrides?: FilterBarStyleOverrides;
+  /** `Bare` drops the bar's own box (for a host card) and stacks fields and actions full width below `stackBreakpoint`. Default `Boxed`. */
+  variant?: FiltersVariant;
+  /** Width (px) below which the `Bare` variant stacks. Default 768. */
+  stackBreakpoint?: number;
   testID?: string;
   /** Caller testIDs for the Apply / Clear buttons; each defaults to `<testID>-apply` / `<testID>-clear`. */
   actionTestIDs?: FilterActionTestIDs;
@@ -89,10 +97,15 @@ export function Filters({
   toLabel,
   renderSelect,
   styleOverrides,
+  variant = FiltersVariant.Boxed,
+  stackBreakpoint = CARD_STACK_BREAKPOINT,
   testID = FILTERS_TEST_ID,
   actionTestIDs,
 }: FiltersProps): React.ReactElement {
   const { t } = useUi();
+  const { width } = useWindowDimensions();
+  const stacked = isStackedVariant(variant, width, stackBreakpoint);
+  const laidOut = useMemo(() => variantFields(fields, stacked), [fields, stacked]);
 
   const setField = useCallback(
     (key: string, value: FilterValue) => {
@@ -149,10 +162,10 @@ export function Filters({
       resultsCount={resultsCount}
       resultsLabel={resultsLabel}
       actions={hasActions ? barActions : undefined}
-      styleOverrides={styleOverrides}
+      styleOverrides={variantShell(variant, stacked, styleOverrides)}
       testID={testID}
     >
-      {fields.map((field) => (
+      {laidOut.map((field) => (
         <FilterFieldView
           key={field.key}
           field={field}

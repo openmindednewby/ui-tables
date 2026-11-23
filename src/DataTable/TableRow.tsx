@@ -23,10 +23,11 @@
  * `element.click()` test. So on a selectable row the checkbox is a SIBLING of the pressable
  * area, never a descendant of it — the gesture it receives is its own.
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Pressable, View, type StyleProp, type ViewProps, type ViewStyle } from 'react-native';
 
 import { focusRingStyle, rowInteractionStyle, type RowInteractionTokens } from './rowInteraction';
+import { densitySlotStyles, TableDensityContext } from './density';
 import { selectionStyles as sel } from './styles';
 import { useFrameFocus, type FrameFocus } from './useFrameFocus';
 import type { RowKeyEvent } from './useRovingFocus';
@@ -123,6 +124,7 @@ export function TableRow({
   const interactive = onPress !== undefined;
   const hover = interactive ? { onHoverIn, onHoverOut } : null;
   const frame = useFrameFocus();
+  const density = useContext(TableDensityContext);
   const frameStyle = [style, focusRingStyle(frame.focused, interaction)];
 
   // --- shapes 1 + 2: unchanged from 1.9.2 (plus the optional roving tabindex) ---
@@ -164,7 +166,7 @@ export function TableRow({
 
   return (
     <View style={frameStyle} testID={testID} {...a11y} {...focusProps(keyboard, frame)}>
-      <View style={sel.selectCell}>{selectionSlot}</View>
+      <View style={[sel.selectCell, densitySlotStyles(density)?.rowSelectCell]}>{selectionSlot}</View>
       {content}
     </View>
   );

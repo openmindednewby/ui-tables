@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.11.0
+
+### Added
+
+- `DataTable`: `density` (`TableDensity.Comfortable` default, `TableDensity.Dense` = 36 px rows and a 34 px uppercase 12 px header band; the 44 px row checkbox box bleeds so it adds no row height).
+- `Filters`: `variant` (`FiltersVariant.Boxed` default, `FiltersVariant.Bare` = no own bordered box, for a host card; below `stackBreakpoint` (768) every field and the actions fill the row) and `stackBreakpoint`.
+- `StatusLedger`: `filtersPlacement` (`LedgerFiltersPlacement.Inline` default, `LedgerFiltersPlacement.Card` = filters in a separate card above the table, headed by the optional `labels.filtersTitle`) and `density` (passed to the table).
+
 ## 3.10.0
 
 ### Added

@@ -7,6 +7,7 @@
 import type React from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
+import type { TableDensity } from './TableDensity';
 import type { DataTableRowAction } from './rowAction';
 
 /**
@@ -184,6 +185,8 @@ export interface DataTableBaseProps<T> {
    * grid renders at every width. Use it when your surface never had a card-stack.
    */
   stackBreakpoint?: number;
+  /** Desktop row density; `TableDensity.Dense` gives 36 px rows and a 34 px header band. Default comfortable. */
+  density?: TableDensity;
   /**
    * Per-slot style overrides, merged LAST so the consumer always wins — including over
    * the inline colours taken from `useUi().theme`. Omit for the shared defaults.

@@ -5,7 +5,7 @@ export { StatTone, resolveStatToneColor } from './StatCard/StatTone';
 
 // DataTable family — the shared, tokenized RN-web grid (GRID.md contract) promoted
 // from the /coverage POC. Its 2nd consumer is the AML v2 parallel-run portal.
-export { DataTable, FilterBar, PagedTableLayout, PagedTableLayoutKind, Pager } from './DataTable';
+export { DataTable, FilterBar, PagedTableLayout, PagedTableLayoutKind, Pager, TableDensity } from './DataTable';
 export type { DataTableBaseProps, DataTableColumn, DataTableProps, DataTableRowAction, FilterBarProps, PagedTableLayoutProps, PagerProps, RowActionNone } from './DataTable';
 // Per-slot style overrides — the defaults are opinionated but never mandatory: these
 // merge LAST, so a consumer that must be pixel-perfect beats the theme colours too.
@@ -26,7 +26,7 @@ export {
 // passes a `fields` schema (select / text / number / dateRange / typeahead / boolean), a value
 // map, and a live-or-draft/apply value model (`useFilterDraft`). Superset of every portal's
 // hand-rolled filters; only the theme changes per app.
-export { Filters, useFilterDraft, suggestOptions, isUnmatched } from './Filters';
+export { Filters, FiltersVariant, useFilterDraft, suggestOptions, isUnmatched } from './Filters';
 export type {
   FilterActionTestIDs,
   FiltersProps,
@@ -74,6 +74,7 @@ export {
   RelativeTime,
   StatusTone,
   LedgerLayout,
+  LedgerFiltersPlacement,
   SortDirection,
   STATUS_LEDGER_TEST_ID,
   ledgerSectionTestID,

@@ -24,4 +24,5 @@ export const TONE_GLYPH: Readonly<Record<StatusTone, string>> = {
 };
 
 export const ledgerSectionTestID = (testID: string, section: string): string => `${testID}-section-${section}`;
+export const ledgerFiltersCardTestID = (testID: string): string => `${testID}-filters-card`;
 export const ledgerSortDirectionTestID = (testID: string): string => `${testID}-sort-direction`;

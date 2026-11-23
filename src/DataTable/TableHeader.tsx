@@ -16,6 +16,8 @@ import { HeaderCheckboxState } from './headerCheckboxState';
 import { SelectionCheckbox } from './SelectionCheckbox';
 import { STICKY_HEADER_STYLE, selectionStyles as sel, tableStyles as s } from './styles';
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
+import { densitySlotStyles } from './density';
+import { TableDensity } from './TableDensity';
 
 /** The select-all wiring. Absent ⇒ the table is not selectable: no gutter, no node. */
 export interface HeaderSelection {
@@ -31,16 +33,18 @@ interface TableHeaderProps<T> {
   selection?: HeaderSelection;
   /** The table opted into keyboard navigation ⇒ it is a real ARIA grid. */
   inGrid: boolean;
+  density?: TableDensity;
   styleOverrides?: DataTableStyleOverrides;
 }
 
-export function TableHeader<T>({ columns, stickyHeader, selection, inGrid, styleOverrides: o }: TableHeaderProps<T>): React.ReactElement {
+export function TableHeader<T>({ columns, stickyHeader, selection, inGrid, density = TableDensity.Comfortable, styleOverrides: o }: TableHeaderProps<T>): React.ReactElement {
   const { theme, t } = useUi();
   const { colors } = theme;
+  const dense = densitySlotStyles(density);
 
   return (
     <View
-      style={[s.headRow, { backgroundColor: colors.background }, stickyHeader ? STICKY_HEADER_STYLE : null, o?.headRow]}
+      style={[s.headRow, dense?.headRow, { backgroundColor: colors.background }, stickyHeader ? STICKY_HEADER_STYLE : null, o?.headRow]}
       testID={TABLE_TEST_IDS.head}
       {...(inGrid ? { role: 'row' as const } : null)}
     >
@@ -61,7 +65,7 @@ export function TableHeader<T>({ columns, stickyHeader, selection, inGrid, style
       {columns.map((col) => (
         <Text
           key={col.key}
-          style={[s.headCell, { color: colors.textSecondary, flex: col.weight ?? 1, minWidth: col.minWidth, textAlign: col.numeric ? 'right' : 'left' }, o?.headCell]}
+          style={[s.headCell, dense?.headCell, { color: colors.textSecondary, flex: col.weight ?? 1, minWidth: col.minWidth, textAlign: col.numeric ? 'right' : 'left' }, o?.headCell]}
           {...(inGrid ? { role: 'columnheader' as const } : null)}
         >
           {col.header}

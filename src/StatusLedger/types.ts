@@ -2,6 +2,8 @@ import type React from 'react';
 
 import type { DataTableRowAction } from '../DataTable/rowAction';
 import type { DataTableColumn } from '../DataTable/types';
+import type { TableDensity } from '../DataTable/TableDensity';
+import type { LedgerFiltersPlacement } from './LedgerFiltersPlacement';
 import type { LedgerLayout } from './LedgerLayout';
 import type { StatusTone } from './StatusTone';
 
@@ -30,6 +32,8 @@ export interface StatusLedgerLabels {
   allClear: string;
   empty: string;
   actions: string;
+  /** Heading of the filters card (`LedgerFiltersPlacement.Card`); omitted = no heading. */
+  filtersTitle?: string;
 }
 
 export type ToneColors = Partial<Record<StatusTone, string>>;
@@ -54,6 +58,10 @@ export interface StatusLedgerBaseProps<T> {
   expandedRowKey?: string | null;
   toneColors?: ToneColors;
   layout?: LedgerLayout;
+  /** `Card` draws the filters as a separate card above the table. Default `Inline`. */
+  filtersPlacement?: LedgerFiltersPlacement;
+  /** Desktop row density of the table. Default comfortable. */
+  density?: TableDensity;
   breakpoint?: number;
   loading?: boolean;
   testID?: string;

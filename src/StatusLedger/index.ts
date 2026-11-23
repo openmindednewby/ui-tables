@@ -6,6 +6,7 @@ export { RelativeTime } from './components/RelativeTime';
 export type { RelativeTimeProps } from './components/RelativeTime';
 export { StatusTone } from './StatusTone';
 export { LedgerLayout } from './LedgerLayout';
+export { LedgerFiltersPlacement } from './LedgerFiltersPlacement';
 export { SortDirection } from './SortDirection';
 export { STATUS_LEDGER_TEST_ID, ledgerSectionTestID, ledgerSortDirectionTestID } from './constants';
 export { filterLedgerRows, sortLedgerRows, splitNeedsLook, distinctValues, isAttentionTone } from './utils/ledgerLogic';
