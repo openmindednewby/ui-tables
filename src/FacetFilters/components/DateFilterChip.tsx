@@ -6,6 +6,8 @@ import { useUi } from '@dloizides/ui-feedback';
 import { facetTestIds } from '../testIds';
 import type { DateFilterChipLabels, DateFilterValue, FacetOption } from '../types';
 import { activeDataSet } from './activeDataSet';
+import { ChipChevron } from './ChipChevron';
+import { chipTone } from './chipTone';
 import { facetStyles as s } from './styles';
 
 const LABEL_SEPARATOR = ': ';
@@ -19,6 +21,7 @@ export interface DateFilterChipProps {
   onPress: () => void;
   labels: DateFilterChipLabels;
   testIDPrefix?: string;
+  chevron?: boolean;
 }
 
 const labelOf = (options: readonly FacetOption[], value: string): string => options.find((o) => o.value === value)?.label ?? value;
@@ -29,11 +32,10 @@ function summaryOf(value: DateFilterValue | null, fields: readonly FacetOption[]
 }
 
 /** The date chip in the filter row: says which date and range apply and opens the DateFieldChip panel. */
-export function DateFilterChip({ fields, ranges, value, open, onPress, labels, testIDPrefix }: DateFilterChipProps): React.ReactElement {
+export function DateFilterChip({ fields, ranges, value, open, onPress, labels, testIDPrefix, chevron = false }: DateFilterChipProps): React.ReactElement {
   const { theme } = useUi();
   const active = value !== null;
   const summary = summaryOf(value, fields, ranges, labels.anyDate);
-  const border = active ? theme.palette.primary['500'] : theme.colors.border;
   return (
     <Pressable
       accessibilityHint={labels.editHint}
@@ -42,12 +44,13 @@ export function DateFilterChip({ fields, ranges, value, open, onPress, labels, t
       accessibilityState={{ expanded: open }}
       {...activeDataSet(active)}
       onPress={onPress}
-      style={[s.chip, s.chipBody, { borderColor: border, backgroundColor: theme.colors.surface }]}
+      style={[s.chip, s.chipBody, chipTone(theme, active)]}
       testID={facetTestIds(testIDPrefix).dateTrigger}
     >
       <Text numberOfLines={1} style={[s.chipText, { color: theme.colors.text }]}>
         <Text style={s.chipLabel}>{`${labels.title}${LABEL_SEPARATOR}`}</Text>
         {summary}
+        {chevron && <ChipChevron color={theme.colors.textSecondary} />}
       </Text>
     </Pressable>
   );

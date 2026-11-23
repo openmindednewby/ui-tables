@@ -70,6 +70,7 @@ export type { UsePagedRowsOptions, PagedRows } from './Pagination/usePagedRows';
 export {
   StatusLedger,
   StatusPill,
+  PillVariant,
   RelativeTime,
   StatusTone,
   LedgerLayout,

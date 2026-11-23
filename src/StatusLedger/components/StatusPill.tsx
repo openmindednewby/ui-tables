@@ -1,7 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 import { TONE_GLYPH } from '../constants';
+import { softBrandTint } from '../../DataTable/styles';
+import { PillVariant } from '../PillVariant';
 import type { StatusTone } from '../StatusTone';
 
 const PILL_RADIUS = 999;
@@ -24,19 +26,28 @@ const styles = StyleSheet.create({
     paddingVertical: PILL_PAD_V,
   },
   text: { fontSize: PILL_FONT, fontWeight: PILL_WEIGHT },
+  filled: { borderWidth: 0, paddingHorizontal: PILL_PAD_H + PILL_BORDER, paddingVertical: PILL_PAD_V + PILL_BORDER },
 });
+
+/** The pill box for a variant: Filled is a borderless tint of the colour, falling back to Outline for a non-hex colour. */
+export function pillBox(color: string, variant: PillVariant): ViewStyle {
+  const tint = variant === PillVariant.Filled ? softBrandTint(color) : undefined;
+  if (tint === undefined) return { borderColor: color };
+  return { ...styles.filled, backgroundColor: tint };
+}
 
 export interface StatusPillProps {
   label: string;
   tone: StatusTone;
   color: string;
   testID?: string;
+  variant?: PillVariant;
 }
 
 /** A status label with a tone glyph, so the tone never relies on colour alone. */
-export function StatusPill({ label, tone, color, testID }: StatusPillProps): React.ReactElement {
+export function StatusPill({ label, tone, color, testID, variant = PillVariant.Outline }: StatusPillProps): React.ReactElement {
   return (
-    <View accessibilityLabel={label} accessibilityRole="text" style={[styles.pill, { borderColor: color }]} testID={testID}>
+    <View accessibilityLabel={label} accessibilityRole="text" style={[styles.pill, pillBox(color, variant)]} testID={testID}>
       <Text aria-hidden style={[styles.text, { color }]}>
         {TONE_GLYPH[tone]}
       </Text>

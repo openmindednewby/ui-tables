@@ -17,6 +17,8 @@ const MARK_WIDTH = FONT + GAP;
 
 export const facetStyles = StyleSheet.create({
   bar: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: GAP },
+  barScroll: { flexWrap: 'nowrap' },
+  chevron: { fontSize: SMALL_FONT },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',

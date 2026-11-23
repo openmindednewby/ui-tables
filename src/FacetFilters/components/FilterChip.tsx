@@ -5,6 +5,8 @@ import { useUi } from '@dloizides/ui-feedback';
 
 import { facetTestIds } from '../testIds';
 import { activeDataSet } from './activeDataSet';
+import { ChipChevron } from './ChipChevron';
+import { chipTone } from './chipTone';
 import { facetStyles as s } from './styles';
 
 const REMOVE_GLYPH = '×';
@@ -22,16 +24,16 @@ export interface FilterChipProps {
   removeHint: string;
   active?: boolean;
   testIDPrefix?: string;
+  chevron?: boolean;
 }
 
 /** An active filter: "Label: values" opens its editor, the cross removes the filter. */
-export function FilterChip({ facetKey, label, summary, open, onPress, onRemove, editHint, removeLabel, removeHint, active = true, testIDPrefix }: FilterChipProps): React.ReactElement {
+export function FilterChip({ facetKey, label, summary, open, onPress, onRemove, editHint, removeLabel, removeHint, active = true, testIDPrefix, chevron = false }: FilterChipProps): React.ReactElement {
   const { theme } = useUi();
   const ids = facetTestIds(testIDPrefix);
-  const brand = theme.palette.primary['500'];
   const text = `${label}${LABEL_SEPARATOR}${summary}`;
   return (
-    <View style={[s.chip, { borderColor: brand, backgroundColor: theme.colors.surface }]}>
+    <View style={[s.chip, chipTone(theme, active)]}>
       <Pressable
         accessibilityHint={editHint}
         accessibilityLabel={text}
@@ -45,6 +47,7 @@ export function FilterChip({ facetKey, label, summary, open, onPress, onRemove, 
         <Text numberOfLines={1} style={[s.chipText, { color: theme.colors.text }]}>
           <Text style={s.chipLabel}>{`${label}${LABEL_SEPARATOR}`}</Text>
           {summary}
+          {chevron && <ChipChevron color={theme.colors.textSecondary} />}
         </Text>
       </Pressable>
       {onRemove !== undefined && (

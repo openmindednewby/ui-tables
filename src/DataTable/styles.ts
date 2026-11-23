@@ -9,7 +9,7 @@ import { MIN_TARGET_PX } from '../minTarget';
 
 export const BORDER_WIDTH = 1;
 export const BORDER_RADIUS = 12;
-const COLUMN_GAP = 16;
+export const COLUMN_GAP = 16;
 export const ROW_PAD_H = 14;
 const ROW_PAD_V = 12;
 const HEAD_PAD_V = 11;
@@ -133,6 +133,8 @@ export const tableStyles = StyleSheet.create({
 export const selectionStyles = StyleSheet.create({
   /** The fixed-width gutter holding the checkbox, in both the header and every row. */
   selectCell: { width: SELECT_COL_WIDTH, alignItems: 'flex-start', justifyContent: 'center' },
+  /** The header gutter keeps its 44px hit box but adds no height, so the header band stays one text line. */
+  headSelectCell: { alignSelf: 'center', height: MIN_TARGET_PX, marginVertical: -MIN_TARGET_PX / 2 },
   /** The checkbox's pressable area — a full 44x44 box around the 18px visual square. */
   checkboxHit: { minWidth: MIN_TARGET_PX, minHeight: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center' },
   checkbox: {

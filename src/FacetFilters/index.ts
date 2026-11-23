@@ -1,4 +1,5 @@
 export { FilterChipBar } from './components/FilterChipBar';
+export { ChipBarLayout } from './ChipBarLayout';
 export type { FilterChipBarProps } from './components/FilterChipBar';
 export { FilterChip } from './components/FilterChip';
 export type { FilterChipProps } from './components/FilterChip';

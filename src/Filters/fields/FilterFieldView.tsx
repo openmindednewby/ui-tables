@@ -23,6 +23,8 @@ import { TextField } from './TextField';
 import { TypeaheadField } from './TypeaheadField';
 import { FIELD_MIN_WIDTH, fieldTestID } from '../constants';
 import { clampedMinWidth } from '../utils/clampedMinWidth';
+import { gridCellStyle } from '../utils/gridCellStyle';
+import { COLUMN_GAP } from '../../DataTable/styles';
 import { filterStyles as s } from '../styles';
 import type { DateRangeValue, FilterField, FilterValue, FilterValues, SelectFilterField } from '../types';
 
@@ -77,7 +79,9 @@ function asRange(value: FilterValue | undefined): DateRangeValue {
   return EMPTY_RANGE;
 }
 
-function fieldContainerStyle(field: FilterField): StyleProp<ViewStyle> {
+/** The wrapper style of one field in the bar: grid cell when `gridColumns` is set, else min-width flow. */
+export function fieldContainerStyle(field: FilterField): StyleProp<ViewStyle> {
+  if (field.gridColumns !== undefined) return [s.fieldInBar, gridCellStyle(field.gridColumns, COLUMN_GAP), field.style];
   const minWidth = field.minWidth ?? FIELD_MIN_WIDTH[field.kind];
   const grow = field.grow === true ? { flexGrow: GROW_FLEX } : null;
   return [s.fieldInBar, { minWidth: clampedMinWidth(minWidth), maxWidth: '100%' as const }, grow, field.style];

@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.10.0
+
+### Added
+
+- `FilterChipBar`: `layout` (`ChipBarLayout.Wrap` default, `ChipBarLayout.Scroll` keeps the chips on one sideways-scrolling row for phones) and `chevron` (down chevron on each chip). `FilterChip` and `DateFilterChip` take `chevron` too.
+- `StatusPill`: `variant` (`PillVariant.Outline` default, `PillVariant.Filled` = borderless soft tint of the tone colour; a non-hex colour falls back to Outline).
+- `Filters`: `FilterField.gridColumns` lays a field out as one equal cell of an N-column grid; `1` fills the row (phones).
+
+### Fixed
+
+- Filter chips: a chip with a value is brand-bordered on a soft brand tint and an unset pinned chip is neutral (border colour on surface); before, every `FilterChip` carried the brand border.
+- `DataTable` header: the select-all gutter keeps its 44 px hit box but no longer adds height, so the header band stays one text line.
+
 ## 3.9.4
 
 ### Fixed

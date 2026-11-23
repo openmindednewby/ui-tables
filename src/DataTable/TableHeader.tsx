@@ -45,7 +45,7 @@ export function TableHeader<T>({ columns, stickyHeader, selection, inGrid, style
       {...(inGrid ? { role: 'row' as const } : null)}
     >
       {selection === undefined ? null : (
-        <View style={[sel.selectCell, o?.selectCell]}>
+        <View style={[sel.selectCell, sel.headSelectCell, o?.selectCell]} testID={`${selection.testID}-cell`}>
           <SelectionCheckbox
             borderColor={colors.border}
             brandColor={theme.palette.primary['500']}

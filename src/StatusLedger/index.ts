@@ -1,5 +1,6 @@
 export { StatusLedger } from './StatusLedger';
 export { StatusPill } from './components/StatusPill';
+export { PillVariant } from './PillVariant';
 export type { StatusPillProps } from './components/StatusPill';
 export { RelativeTime } from './components/RelativeTime';
 export type { RelativeTimeProps } from './components/RelativeTime';
