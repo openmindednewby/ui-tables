@@ -108,7 +108,7 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
               fieldProps={{
                 accessibilityHint: field.accessibilityHint ?? NO_HINT,
                 label: field.label,
-                testID: `${testID}-input`,
+                testID: field.inputTestID ?? `${testID}-input`,
                 value: asString(raw),
                 onChange: (v) => setField(field.key, v),
                 onSubmit,

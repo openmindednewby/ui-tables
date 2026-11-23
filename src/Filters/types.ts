@@ -90,6 +90,8 @@ export interface NumberFilterField extends FilterFieldBase {
 /** A single calendar date (`YYYY-MM-DD`, ''=unset), rendered by `ui-forms`' `DateField`. */
 export interface DateFilterField extends FilterFieldBase {
   kind: 'date';
+  /** testID of the input itself; defaults to `<field testID>-input`. */
+  inputTestID?: string;
 }
 
 /** An inclusive from/to date range (two `YYYY-MM-DD` inputs). */

@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.12.0
+
+### Added
+
+- `Filters`: `DateFilterField.inputTestID` sets the date input's testID (default stays `<field testID>-input`), so a screen can split a range into two `date` fields and keep a locked e2e id.
+
 ## 3.11.0
 
 ### Added

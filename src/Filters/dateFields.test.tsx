@@ -104,3 +104,23 @@ describe('FilterFieldView date', () => {
     expect(input.value).toBe('');
   });
 });
+
+
+describe('FilterFieldView date inputTestID', () => {
+  it('with an inputTestID, puts that id on the date input', () => {
+    const field: FilterField = { key: 'on', kind: 'date', label: 'Booked on', inputTestID: 'booked-from' };
+    render(<UiProvider theme={theme} t={t}><Filters fields={[field]} values={EMPTY} onChange={() => undefined} /></UiProvider>);
+
+    const input = screen.getByTestId('booked-from');
+
+    expect(input.getAttribute('type')).toBe('date');
+  });
+
+  it('without an inputTestID, keeps the field testID plus -input', () => {
+    renderFilters(EMPTY);
+
+    const input = screen.queryByTestId(DATE_ID);
+
+    expect(input).not.toBeNull();
+  });
+});
