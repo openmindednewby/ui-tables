@@ -116,6 +116,9 @@ export const tableStyles = StyleSheet.create({
   cardLine: { flexDirection: 'column', alignItems: 'stretch', paddingVertical: CARD_LINE_PAD_V, gap: CARD_LABEL_GAP },
   cardLabel: { fontSize: HEAD_FONT, fontWeight: '600', textTransform: 'uppercase', letterSpacing: LABEL_LETTER_SPACING },
   cardValue: { alignItems: 'flex-start' },
+  cardLineInline: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: CARD_LINE_PAD_V, gap: COLUMN_GAP },
+  cardLabelInline: { flexShrink: 0, fontWeight: '400', letterSpacing: 0, textTransform: 'none' },
+  cardValueInline: { alignItems: 'flex-end', flexShrink: 1, minWidth: 0 },
   /**
    * A zero-footprint carrier for the `ui-data-table-head` test id in the card-stack layout
    * (which has no visible header row). `display: 'none'` keeps it out of layout AND the

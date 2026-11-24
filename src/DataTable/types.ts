@@ -7,6 +7,7 @@
 import type React from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
+import type { CardLineLayout } from './CardLineLayout';
 import type { TableDensity } from './TableDensity';
 import type { DataTableRowAction } from './rowAction';
 
@@ -185,6 +186,8 @@ export interface DataTableBaseProps<T> {
    * grid renders at every width. Use it when your surface never had a card-stack.
    */
   stackBreakpoint?: number;
+  /** Card-stack line layout; `CardLineLayout.Inline` puts the label left and the value right. Default stacked. */
+  cardLineLayout?: CardLineLayout;
   /** Desktop row density; `TableDensity.Dense` gives 36 px rows and a 34 px header band. Default comfortable. */
   density?: TableDensity;
   /**

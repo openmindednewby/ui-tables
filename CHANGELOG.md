@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.0
+
+### Added
+
+- `DataTable` `cardLineLayout`: `CardLineLayout.Inline` lays each card-stack line out as the label on the left (muted, sentence case) and the value on the right; default `CardLineLayout.Stacked` is unchanged (MODC-1 D-MC-728, S-32 Users mobile pick C).
+
 ## 3.12.0
 
 ### Added

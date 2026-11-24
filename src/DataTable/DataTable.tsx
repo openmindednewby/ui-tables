@@ -48,6 +48,7 @@ import { DataTableRow } from './DataTableRow';
 import { JoinedFrameContext } from './joinedFrameContext';
 import { SelectAllBanner } from './SelectAllBanner';
 import { selectionStyles as sel, softBrandTint, tableStyles as s } from './styles';
+import { CardLineLayout, CardLineLayoutContext } from './CardLineLayout';
 import { TableDensity } from './TableDensity';
 import { densitySlotStyles, TableDensityContext } from './density';
 import { TableHeader } from './TableHeader';
@@ -66,7 +67,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     renderRowDetail, getRowDetailAccessibilityLabel, expandedRowKeys, styleOverrides: o,
     selectedRowKeys, onSelectionChange, matchingCount, allMatchingSelected, onSelectAllMatchingChange,
     keyboardNavigation = false, animateRows = true, density = TableDensity.Comfortable,
-    stackBreakpoint = CARD_STACK_BREAKPOINT, testID = TABLE_TEST_IDS.root,
+    stackBreakpoint = CARD_STACK_BREAKPOINT, cardLineLayout = CardLineLayout.Stacked, testID = TABLE_TEST_IDS.root,
   } = props;
 
   const { theme, t } = useUi();
@@ -237,6 +238,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
             still resolve at phone width — a hidden, a11y-inert carrier keeps `ui-data-table-head`
             queryable in BOTH layouts (see `headSentinel` in styles.ts). */}
         <View style={s.headSentinel} testID={TABLE_TEST_IDS.head} aria-hidden />
+        <CardLineLayoutContext.Provider value={cardLineLayout}>
         {rows.map((row, i) => {
           const key = rowKeys[i] ?? keyExtractor(row);
           const bg = rowBg(row, i, key);
@@ -250,6 +252,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
             o?.card,
           ]);
         })}
+        </CardLineLayoutContext.Provider>
       </View>
     );
   }
