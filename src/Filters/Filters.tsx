@@ -20,6 +20,8 @@ import { useUi } from '@dloizides/ui-feedback';
 
 import { CARD_STACK_BREAKPOINT } from '../DataTable/constants';
 import { FilterBar, type FilterBarStyleOverrides } from '../DataTable/FilterBar';
+import { FilterBarLayout } from '../DataTable/FilterBarLayout';
+import { FiltersCompactActionsContext } from './actionSize';
 import { ActionButton } from './components/ActionButton';
 import { FILTERS_I18N, FILTERS_TEST_ID, applyTestID, clearTestID } from './constants';
 import { FilterFieldView, type FieldStrings, type RenderSelectArgs } from './fields/FilterFieldView';
@@ -64,7 +66,7 @@ export interface FiltersProps {
   renderSelect?: (args: RenderSelectArgs) => React.ReactNode;
   /** FilterBar per-slot style overrides — merged LAST, so a consumer always wins. */
   styleOverrides?: FilterBarStyleOverrides;
-  /** `Bare` drops the bar's own box (for a host card) and stacks fields and actions full width below `stackBreakpoint`. Default `Boxed`. */
+  /** `Bare` drops the bar's own box (for a host card) and stacks fields and actions full width below `stackBreakpoint`; `Grid` also lines the fields up in one even row with the actions and count below. Default `Boxed`. */
   variant?: FiltersVariant;
   /** Width (px) below which the `Bare` variant stacks. Default 768. */
   stackBreakpoint?: number;
@@ -105,7 +107,8 @@ export function Filters({
   const { t } = useUi();
   const { width } = useWindowDimensions();
   const stacked = isStackedVariant(variant, width, stackBreakpoint);
-  const laidOut = useMemo(() => variantFields(fields, stacked), [fields, stacked]);
+  const laidOut = useMemo(() => variantFields(fields, stacked, variant), [fields, stacked, variant]);
+  const gridRows = variant === FiltersVariant.Grid && !stacked;
 
   const setField = useCallback(
     (key: string, value: FilterValue) => {
@@ -158,7 +161,9 @@ export function Filters({
   const hasActions = actions !== undefined || onClear !== undefined || onApply !== undefined;
 
   return (
+    <FiltersCompactActionsContext.Provider value={gridRows}>
     <FilterBar
+      layout={gridRows ? FilterBarLayout.Rows : FilterBarLayout.Flow}
       resultsCount={resultsCount}
       resultsLabel={resultsLabel}
       actions={hasActions ? barActions : undefined}
@@ -178,6 +183,7 @@ export function Filters({
         />
       ))}
     </FilterBar>
+    </FiltersCompactActionsContext.Provider>
   );
 }
 

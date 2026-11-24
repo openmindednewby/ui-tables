@@ -211,3 +211,14 @@ export const chromeStyles = StyleSheet.create({
   sizeOption: { minHeight: MIN_TARGET_PX, justifyContent: 'center', paddingHorizontal: CONTROL_PAD_H, paddingVertical: MENU_OPT_PAD_V },
   sizeOptionText: { fontSize: CONTROL_FONT, fontVariant: ['tabular-nums'] },
 });
+
+const ROWS_LINE_GAP = 10;
+const ROWS_RESULTS_FONT = 12;
+
+/** The `FilterBarLayout.Rows` slots: a column of the fields line over the actions-and-count line. */
+export const filterRowsStyles = StyleSheet.create({
+  shell: { flexDirection: 'column', alignItems: 'stretch', rowGap: ROWS_LINE_GAP },
+  fields: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-end', columnGap: COLUMN_GAP, rowGap: PAGER_GAP },
+  foot: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: PAGER_GAP, rowGap: PAGER_GAP },
+  results: { fontSize: ROWS_RESULTS_FONT },
+});

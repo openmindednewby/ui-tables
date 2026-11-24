@@ -50,7 +50,7 @@ import { SelectAllBanner } from './SelectAllBanner';
 import { selectionStyles as sel, softBrandTint, tableStyles as s } from './styles';
 import { CardLineLayout, CardLineLayoutContext } from './CardLineLayout';
 import { TableDensity } from './TableDensity';
-import { densitySlotStyles, TableDensityContext } from './density';
+import { densitySlotStyles, TableDensityContext, withDensityCell } from './density';
 import { TableHeader } from './TableHeader';
 import { useRovingFocus } from './useRovingFocus';
 import { useTableSelection } from './useTableSelection';
@@ -64,7 +64,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const {
     columns, rows, keyExtractor, rowTint, zebra, stickyHeader, onRowPress,
     getRowAccessibilityLabel, loading, loadingLabel, emptyLabel,
-    renderRowDetail, getRowDetailAccessibilityLabel, expandedRowKeys, styleOverrides: o,
+    renderRowDetail, getRowDetailAccessibilityLabel, expandedRowKeys, styleOverrides: callerOverrides,
     selectedRowKeys, onSelectionChange, matchingCount, allMatchingSelected, onSelectAllMatchingChange,
     keyboardNavigation = false, animateRows = true, density = TableDensity.Comfortable,
     stackBreakpoint = CARD_STACK_BREAKPOINT, cardLineLayout = CardLineLayout.Stacked, testID = TABLE_TEST_IDS.root,
@@ -82,6 +82,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const frame = { backgroundColor: colors.surface, borderColor: colors.border };
   const joined = useContext(JoinedFrameContext);
   const dense = densitySlotStyles(density);
+  const o = withDensityCell(callerOverrides, dense);
 
   // Web row-hover highlight (v1 `.ui-table tr.clickable:hover`): only interactive rows
   // (those with `onRowPress`) tint on hover, so static rows never light up. The tint is

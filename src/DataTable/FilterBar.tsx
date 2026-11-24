@@ -11,8 +11,9 @@ import { Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'reac
 import { useUi } from '@dloizides/ui-feedback';
 
 import { TABLE_I18N, TABLE_TEST_IDS } from './constants';
+import { FilterBarLayout } from './FilterBarLayout';
 import { JoinedFrameContext } from './joinedFrameContext';
-import { chromeStyles as c } from './styles';
+import { chromeStyles as c, filterRowsStyles as r } from './styles';
 
 const RESULTS_COUNT_WEIGHT = '700' as const;
 
@@ -46,6 +47,8 @@ export interface FilterBarProps {
    * the inline theme colours. Omit for the shared defaults.
    */
   styleOverrides?: FilterBarStyleOverrides;
+  /** `Rows` puts the fields on their own line and the actions with the count on the line below. Default `Flow`. */
+  layout?: FilterBarLayout;
   testID?: string;
 }
 
@@ -55,6 +58,7 @@ export function FilterBar({
   resultsLabel,
   actions,
   styleOverrides: o,
+  layout = FilterBarLayout.Flow,
   testID = TABLE_TEST_IDS.filterBar,
 }: FilterBarProps): React.ReactElement {
   const { theme, t } = useUi();
@@ -62,23 +66,41 @@ export function FilterBar({
   const joined = useContext(JoinedFrameContext);
   const word = resultsLabel ?? t(TABLE_I18N.results);
 
+  const count =
+    typeof resultsCount === 'number' ? (
+      // Live region: announce the new count when filters change the result set (WCAG 4.1.3).
+      <Text
+        accessibilityLiveRegion="polite"
+        role="status"
+        style={[c.results, { color: colors.textSecondary }, layout === FilterBarLayout.Rows ? r.results : null, o?.results]}
+        testID={TABLE_TEST_IDS.results}
+      >
+        <Text style={{ color: colors.text, fontWeight: RESULTS_COUNT_WEIGHT }}>{resultsCount.toLocaleString()}</Text>
+        {` ${word}`}
+      </Text>
+    ) : null;
+  const shell = [c.filters, { backgroundColor: colors.surface, borderColor: colors.border }, joined?.filters, layout === FilterBarLayout.Rows ? r.shell : null, o?.filters];
+  const actionsCluster = actions ? <View style={[c.filtersActions, o?.filtersActions]}>{actions}</View> : null;
+
+  if (layout === FilterBarLayout.Rows) {
+    return (
+      <View style={shell} testID={testID}>
+        <View style={r.fields}>{children}</View>
+        <View style={r.foot}>
+          {actionsCluster}
+          <View style={[c.filtersSpacer, o?.filtersSpacer]} />
+          {count}
+        </View>
+      </View>
+    );
+  }
+
   return (
-    <View style={[c.filters, { backgroundColor: colors.surface, borderColor: colors.border }, joined?.filters, o?.filters]} testID={testID}>
+    <View style={shell} testID={testID}>
       {children}
       <View style={[c.filtersSpacer, o?.filtersSpacer]} />
-      {typeof resultsCount === 'number' && (
-        // Live region: announce the new count when filters change the result set (WCAG 4.1.3).
-        <Text
-          accessibilityLiveRegion="polite"
-          role="status"
-          style={[c.results, { color: colors.textSecondary }, o?.results]}
-          testID={TABLE_TEST_IDS.results}
-        >
-          <Text style={{ color: colors.text, fontWeight: RESULTS_COUNT_WEIGHT }}>{resultsCount.toLocaleString()}</Text>
-          {` ${word}`}
-        </Text>
-      )}
-      {!!actions && <View style={[c.filtersActions, o?.filtersActions]}>{actions}</View>}
+      {count}
+      {actionsCluster}
     </View>
   );
 }

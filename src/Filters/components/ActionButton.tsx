@@ -4,12 +4,13 @@
  * needs no ui-buttons dependency; richer buttons (Export with a spinner) go in the caller's
  * own `actions` slot.
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Pressable, Text } from 'react-native';
 
 import { resolveOnBrand } from '@dloizides/design-tokens';
 import { useUi } from '@dloizides/ui-feedback';
 
+import { FiltersCompactActionsContext } from '../actionSize';
 import { filterStyles as s } from '../styles';
 
 const DISABLED_OPACITY = 0.4;
@@ -30,6 +31,7 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
   const { colors, palette } = theme;
   const isPrimary = tone === 'primary';
   const brand = palette.primary['500'];
+  const compact = useContext(FiltersCompactActionsContext);
 
   return (
     <Pressable
@@ -41,6 +43,7 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
       onPress={onPress}
       style={[
         s.action,
+        compact ? s.actionCompact : null,
         {
           borderColor: isPrimary ? brand : colors.border,
           backgroundColor: isPrimary ? brand : TRANSPARENT,
@@ -49,7 +52,7 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
       ]}
       testID={testID}
     >
-      <Text style={[s.actionText, { color: isPrimary ? resolveOnBrand(brand) : colors.text }]}>{label}</Text>
+      <Text style={[s.actionText, compact ? s.actionTextCompact : null, { color: isPrimary ? resolveOnBrand(brand) : colors.text }]}>{label}</Text>
     </Pressable>
   );
 }

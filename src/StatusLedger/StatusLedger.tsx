@@ -25,16 +25,16 @@ export function StatusLedger<T>(props: StatusLedgerProps<T>): React.ReactElement
   const { labels, layout = LedgerLayout.Auto, breakpoint = CARD_STACK_BREAKPOINT, loading, testID = STATUS_LEDGER_TEST_ID } = props;
   const { width } = useWindowDimensions();
   const view = useLedgerView(props);
-  const inCard = props.filtersPlacement === LedgerFiltersPlacement.Card;
-  const filterBar = (
-    <LedgerFilterBar labels={labels} resultsCount={view.visible.length} testID={testID} variant={inCard ? FiltersVariant.Bare : FiltersVariant.Boxed} view={view} />
-  );
+  const grid = props.filtersPlacement === LedgerFiltersPlacement.CardGrid;
+  const inCard = grid || props.filtersPlacement === LedgerFiltersPlacement.Card;
+  const variant = grid ? FiltersVariant.Grid : inCard ? FiltersVariant.Bare : FiltersVariant.Boxed;
+  const filterBar = <LedgerFilterBar labels={labels} resultsCount={view.visible.length} testID={testID} variant={variant} view={view} />;
   const feed = layout === LedgerLayout.Feed || (layout === LedgerLayout.Auto && width < breakpoint);
 
   return (
     <View style={styles.root} testID={testID}>
       {inCard ? (
-        <LedgerFiltersCard testID={ledgerFiltersCardTestID(testID)} title={labels.filtersTitle}>
+        <LedgerFiltersCard compact={grid} testID={ledgerFiltersCardTestID(testID)} title={labels.filtersTitle}>
           {filterBar}
         </LedgerFiltersCard>
       ) : (

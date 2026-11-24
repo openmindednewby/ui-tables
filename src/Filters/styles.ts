@@ -23,6 +23,10 @@ const ACTION_PAD_V = 8;
 const ACTION_RADIUS = 8;
 const ACTION_FONT = 13;
 const ACTION_BORDER = 1;
+/** Desktop-only `Grid` actions: a 36 px box (pointer input), the stacked phone layout keeps the 44 px floor. */
+const ACTION_COMPACT_HEIGHT = 36;
+const ACTION_COMPACT_PAD_H = 12;
+const ACTION_COMPACT_PAD_V = 0;
 /** `Field` carries the 16px vertical form rhythm; a filter bar spaces via FilterBar's own gap. */
 const NO_FORM_RHYTHM = 0;
 
@@ -41,6 +45,8 @@ export const filterStyles = StyleSheet.create({
   switchInert: { pointerEvents: 'none' },
   action: { minHeight: MIN_TARGET_PX, minWidth: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center', paddingHorizontal: ACTION_PAD_H, paddingVertical: ACTION_PAD_V, borderRadius: ACTION_RADIUS, borderWidth: ACTION_BORDER },
   actionText: { fontSize: ACTION_FONT, fontWeight: '600' },
+  actionCompact: { minHeight: ACTION_COMPACT_HEIGHT, height: ACTION_COMPACT_HEIGHT, paddingHorizontal: ACTION_COMPACT_PAD_H, paddingVertical: ACTION_COMPACT_PAD_V },
+  actionTextCompact: { lineHeight: ACTION_FONT },
 });
 
 /**
