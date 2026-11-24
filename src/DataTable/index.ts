@@ -22,3 +22,5 @@ export {
   rowFadeTestID,
   selectAllTestID,
 } from './constants';
+export { TableDefaultsProvider, TableDefaultsContext } from './TableDefaults';
+export type { TableDefaults, TableDefaultsProviderProps } from './TableDefaults';

@@ -188,7 +188,7 @@ export interface DataTableBaseProps<T> {
   stackBreakpoint?: number;
   /** Card-stack line layout; `CardLineLayout.Inline` puts the label left and the value right. Default stacked. */
   cardLineLayout?: CardLineLayout;
-  /** Desktop row density; `TableDensity.Dense` gives 36 px rows and a 34 px header band. Default comfortable. */
+  /** Desktop row density; `TableDensity.Dense` gives 36 px rows and a 34 px header band. Default: the nearest `TableDefaultsProvider` density, else comfortable. */
   density?: TableDensity;
   /**
    * Per-slot style overrides, merged LAST so the consumer always wins — including over

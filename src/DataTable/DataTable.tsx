@@ -49,8 +49,8 @@ import { JoinedFrameContext } from './joinedFrameContext';
 import { SelectAllBanner } from './SelectAllBanner';
 import { selectionStyles as sel, softBrandTint, tableStyles as s } from './styles';
 import { CardLineLayout, CardLineLayoutContext } from './CardLineLayout';
-import { TableDensity } from './TableDensity';
 import { densitySlotStyles, TableDensityContext, withDensityCell } from './density';
+import { TableDefaultsContext } from './TableDefaults';
 import { TableHeader } from './TableHeader';
 import { useRovingFocus } from './useRovingFocus';
 import { useTableSelection } from './useTableSelection';
@@ -66,11 +66,13 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
     getRowAccessibilityLabel, loading, loadingLabel, emptyLabel,
     renderRowDetail, getRowDetailAccessibilityLabel, expandedRowKeys, styleOverrides: callerOverrides,
     selectedRowKeys, onSelectionChange, matchingCount, allMatchingSelected, onSelectAllMatchingChange,
-    keyboardNavigation = false, animateRows = true, density = TableDensity.Comfortable,
+    keyboardNavigation = false, animateRows = true, density: densityProp,
     stackBreakpoint = CARD_STACK_BREAKPOINT, cardLineLayout = CardLineLayout.Stacked, testID = TABLE_TEST_IDS.root,
   } = props;
 
   const { theme, t } = useUi();
+  const defaults = useContext(TableDefaultsContext);
+  const density = densityProp ?? defaults.density;
   // Row entrance: on by default, but collapse to instant (no wrapper, no delay) under
   // reduced-motion — the FadeIn gates too, but skipping the wrapper entirely keeps the
   // reduced-motion DOM byte-for-byte identical to the un-animated table.

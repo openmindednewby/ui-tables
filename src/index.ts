@@ -126,3 +126,6 @@ export * from './ReportFilters';
 export * from './ExportCsvAction';
 
 export * from './FacetFilters';
+export { TableDefaultsProvider, TableDefaultsContext } from './DataTable';
+export type { TableDefaults, TableDefaultsProviderProps } from './DataTable';
+export * from './RowActions';
