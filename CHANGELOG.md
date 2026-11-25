@@ -8,6 +8,17 @@
 - `FiltersVariant.Grid` + `FilterBarLayout.Rows`: fields in one even row of up to four columns, then the actions (left, 36 px on desktop, 44 px when stacked) and the results count (right) on the line below.
 - `LedgerFiltersPlacement.CardGrid`: the ledger's filters in a 12 x 14 px card using `FiltersVariant.Grid` (MODC-1 D-MC-756 F2).
 
+## 3.16.0
+
+### Added
+
+- `FilterField.gridSpan`: the number of `Grid` columns a field's cell spans (default 1); `FiltersVariant.Grid` gives a `grow` field two. `gridCellStyle(columns, gap, span)` takes the span.
+
+### Changed
+
+- `Filters` text field: inside a ui-forms `SelectLookProvider` it takes the select look box (`lookInputBox`), so a text field and a select in one filter row share height, padding, font and radius (MODC-1).
+- Peer `@dloizides/ui-forms` raised to `>=1.59.0`; `react-native-svg >=13.0.0` added as a peer.
+
 ## 3.13.0
 
 ### Added
