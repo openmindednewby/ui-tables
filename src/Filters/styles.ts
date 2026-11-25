@@ -10,7 +10,7 @@
  *
  * Colours are applied inline from `useUi().theme` at render — nothing here carries a colour literal.
  */
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet, type TextStyle } from 'react-native';
 
 import { controlStyles } from '@dloizides/ui-forms';
 
@@ -48,6 +48,11 @@ export const filterStyles = StyleSheet.create({
   actionCompact: { minHeight: ACTION_COMPACT_HEIGHT, height: ACTION_COMPACT_HEIGHT, paddingHorizontal: ACTION_COMPACT_PAD_H, paddingVertical: ACTION_COMPACT_PAD_V },
   actionTextCompact: { lineHeight: ACTION_FONT },
 });
+
+const SINGLE_LINE_WEB = { whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', maxWidth: '100%' } as unknown as TextStyle;
+
+/** A bar label stays on one line and ends in an ellipsis, so a long label never pushes its control below its row. */
+export const fieldLabelSingleLine: TextStyle | undefined = Platform.OS === 'web' ? SINGLE_LINE_WEB : undefined;
 
 /**
  * The dense-control metrics, re-exported from `@dloizides/ui-forms` so the bar's remaining

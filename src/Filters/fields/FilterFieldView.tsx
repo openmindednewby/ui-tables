@@ -25,7 +25,7 @@ import { FIELD_MIN_WIDTH, fieldTestID } from '../constants';
 import { clampedMinWidth } from '../utils/clampedMinWidth';
 import { gridCellStyle } from '../utils/gridCellStyle';
 import { COLUMN_GAP } from '../../DataTable/styles';
-import { filterStyles as s } from '../styles';
+import { fieldLabelSingleLine, filterStyles as s } from '../styles';
 import type { DateRangeValue, FilterField, FilterValue, FilterValues, SelectFilterField } from '../types';
 
 const EMPTY_RANGE: DateRangeValue = { from: '', to: '' };
@@ -186,6 +186,7 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
       containerStyle={containerStyle}
       error={field.kind === 'dateRange' ? field.error : undefined}
       label={field.label}
+      labelStyle={fieldLabelSingleLine}
       labelVariant="control"
       testID={field.wrapperTestID ?? testID}
     >
