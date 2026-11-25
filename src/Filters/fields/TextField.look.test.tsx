@@ -31,7 +31,7 @@ describe('TextField', () => {
       </UiProvider>,
     );
 
-    expect(screen.getByTestId('bar-q-input')).toHaveStyle({ height: `${String(box.height)}px`, fontSize: `${String(box.fontSize)}px`, borderRadius: `${String(box.borderRadius)}px`, paddingTop: `${String(box.paddingVertical)}px` });
+    expect(screen.getByTestId('bar-q-input')).toHaveStyle({ height: `${String(box.height)}px`, fontSize: `${String(box.fontSize)}px`, borderTopLeftRadius: `${String(box.borderRadius)}px`, borderTopRightRadius: `${String(box.borderRadius)}px`, borderBottomRightRadius: `${String(box.borderRadius)}px`, borderBottomLeftRadius: `${String(box.borderRadius)}px`, paddingTop: `${String(box.paddingVertical)}px` });
   });
 });
 
