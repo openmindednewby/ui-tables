@@ -34,7 +34,7 @@ export function useToneColor(toneColors: StatusLedgerProps<unknown>['toneColors'
 
 /** Filter, sort and column state behind `StatusLedger`. */
 export function useLedgerView<T>(props: StatusLedgerProps<T>) {
-  const { rows, columns, getStatus, statusLabel, statusTone, labels, getGroup, groupLabel, getSearchText, needsLook, renderActions, toneColors } = props;
+  const { rows, columns, getStatus, statusLabel, statusTone, labels, getGroup, groupLabel, getSearchText, needsLook, renderActions, toneColors, searchSpan } = props;
   const [values, setValues] = useState<FilterValues>({});
   const [direction, setDirection] = useState<SortDirection>(SortDirection.Asc);
   const toneColor = useToneColor(toneColors);
@@ -59,12 +59,12 @@ export function useLedgerView<T>(props: StatusLedgerProps<T>) {
     const sortable = allColumns.filter((c) => 'sortValue' in c && c.sortValue !== undefined).map((c) => ({ value: c.key, label: c.header }));
     const groupField: FilterField[] = groups.length === 0 ? [] : [{ kind: 'select', key: LedgerFilterKey.Group, label: labels.group, options: [all, ...groups] }];
     return [
-      { kind: 'text', key: LedgerFilterKey.Search, label: labels.search, grow: true },
+      { kind: 'text', key: LedgerFilterKey.Search, label: labels.search, grow: true, gridSpan: searchSpan },
       { kind: 'select', key: LedgerFilterKey.Status, label: labels.status, options: [all, ...statuses] },
       ...groupField,
       { kind: 'select', key: LedgerFilterKey.Sort, label: labels.sortBy, options: sortable },
     ];
-  }, [rows, getStatus, statusLabel, getGroup, groupLabel, labels, allColumns]);
+  }, [rows, getStatus, statusLabel, getGroup, groupLabel, labels, allColumns, searchSpan]);
 
   const visible = useMemo(() => {
     const filter = { status: readText(values, LedgerFilterKey.Status), group: readText(values, LedgerFilterKey.Group), text: readText(values, LedgerFilterKey.Search) };

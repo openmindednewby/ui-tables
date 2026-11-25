@@ -32,7 +32,10 @@ export function variantFields(fields: readonly FilterField[], stacked: boolean, 
   if (stacked) return fields.map((field) => ({ ...field, gridColumns: FULL_ROW }));
   if (variant !== FiltersVariant.Grid) return fields;
   if (fields.length > GRID_MAX_COLUMNS) return fields.map((field) => ({ ...field, gridColumns: field.gridColumns ?? GRID_MAX_COLUMNS }));
-  const span = (field: FilterField): number => (field.grow === true && field.gridColumns === undefined ? GROW_SPAN : 1);
+  const span = (field: FilterField): number => {
+    if (field.gridColumns !== undefined) return 1;
+    return field.gridSpan ?? (field.grow === true ? GROW_SPAN : 1);
+  };
   const units = Math.max(fields.reduce((sum, field) => sum + span(field), 0), 1);
   return fields.map((field) => (field.gridColumns === undefined ? { ...field, gridColumns: units, gridSpan: span(field) } : field));
 }

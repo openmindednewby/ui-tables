@@ -60,6 +60,8 @@ export interface StatusLedgerBaseProps<T> {
   layout?: LedgerLayout;
   /** `Card` draws the filters as a separate card above the table. Default `Inline`. */
   filtersPlacement?: LedgerFiltersPlacement;
+  /** Grid columns the search filter spans in the `CardGrid` placement. Default 2. */
+  searchSpan?: number;
   /** Desktop row density of the table. Default comfortable. */
   density?: TableDensity;
   breakpoint?: number;

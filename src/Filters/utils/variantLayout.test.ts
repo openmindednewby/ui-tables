@@ -9,6 +9,7 @@ const fields: readonly FilterField[] = [
   { key: 'q', kind: 'text', label: 'Search', grow: true },
   { key: 'status', kind: 'select', label: 'Status', options: [], gridColumns: 4 },
 ];
+const selects: readonly FilterField[] = ['status', 'group', 'sort'].map((key) => ({ key, kind: 'select' as const, label: key, options: [] }));
 
 describe('isStackedVariant', () => {
   it('with the bare variant below the breakpoint, stacks', () => {
@@ -41,6 +42,22 @@ describe('variantFields', () => {
     const result = variantFields(fields, false);
 
     expect(result).toBe(fields);
+  });
+
+  it('with the grid variant and a grow search, spans the search two of five columns', () => {
+    const row: readonly FilterField[] = [{ key: 'q', kind: 'text', label: 'Search', grow: true }, ...selects];
+
+    const result = variantFields(row, false, FiltersVariant.Grid);
+
+    expect(result.map((f) => [f.gridColumns, f.gridSpan])).toEqual([[5, 2], [5, 1], [5, 1], [5, 1]]);
+  });
+
+  it('with the grid variant and a search span of 3, spans the search three of six columns', () => {
+    const row: readonly FilterField[] = [{ key: 'q', kind: 'text', label: 'Search', grow: true, gridSpan: 3 }, ...selects];
+
+    const result = variantFields(row, false, FiltersVariant.Grid);
+
+    expect(result.map((f) => [f.gridColumns, f.gridSpan])).toEqual([[6, 3], [6, 1], [6, 1], [6, 1]]);
   });
 });
 

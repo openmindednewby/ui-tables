@@ -4,6 +4,7 @@
 
 ### Added
 
+- `StatusLedger` `searchSpan`: grid columns the search filter spans in the `CardGrid` placement (default 2, unchanged). `FiltersVariant.Grid` now honours an explicit `gridSpan` on a field (MODC-1 /jobs search label clip).
 - `TableDensity.Compact`: 34 px rows, 28 px header band, 13 px cells, 11 px header tracked 0.06em, 10 px cell gutters (20 px between cells). `withDensityCell` places the density's cell font under the caller's `cell` override (MODC-1 D-MC-756 F4).
 - `FiltersVariant.Grid` + `FilterBarLayout.Rows`: fields in one even row of up to four columns, then the actions (left, 36 px on desktop, 44 px when stacked) and the results count (right) on the line below.
 - `LedgerFiltersPlacement.CardGrid`: the ledger's filters in a 12 x 14 px card using `FiltersVariant.Grid` (MODC-1 D-MC-756 F2).
