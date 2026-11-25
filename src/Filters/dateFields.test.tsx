@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { UiProvider, type UiTheme, type UiValue } from '@dloizides/ui-feedback';
+import { DatePickerProvider } from '@dloizides/ui-forms';
 
 import { Filters } from './Filters';
 import { FILTERS_I18N, FILTERS_TEST_ID, fieldTestID } from './constants';
@@ -27,28 +28,34 @@ function renderFilters(values: FilterValues, onChange: (v: FilterValues) => void
 }
 
 describe('FilterFieldView dateRange', () => {
-  it('with a dateRange field, renders the from side as a native date input', () => {
+  it('with a dateRange field, renders the from side with the shared range calendar', () => {
     renderFilters(EMPTY);
 
     const from = screen.getByTestId(`${RANGE_ID}-from`);
 
-    expect(from.getAttribute('type')).toBe('date');
+    expect([from.tagName, screen.getByTestId(`${RANGE_ID}-calendar`).tagName]).toEqual(['INPUT', 'BUTTON']);
   });
 
-  it('with a dateRange field, renders the to side as a native date input', () => {
+  it('with a dateRange field, renders the to side with the shared range calendar', () => {
     renderFilters(EMPTY);
 
     const to = screen.getByTestId(`${RANGE_ID}-to`);
 
-    expect(to.getAttribute('type')).toBe('date');
+    expect([to.tagName, screen.getByTestId(`${RANGE_ID}-calendar`).tagName]).toEqual(['INPUT', 'BUTTON']);
   });
 
-  it('with a stored range, shows each side as its ISO value', () => {
-    renderFilters({ ...EMPTY, dates: { from: '2024-01-01', to: '2024-12-31' } });
+  it('with a stored range in en-GB, shows the from side as 1 Jan 2024', () => {
+    render(
+      <UiProvider theme={theme} t={t}>
+        <DatePickerProvider locale="en-GB">
+          <Filters fields={FIELDS} values={{ ...EMPTY, dates: { from: '2024-01-01', to: '2024-12-31' } }} onChange={() => undefined} />
+        </DatePickerProvider>
+      </UiProvider>,
+    );
 
     const from = screen.getByTestId(`${RANGE_ID}-from`) as HTMLInputElement;
 
-    expect(from.value).toBe('2024-01-01');
+    expect(from.value).toBe('1 Jan 2024');
   });
 });
 
@@ -66,7 +73,7 @@ describe('FilterFieldView wrapperTestID', () => {
 
     const to = screen.getByTestId(`${RANGE_ID}-to`);
 
-    expect(to.getAttribute('type')).toBe('date');
+    expect([to.tagName, screen.getByTestId(`${RANGE_ID}-calendar`).tagName]).toEqual(['INPUT', 'BUTTON']);
   });
 
   it('without a wrapperTestID, the wrapper keeps the field testID', () => {
@@ -79,12 +86,12 @@ describe('FilterFieldView wrapperTestID', () => {
 });
 
 describe('FilterFieldView date', () => {
-  it('with a date field, renders a native date input', () => {
+  it('with a date field, renders the input inside the shared date picker', () => {
     renderFilters(EMPTY);
 
     const input = screen.getByTestId(DATE_ID);
 
-    expect(input.getAttribute('type')).toBe('date');
+    expect(screen.getByTestId(`${DATE_ID}-anchor`).contains(input)).toBe(true);
   });
 
   it('with a date picked, emits the ISO value under the field key', () => {
@@ -107,13 +114,13 @@ describe('FilterFieldView date', () => {
 
 
 describe('FilterFieldView date inputTestID', () => {
-  it('with an inputTestID, puts that id on the date input', () => {
+  it('with an inputTestID, puts that id on the date picker input', () => {
     const field: FilterField = { key: 'on', kind: 'date', label: 'Booked on', inputTestID: 'booked-from' };
     render(<UiProvider theme={theme} t={t}><Filters fields={[field]} values={EMPTY} onChange={() => undefined} /></UiProvider>);
 
     const input = screen.getByTestId('booked-from');
 
-    expect(input.getAttribute('type')).toBe('date');
+    expect(screen.getByTestId('booked-from-anchor').contains(input)).toBe(true);
   });
 
   it('without an inputTestID, keeps the field testID plus -input', () => {

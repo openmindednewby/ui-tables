@@ -77,12 +77,14 @@
         "version": "npm run build"
     },
     "peerDependencies": {
+        "@dloizides/api-client-base": ">=1.2.0",
         "@dloizides/ui-buttons": ">=1.4.0",
         "@dloizides/ui-feedback": ">=1.1.0",
-        "@dloizides/ui-forms": ">=1.31.0",
+        "@dloizides/ui-forms": ">=1.59.0",
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0",
-        "react-native": ">=0.74.0"
+        "react-native": ">=0.74.0",
+        "react-native-svg": ">=13.0.0"
     },
     "peerDependenciesMeta": {
         "react-dom": {
@@ -90,9 +92,10 @@
         }
     },
     "devDependencies": {
+        "@dloizides/api-client-base": "^1.2.0",
         "@dloizides/ui-buttons": "^1.4.0",
         "@dloizides/ui-feedback": "^1.1.0",
-        "@dloizides/ui-forms": "^1.31.0",
+        "@dloizides/ui-forms": "^1.59.0",
         "@testing-library/dom": "^10.4.0",
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.1.0",
@@ -110,6 +113,7 @@
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "react-native": "0.81.5",
+        "react-native-svg": "15.12.1",
         "react-native-web": "^0.21.0",
         "rimraf": "^5.0.0",
         "ts-jest": "^29.1.0",

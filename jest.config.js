@@ -7,6 +7,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^react-native$': 'react-native-web',
+    '^react-native-svg$': '<rootDir>/jest/reactNativeSvgMock.js',
   },
   collectCoverageFrom: [
     'src/**/*.ts',
