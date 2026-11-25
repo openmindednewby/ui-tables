@@ -76,10 +76,10 @@ describe('variantShell', () => {
     expect(result).toMatchObject({ borderWidth: 0, paddingHorizontal: 0, paddingVertical: 0, backgroundColor: 'transparent' });
   });
 
-  it('with the bare variant stacked, stretches the actions full width', () => {
+  it('with the bare variant stacked, puts the actions side by side in one full-width row', () => {
     const result = StyleSheet.flatten(variantShell(FiltersVariant.Bare, true, undefined)?.filtersActions);
 
-    expect(result).toMatchObject({ width: '100%', flexDirection: 'column', alignItems: 'stretch' });
+    expect(result).toMatchObject({ width: '100%', flexDirection: 'row', alignItems: 'stretch' });
   });
 
   it('with the bare variant and a caller override, the caller wins', () => {

@@ -45,6 +45,7 @@ export const filterStyles = StyleSheet.create({
   switchInert: { pointerEvents: 'none' },
   action: { minHeight: MIN_TARGET_PX, minWidth: MIN_TARGET_PX, alignItems: 'center', justifyContent: 'center', paddingHorizontal: ACTION_PAD_H, paddingVertical: ACTION_PAD_V, borderRadius: ACTION_RADIUS, borderWidth: ACTION_BORDER },
   actionText: { fontSize: ACTION_FONT, fontWeight: '600' },
+  actionStretch: { flexGrow: 1, flexBasis: 0 },
   actionCompact: { minHeight: ACTION_COMPACT_HEIGHT, height: ACTION_COMPACT_HEIGHT, paddingHorizontal: ACTION_COMPACT_PAD_H, paddingVertical: ACTION_COMPACT_PAD_V },
   actionTextCompact: { lineHeight: ACTION_FONT },
 });

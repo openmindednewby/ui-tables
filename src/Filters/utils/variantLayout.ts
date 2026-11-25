@@ -13,7 +13,7 @@ const BARE_SHELL: FilterBarStyleOverrides = {
 const BARE_NARROW_SHELL: FilterBarStyleOverrides = {
   ...BARE_SHELL,
   filtersSpacer: { display: 'none' },
-  filtersActions: { width: '100%', flexDirection: 'column', alignItems: 'stretch' },
+  filtersActions: { width: '100%', flexDirection: 'row', alignItems: 'stretch' },
 };
 
 const GRID_MAX_COLUMNS = 4;

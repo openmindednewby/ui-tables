@@ -10,7 +10,7 @@ import { Pressable, Text } from 'react-native';
 import { resolveOnBrand } from '@dloizides/design-tokens';
 import { useUi } from '@dloizides/ui-feedback';
 
-import { FiltersCompactActionsContext } from '../actionSize';
+import { FiltersCompactActionsContext, FiltersStretchActionsContext } from '../actionSize';
 import { filterStyles as s } from '../styles';
 
 const DISABLED_OPACITY = 0.4;
@@ -32,6 +32,7 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
   const isPrimary = tone === 'primary';
   const brand = palette.primary['500'];
   const compact = useContext(FiltersCompactActionsContext);
+  const stretch = useContext(FiltersStretchActionsContext);
 
   return (
     <Pressable
@@ -44,6 +45,7 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
       style={[
         s.action,
         compact ? s.actionCompact : null,
+        stretch ? s.actionStretch : null,
         {
           borderColor: isPrimary ? brand : colors.border,
           backgroundColor: isPrimary ? brand : TRANSPARENT,

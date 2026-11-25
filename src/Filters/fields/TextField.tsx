@@ -4,7 +4,7 @@ import { TextInput, type TextInputProps } from 'react-native';
 
 import { useA11y } from '@dloizides/a11y';
 import { useUi } from '@dloizides/ui-feedback';
-import { lookInputBox, useSelectLookMetrics } from '@dloizides/ui-forms';
+import { lookInputBox, useSelectLookMetrics, useThemedInput } from '@dloizides/ui-forms';
 
 import { fieldTestID } from '../constants';
 import { controlStyles as s } from '../styles';
@@ -27,6 +27,7 @@ export function TextField({ field, barTestID, value, onChange, onSubmit }: TextF
   const { theme } = useUi();
   const { colors } = theme;
   const look = useSelectLookMetrics();
+  const themed = useThemedInput({ hasError: false, editable: true });
   const isNumber = field.kind === 'number';
   const { a11yProps, hintNode } = useA11y({
     label: field.label,
@@ -45,7 +46,7 @@ export function TextField({ field, barTestID, value, onChange, onSubmit }: TextF
         value={value}
         onChangeText={onChange}
         onSubmitEditing={onSubmit}
-        style={[s.input, { borderColor: colors.border, backgroundColor: colors.surface, color: colors.text }, lookInputBox(look)]}
+        style={[s.input, themed.style, lookInputBox(look)]}
       />
       {hintNode}
     </>

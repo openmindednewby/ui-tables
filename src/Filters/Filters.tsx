@@ -21,7 +21,7 @@ import { useUi } from '@dloizides/ui-feedback';
 import { CARD_STACK_BREAKPOINT } from '../DataTable/constants';
 import { FilterBar, type FilterBarStyleOverrides } from '../DataTable/FilterBar';
 import { FilterBarLayout } from '../DataTable/FilterBarLayout';
-import { FiltersCompactActionsContext } from './actionSize';
+import { FiltersCompactActionsContext, FiltersStretchActionsContext } from './actionSize';
 import { ActionButton } from './components/ActionButton';
 import { FILTERS_I18N, FILTERS_TEST_ID, applyTestID, clearTestID } from './constants';
 import { FilterFieldView, type FieldStrings, type RenderSelectArgs } from './fields/FilterFieldView';
@@ -162,6 +162,7 @@ export function Filters({
 
   return (
     <FiltersCompactActionsContext.Provider value={gridRows}>
+    <FiltersStretchActionsContext.Provider value={stacked}>
     <FilterBar
       layout={gridRows ? FilterBarLayout.Rows : FilterBarLayout.Flow}
       resultsCount={resultsCount}
@@ -183,6 +184,7 @@ export function Filters({
         />
       ))}
     </FilterBar>
+    </FiltersStretchActionsContext.Provider>
     </FiltersCompactActionsContext.Provider>
   );
 }
