@@ -17,6 +17,7 @@ const BARE_NARROW_SHELL: FilterBarStyleOverrides = {
 };
 
 const GRID_MAX_COLUMNS = 4;
+const GROW_SPAN = 2;
 
 /** Whether the variant lays the bar out as one full-width column at this viewport width. */
 export function isStackedVariant(variant: FiltersVariant, width: number, breakpoint: number): boolean {
@@ -30,8 +31,10 @@ export function isStackedVariant(variant: FiltersVariant, width: number, breakpo
 export function variantFields(fields: readonly FilterField[], stacked: boolean, variant: FiltersVariant = FiltersVariant.Boxed): readonly FilterField[] {
   if (stacked) return fields.map((field) => ({ ...field, gridColumns: FULL_ROW }));
   if (variant !== FiltersVariant.Grid) return fields;
-  const columns = Math.min(Math.max(fields.length, 1), GRID_MAX_COLUMNS);
-  return fields.map((field) => ({ ...field, gridColumns: field.gridColumns ?? columns }));
+  if (fields.length > GRID_MAX_COLUMNS) return fields.map((field) => ({ ...field, gridColumns: field.gridColumns ?? GRID_MAX_COLUMNS }));
+  const span = (field: FilterField): number => (field.grow === true && field.gridColumns === undefined ? GROW_SPAN : 1);
+  const units = Math.max(fields.reduce((sum, field) => sum + span(field), 0), 1);
+  return fields.map((field) => (field.gridColumns === undefined ? { ...field, gridColumns: units, gridSpan: span(field) } : field));
 }
 
 /**

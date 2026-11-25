@@ -57,6 +57,8 @@ interface FilterFieldBase {
   minWidth?: number;
   /** Lay the field out as one equal cell of an N-column grid; 1 = full row width (phones). Overrides minWidth and grow. */
   gridColumns?: number;
+  /** Grid columns this field's cell spans (default 1); the `Grid` variant gives a `grow` field two. */
+  gridSpan?: number;
   /** Merged LAST onto the field's wrapper — the consumer always wins over the shared style. */
   style?: StyleProp<ViewStyle>;
   /** Pre-localized accessibility hint for the field's primary control. */

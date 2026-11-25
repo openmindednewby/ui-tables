@@ -81,7 +81,7 @@ function asRange(value: FilterValue | undefined): DateRangeValue {
 
 /** The wrapper style of one field in the bar: grid cell when `gridColumns` is set, else min-width flow. */
 export function fieldContainerStyle(field: FilterField): StyleProp<ViewStyle> {
-  if (field.gridColumns !== undefined) return [s.fieldInBar, gridCellStyle(field.gridColumns, COLUMN_GAP), field.style];
+  if (field.gridColumns !== undefined) return [s.fieldInBar, gridCellStyle(field.gridColumns, COLUMN_GAP, field.gridSpan), field.style];
   const minWidth = field.minWidth ?? FIELD_MIN_WIDTH[field.kind];
   const grow = field.grow === true ? { flexGrow: GROW_FLEX } : null;
   return [s.fieldInBar, { minWidth: clampedMinWidth(minWidth), maxWidth: '100%' as const }, grow, field.style];

@@ -47,3 +47,13 @@ describe('fieldContainerStyle', () => {
     expect(style[1]).toMatchObject({ minWidth: 'min(150px, 100%)' });
   });
 });
+
+describe('gridCellStyle span', () => {
+  it('with a two-column span of a five-column grid, returns two cells plus one gap', () => {
+    const span = 2;
+
+    const style = gridCellStyle(5, GAP, span);
+
+    expect(style.width).toBe('calc((100% - 64px) / 5 * 2 + 16px)');
+  });
+});
