@@ -161,6 +161,7 @@ export function FilterFieldView({ field, barTestID, values, setField, onSubmit, 
           <DateRangeControl
             accessibilityHint={field.accessibilityHint}
             fromLabel={field.fromLabel ?? strings.fromLabel}
+            showLabel={(field.label ?? '') === ''}
             testID={field.testID ?? fieldTestID(barTestID, field.key)}
             toLabel={field.toLabel ?? strings.toLabel}
             value={asRange(raw)}
