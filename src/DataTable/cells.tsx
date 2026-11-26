@@ -9,6 +9,7 @@ import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
 
 import { cellMinWidth, NO_WRAP_TEXT, titleRef } from './cellFit';
+import { CellFitContext, fitLines } from './cellFitContext';
 import { TableDefaultsContext } from './TableDefaults';
 import { tableStyles as s } from './styles';
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
@@ -31,12 +32,12 @@ export function cellContent<T>(
   overrides?: CellStyleOverrides,
 ): React.ReactNode {
   const content = column.render(row);
+  const lines = fitLines(column.truncate, column.maxLines);
   if (typeof content === 'string' || typeof content === 'number') {
-    const truncate = column.truncate === true;
     return (
       <Text
-        ref={truncate ? titleRef(String(content)) : undefined}
-        numberOfLines={truncate ? 1 : undefined}
+        ref={lines !== undefined ? titleRef(String(content)) : undefined}
+        numberOfLines={lines}
         style={[
           s.cell,
           column.numeric ? s.numCell : null,
@@ -50,7 +51,7 @@ export function cellContent<T>(
       </Text>
     );
   }
-  return content;
+  return <CellFitContext.Provider value={{ noWrap: column.noWrap, maxLines: lines }}>{content}</CellFitContext.Provider>;
 }
 
 interface DesktopCellProps<T> {
@@ -85,7 +86,8 @@ interface DesktopCellProps<T> {
  */
 export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides, inGrid }: DesktopCellProps<T>): React.ReactElement {
   const { keepWords } = useContext(TableDefaultsContext);
-  const minWidth = cellMinWidth(column.minWidth, column.truncate, keepWords, column.noWrap);
+  const minWidth = cellMinWidth(column.noWrap === true ? undefined : column.minWidth, column.truncate, keepWords, column.noWrap);
+  const floor = column.noWrap === true && column.minWidth !== undefined ? { minWidth: column.minWidth } : null;
   return (
     <View
       style={[
@@ -95,7 +97,7 @@ export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides,
       testID={testID}
       {...(inGrid === true ? { role: 'cell' as const } : null)}
     >
-      <View style={s.desktopCellContent}>{cellContent(column, row, textColor, styleOverrides)}</View>
+      <View style={[s.desktopCellContent, floor]}>{cellContent(column, row, textColor, styleOverrides)}</View>
     </View>
   );
 }

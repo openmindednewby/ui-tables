@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.25.0
+
+### Added
+
+- `CellText`: text inside a custom cell that follows its column's `noWrap` / `maxLines`, so a name, email or chip in a custom node keeps one line (MODC-1 residuals-5 S32-D, S24L-D).
+- `DataTableColumn` `maxLines`: clamp a cell to N lines with an ellipsis, full text in the web title (S24L-D PEP class, Office).
+
+### Fixed
+
+- A `noWrap` column with a `minWidth` keeps the floor and still grows to its text (S26-D source names).
+- Card stack: a `noWrap` value no longer shrinks, it moves under its label instead of breaking mid-word (S21-M chips).
+
 ## Unreleased
 
 ### Added

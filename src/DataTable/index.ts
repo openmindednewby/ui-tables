@@ -11,6 +11,8 @@ export { PagedTableLayoutKind } from './PagedTableLayoutKind';
 export { TableDensity } from './TableDensity';
 export { FilterBarLayout } from './FilterBarLayout';
 export { CardLineLayout } from './CardLineLayout';
+export { CellText } from './CellText';
+export type { CellTextProps } from './CellText';
 export type { PagedTableLayoutProps } from './PagedTableLayout';
 export {
   TABLE_TEST_IDS,
