@@ -27,10 +27,10 @@ describe('cellMinWidth', () => {
 });
 
 describe('cellMinWidth with noWrap', () => {
-  it('with noWrap on web and no keepWords, returns auto so the column grows to its text', () => {
+  it('with noWrap on web and no keepWords, returns max-content so a custom node never wraps either', () => {
     const minWidth = cellMinWidth(undefined, false, undefined, true);
 
-    expect(minWidth).toBe('auto');
+    expect(minWidth).toBe('max-content');
   });
 
   it('with noWrap and a truncated column, returns undefined so the ellipsis can cut', () => {
