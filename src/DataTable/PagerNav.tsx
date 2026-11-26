@@ -3,8 +3,8 @@
  * Next / Last). Split out of Pager.tsx so each file stays small and the page-math component
  * reads cleanly; purely presentational, driven by the resolved page bounds passed in.
  */
-import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { resolveOnBrand } from '@dloizides/design-tokens';
 import { useUi, type UiTranslate } from '@dloizides/ui-feedback';
@@ -19,11 +19,31 @@ const FIRST_PAGE = 1;
 const DISABLED_OPACITY = 0.4;
 const FULL_OPACITY = 1;
 const TRANSPARENT = 'transparent';
+const SPINNER_SIZE = 14;
+
+function isPromise(value: unknown): value is Promise<void> {
+  return typeof (value as Promise<void> | undefined)?.then === 'function';
+}
+
+/** Tracks which nav button started async work, so only that one shows the shared spinner. */
+function usePendingNav(onPageChange: (page: number) => void | Promise<void>, loading: boolean): { busyKey: string | null; go: (key: string, page: number) => void } {
+  const [pending, setPending] = useState<string | null>(null);
+  const [lastPressed, setLastPressed] = useState<string | null>(null);
+  const go = (key: string, page: number): void => {
+    setLastPressed(key);
+    const result = onPageChange(page);
+    if (!isPromise(result)) return;
+    setPending(key);
+    result.finally(() => setPending(null)).catch(() => undefined);
+  };
+  return { busyKey: pending ?? (loading ? lastPressed ?? TABLE_TEST_IDS.pagerNext : null), go };
+}
 
 interface NavButtonProps {
   label: string;
   hint: string;
   disabled: boolean;
+  busy: boolean;
   onPress: () => void;
   color: string;
   border: string;
@@ -31,18 +51,19 @@ interface NavButtonProps {
   styleOverrides?: Pick<PagerStyleOverrides, 'control' | 'controlText'>;
 }
 
-function NavButton({ label, hint, disabled, onPress, color, border, testID, styleOverrides: o }: NavButtonProps): React.ReactElement {
+function NavButton({ label, hint, disabled, busy, onPress, color, border, testID, styleOverrides: o }: NavButtonProps): React.ReactElement {
   return (
     <Pressable
       testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={hint}
-      accessibilityState={{ disabled }}
+      accessibilityState={{ disabled, busy }}
       disabled={disabled}
       onPress={onPress}
       style={[c.control, { borderColor: border, opacity: disabled ? DISABLED_OPACITY : FULL_OPACITY }, o?.control]}
     >
+      {busy ? <ActivityIndicator color={color} size={SPINNER_SIZE} testID={`${testID}-spinner`} /> : null}
       <Text style={[c.controlText, { color }, o?.controlText]}>{label}</Text>
     </Pressable>
   );
@@ -51,11 +72,12 @@ function NavButton({ label, hint, disabled, onPress, color, border, testID, styl
 export interface PagerNavProps {
   pageSize: number;
   pageSizeOptions: readonly number[];
-  onPageSizeChange: (pageSize: number) => void;
-  onPageChange: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
+  onPageChange: (page: number) => void | Promise<void>;
   safePage: number;
   lastPage: number;
   isCompact: boolean;
+  loading: boolean;
   isDropdown: boolean;
   showFirstLast: boolean;
   testID: string;
@@ -81,7 +103,7 @@ function rowsOptionLabel(t: UiTranslate, optionSize: number): string {
 }
 
 /** The rows-per-page control (hidden when compact): a dropdown or a row of size pills. */
-function RowsControl({ pageSize, pageSizeOptions, onPageSizeChange, isDropdown, testID, styleOverrides: o }: Pick<PagerNavProps, 'pageSize' | 'pageSizeOptions' | 'onPageSizeChange' | 'isDropdown' | 'testID' | 'styleOverrides'>): React.ReactElement {
+function RowsControl({ pageSize, pageSizeOptions, onPageSizeChange, isDropdown, testID, styleOverrides: o }: Pick<PagerNavProps, 'pageSize' | 'pageSizeOptions' | 'isDropdown' | 'testID' | 'styleOverrides'> & { onPageSizeChange: (pageSize: number) => void }): React.ReactElement {
   const { theme, t } = useUi();
   const { colors, palette } = theme;
   const brand = palette.primary['500'];
@@ -142,6 +164,7 @@ export function PagerNav({
   safePage,
   lastPage,
   isCompact,
+  loading,
   isDropdown,
   showFirstLast,
   testID,
@@ -152,10 +175,12 @@ export function PagerNav({
   const atFirst = safePage <= FIRST_PAGE;
   const atLast = safePage >= lastPage;
   const showJumps = showFirstLast && !isCompact;
+  const { busyKey, go } = usePendingNav(onPageChange, loading);
+  const anyBusy = busyKey !== null;
 
   return (
     <View style={[c.pagerNav, o?.pagerNav]}>
-      {!isCompact && (
+      {!isCompact && onPageSizeChange !== undefined && (
         <RowsControl
           pageSize={pageSize}
           pageSizeOptions={pageSizeOptions}
@@ -169,8 +194,9 @@ export function PagerNav({
         <NavButton
           label={t(TABLE_I18N.pagerFirst)}
           hint={t(TABLE_I18N.pagerFirstHint)}
-          disabled={atFirst}
-          onPress={() => onPageChange(FIRST_PAGE)}
+          disabled={atFirst || anyBusy}
+          busy={busyKey === TABLE_TEST_IDS.pagerFirst}
+          onPress={() => go(TABLE_TEST_IDS.pagerFirst, FIRST_PAGE)}
           color={colors.text}
           border={colors.border}
           styleOverrides={o}
@@ -180,8 +206,9 @@ export function PagerNav({
       <NavButton
         label={t(TABLE_I18N.pagerPrev)}
         hint={t(TABLE_I18N.pagerPrevHint)}
-        disabled={atFirst}
-        onPress={() => onPageChange(safePage - 1)}
+        disabled={atFirst || anyBusy}
+        busy={busyKey === TABLE_TEST_IDS.pagerPrev}
+        onPress={() => go(TABLE_TEST_IDS.pagerPrev, safePage - 1)}
         color={colors.text}
         border={colors.border}
         styleOverrides={o}
@@ -190,8 +217,9 @@ export function PagerNav({
       <NavButton
         label={t(TABLE_I18N.pagerNext)}
         hint={t(TABLE_I18N.pagerNextHint)}
-        disabled={atLast}
-        onPress={() => onPageChange(safePage + 1)}
+        disabled={atLast || anyBusy}
+        busy={busyKey === TABLE_TEST_IDS.pagerNext}
+        onPress={() => go(TABLE_TEST_IDS.pagerNext, safePage + 1)}
         color={colors.text}
         border={colors.border}
         styleOverrides={o}
@@ -201,8 +229,9 @@ export function PagerNav({
         <NavButton
           label={t(TABLE_I18N.pagerLast)}
           hint={t(TABLE_I18N.pagerLastHint)}
-          disabled={atLast}
-          onPress={() => onPageChange(lastPage)}
+          disabled={atLast || anyBusy}
+          busy={busyKey === TABLE_TEST_IDS.pagerLast}
+          onPress={() => go(TABLE_TEST_IDS.pagerLast, lastPage)}
           color={colors.text}
           border={colors.border}
           styleOverrides={o}

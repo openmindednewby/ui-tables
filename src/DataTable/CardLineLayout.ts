@@ -1,9 +1,10 @@
 import { createContext } from 'react';
 
-/** How a card-stack line places its label: `Stacked` above the value (default), `Inline` left with the value right. */
+/** How a card-stack places its lines: `Stacked` label above value (default), `Inline` label left and value right, `Compact` a bold title plus one `Label: value · Label: value` line. */
 export const enum CardLineLayout {
   Stacked = 'stacked',
   Inline = 'inline',
+  Compact = 'compact',
 }
 
 export const CardLineLayoutContext = createContext<CardLineLayout>(CardLineLayout.Stacked);

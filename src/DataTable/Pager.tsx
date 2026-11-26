@@ -11,11 +11,11 @@ import { Text, View, useWindowDimensions, type StyleProp, type TextStyle, type V
 import { useUi } from '@dloizides/ui-feedback';
 
 import { CARD_STACK_BREAKPOINT, DEFAULT_PAGE_SIZE_OPTIONS, TABLE_I18N, TABLE_TEST_IDS } from './constants';
+import { pageBounds } from './pageBounds';
 import { PagerNav } from './PagerNav';
 import { TableDefaultsContext } from './TableDefaults';
 import { chromeStyles as c } from './styles';
 
-const FIRST_PAGE = 1;
 const EN_DASH = '–';
 const BOLD = '700' as const;
 
@@ -45,15 +45,27 @@ export interface PagerStyleOverrides {
   sizePillText?: StyleProp<TextStyle>;
 }
 
+/** One server page when the total is unknown. */
+export interface PagerServerPage {
+  itemCount: number;
+  hasNext: boolean;
+}
+
 export interface PagerProps {
   /** 1-based current page. */
   page: number;
   /** Rows per page. */
   pageSize: number;
-  /** Total row count across all pages. */
-  total: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (pageSize: number) => void;
+  /** Total row count across all pages; omit when the server does not know it and pass `serverPage`. */
+  total?: number;
+  /** Server-paged page with an unknown total: rows on this page and whether a next page exists. */
+  serverPage?: PagerServerPage;
+  /** A returned Promise shows the shared spinner on the pressed Prev/Next until it settles. */
+  onPageChange: (page: number) => void | Promise<void>;
+  /** Omit for a fixed page size (server-paged): the rows-per-page control is hidden. */
+  onPageSizeChange?: (pageSize: number) => void;
+  /** A page load is in flight: Prev/Next are disabled and the last pressed one shows the spinner. */
+  loading?: boolean;
   /** Rows-per-page choices. Default 25 / 50 / 100 / 200. */
   pageSizeOptions?: readonly number[];
   /**
@@ -114,8 +126,10 @@ export function Pager({
   page,
   pageSize,
   total,
+  serverPage,
   onPageChange,
   onPageSizeChange,
+  loading = false,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   rowsVariant,
   unitLabel,
@@ -137,18 +151,17 @@ export function Pager({
   // control and the First/Last jumps, mirroring the DataTable's card-stack behaviour.
   const isCompact = responsive && width < stackBreakpoint;
 
-  const lastPage = Math.max(FIRST_PAGE, Math.ceil(total / pageSize));
-  const safePage = Math.min(Math.max(page, FIRST_PAGE), lastPage);
-  const from = total === 0 ? 0 : (safePage - 1) * pageSize + 1;
-  const to = Math.min(safePage * pageSize, total);
+  const { safePage, lastPage, from, to } = pageBounds({ page, pageSize, total, serverPage });
+  const knownTotal = total ?? to;
   const hasUnit = unitLabel !== undefined && unitLabel !== '';
   // Singularise the unit noun when exactly one row matches (needs both a base unit AND a singular).
-  const resolvedUnit = total === 1 && unitLabelSingular !== undefined && unitLabelSingular !== '' ? unitLabelSingular : unitLabel;
+  const resolvedUnit = knownTotal === 1 && unitLabelSingular !== undefined && unitLabelSingular !== '' ? unitLabelSingular : unitLabel;
   const hasPrefix = infoPrefix !== undefined && infoPrefix !== '';
   const prefix = hasPrefix ? `${infoPrefix} ` : '';
   const ofWord = t(TABLE_I18N.pagerInfo);
   const unitSuffix = hasUnit ? ` ${resolvedUnit}` : '';
-  const count = `${from.toLocaleString()}${EN_DASH}${to.toLocaleString()} ${ofWord} ${total.toLocaleString()}`;
+  const ofTotal = total === undefined ? '' : ` ${ofWord} ${total.toLocaleString()}`;
+  const count = `${from.toLocaleString()}${EN_DASH}${to.toLocaleString()}${ofTotal}`;
   const info = `${prefix}${count}${unitSuffix}`;
   const boldStyle = { color: colors.text, fontWeight: BOLD };
 
@@ -161,8 +174,8 @@ export function Pager({
             <Text style={boldStyle}>{from.toLocaleString()}</Text>
             {EN_DASH}
             <Text style={boldStyle}>{to.toLocaleString()}</Text>
-            {` ${ofWord} `}
-            <Text style={boldStyle}>{total.toLocaleString()}</Text>
+            {total === undefined ? null : ` ${ofWord} `}
+            {total === undefined ? null : <Text style={boldStyle}>{total.toLocaleString()}</Text>}
             {unitSuffix}
           </>
         ) : (
@@ -177,6 +190,7 @@ export function Pager({
         safePage={safePage}
         lastPage={lastPage}
         isCompact={isCompact}
+        loading={loading}
         isDropdown={isDropdown}
         showFirstLast={showFirstLast}
         testID={testID}

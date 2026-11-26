@@ -9,6 +9,7 @@ import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
 
 import { CardLineLayout, CardLineLayoutContext } from './CardLineLayout';
+import { CompactCardLines } from './CompactCardLines';
 import { DesktopCell, cellContent } from './cells';
 import { TableDefaultsContext } from './TableDefaults';
 import { tableStyles as s } from './styles';
@@ -38,9 +39,13 @@ export function RowCells<T>({
   labelColor,
   styleOverrides: o,
 }: RowCellsProps<T>): React.ReactElement {
-  const inline = useContext(CardLineLayoutContext) === CardLineLayout.Inline;
+  const layout = useContext(CardLineLayoutContext);
+  const inline = layout === CardLineLayout.Inline;
   const { keepWords } = useContext(TableDefaultsContext);
   const wrapLongValue = inline && keepWords === true;
+  if (stacked && layout === CardLineLayout.Compact) {
+    return <CompactCardLines columns={columns} labelColor={labelColor} row={row} rowTestID={rowTestID} styleOverrides={o} textColor={textColor} />;
+  }
   if (stacked) {
     return (
       <>

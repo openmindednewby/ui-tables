@@ -9,7 +9,7 @@ export { DataTable, FilterBar, FilterBarLayout, PagedTableLayout, PagedTableLayo
 export type { DataTableBaseProps, DataTableColumn, DataTableProps, DataTableRowAction, FilterBarProps, PagedTableLayoutProps, PagerProps, RowActionNone } from './DataTable';
 // Per-slot style overrides — the defaults are opinionated but never mandatory: these
 // merge LAST, so a consumer that must be pixel-perfect beats the theme colours too.
-export type { DataTableStyleOverrides, FilterBarStyleOverrides, PagerStyleOverrides } from './DataTable';
+export type { DataTableStyleOverrides, FilterBarStyleOverrides, PagerServerPage, PagerStyleOverrides } from './DataTable';
 export {
   TABLE_TEST_IDS,
   TABLE_I18N,

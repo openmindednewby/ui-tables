@@ -6,7 +6,7 @@ export { PagedTableLayout } from './PagedTableLayout';
 export type { DataTableBaseProps, DataTableColumn, DataTableProps, DataTableStyleOverrides } from './types';
 export type { DataTableRowAction, RowActionNone } from './rowAction';
 export type { FilterBarProps, FilterBarStyleOverrides } from './FilterBar';
-export type { PagerProps, PagerStyleOverrides } from './Pager';
+export type { PagerProps, PagerServerPage, PagerStyleOverrides } from './Pager';
 export { PagedTableLayoutKind } from './PagedTableLayoutKind';
 export { TableDensity } from './TableDensity';
 export { FilterBarLayout } from './FilterBarLayout';
