@@ -77,6 +77,8 @@ export interface DataTableColumn<T> {
   noWrap?: boolean;
   /** Clamp the cell to this many lines with an ellipsis; on web the full text shows as the cell's title. Custom cells opt in through `CellText`. */
   maxLines?: number;
+  /** Vertical padding (px) of this column's cell in the dense and compact densities, in place of the row padding, so an inline button does not make the row taller than its frame. The cell keeps its own height, so the hit area is unchanged. Default: the row padding. */
+  cellPaddingY?: number;
   /** Plain text of the cell for the `CardLineLayout.Compact` card; the first column is its bold title, the rest join its summary line. */
   summaryText?: (row: T) => string;
   render: (row: T) => React.ReactNode;

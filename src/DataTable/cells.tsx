@@ -10,6 +10,7 @@ import { Text, View } from 'react-native';
 
 import { cellMinWidth, NO_WRAP_TEXT, titleRef } from './cellFit';
 import { CellFitContext, fitLines } from './cellFitContext';
+import { cellPaddingStyle, TableDensityContext } from './density';
 import { TableDefaultsContext } from './TableDefaults';
 import { tableStyles as s } from './styles';
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
@@ -86,12 +87,14 @@ interface DesktopCellProps<T> {
  */
 export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides, inGrid }: DesktopCellProps<T>): React.ReactElement {
   const { keepWords } = useContext(TableDefaultsContext);
+  const density = useContext(TableDensityContext);
   const minWidth = cellMinWidth(column.noWrap === true ? undefined : column.minWidth, column.truncate, keepWords, column.noWrap);
   const floor = column.noWrap === true && column.minWidth !== undefined ? { minWidth: column.minWidth } : null;
   return (
     <View
       style={[
         { flex: column.weight ?? 1, minWidth, alignItems: column.numeric ? 'flex-end' : 'flex-start' },
+        cellPaddingStyle(density, column.cellPaddingY),
         styleOverrides?.cellWrap,
       ]}
       testID={testID}

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { densitySlotStyles, withDensityCell } from './density';
+import { cellPaddingStyle, densitySlotStyles, withDensityCell } from './density';
 import { TableDensity } from './TableDensity';
 
 describe('densitySlotStyles compact', () => {
@@ -31,5 +31,25 @@ describe('densitySlotStyles compact', () => {
     const result = withDensityCell(overrides, densitySlotStyles(TableDensity.Dense));
 
     expect(result).toBe(overrides);
+  });
+});
+
+describe('cellPaddingStyle', () => {
+  it('with a compact column padding of 3, trims the 7 px row padding by 4 px each side', () => {
+    const result = cellPaddingStyle(TableDensity.Compact, 3);
+
+    expect(result).toEqual({ marginVertical: -4 });
+  });
+
+  it('with no column padding, adds no style', () => {
+    const result = cellPaddingStyle(TableDensity.Compact, undefined);
+
+    expect(result).toBeNull();
+  });
+
+  it('with the comfortable density, adds no style', () => {
+    const result = cellPaddingStyle(TableDensity.Comfortable, 3);
+
+    expect(result).toBeNull();
   });
 });
