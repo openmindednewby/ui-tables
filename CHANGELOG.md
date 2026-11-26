@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `DataTableColumn` `cellPaddingY`: opt-in vertical padding of one column in the dense and compact densities, so a 28 px inline button keeps compact rows at 34 px. The desktop row hands its padding to the cells; a column overrides its own. Comfortable density and the card stack are unchanged (MODC-1 round 8 S7P-D).
+
 ## 3.25.0
 
 ### Added

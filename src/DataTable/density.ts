@@ -70,14 +70,21 @@ export function withDensityCell(overrides: DataTableStyleOverrides | undefined, 
 }
 
 /**
- * The vertical margin that trims a cell's share of the row padding down to `cellPaddingY`.
- * @returns `null` when the column sets none or the density has no row padding, so the row keeps its default height.
+ * The desktop row style that hands the density's vertical padding to the cells, so a column can override it.
+ * @returns `null` for the comfortable density.
+ */
+export function rowPaddingToCells(dense: DensitySlotStyles | null): ViewStyle | null {
+  return dense === null ? null : { paddingVertical: 0 };
+}
+
+/**
+ * The vertical padding one desktop cell carries: the column's `cellPaddingY`, else the density's row padding.
+ * @returns `null` for the comfortable density.
  */
 export function cellPaddingStyle(density: TableDensity, cellPaddingY: number | undefined): ViewStyle | null {
-  if (cellPaddingY === undefined) return null;
   const rowPad = densitySlotStyles(density)?.row.paddingVertical;
   if (typeof rowPad !== 'number') return null;
-  return { marginVertical: cellPaddingY - rowPad };
+  return { paddingVertical: cellPaddingY ?? rowPad };
 }
 
 export const TableDensityContext = createContext<TableDensity>(TableDensity.Comfortable);

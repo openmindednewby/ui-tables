@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { cellPaddingStyle, densitySlotStyles, withDensityCell } from './density';
+import { cellPaddingStyle, densitySlotStyles, rowPaddingToCells, withDensityCell } from './density';
 import { TableDensity } from './TableDensity';
 
 describe('densitySlotStyles compact', () => {
@@ -35,21 +35,27 @@ describe('densitySlotStyles compact', () => {
 });
 
 describe('cellPaddingStyle', () => {
-  it('with a compact column padding of 3, trims the 7 px row padding by 4 px each side', () => {
+  it('with a compact column padding of 3, pads that cell 3 px each side', () => {
     const result = cellPaddingStyle(TableDensity.Compact, 3);
 
-    expect(result).toEqual({ marginVertical: -4 });
+    expect(result).toEqual({ paddingVertical: 3 });
   });
 
-  it('with no column padding, adds no style', () => {
+  it('with no column padding, keeps the 7 px compact row padding on the cell', () => {
     const result = cellPaddingStyle(TableDensity.Compact, undefined);
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ paddingVertical: 7 });
   });
 
   it('with the comfortable density, adds no style', () => {
     const result = cellPaddingStyle(TableDensity.Comfortable, 3);
 
     expect(result).toBeNull();
+  });
+
+  it('with the compact density, the desktop row gives its padding to the cells', () => {
+    const result = rowPaddingToCells(densitySlotStyles(TableDensity.Compact));
+
+    expect(result).toEqual({ paddingVertical: 0 });
   });
 });

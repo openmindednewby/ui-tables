@@ -49,7 +49,7 @@ import { JoinedFrameContext } from './joinedFrameContext';
 import { SelectAllBanner } from './SelectAllBanner';
 import { selectionStyles as sel, softBrandTint, tableStyles as s } from './styles';
 import { CardLineLayout, CardLineLayoutContext } from './CardLineLayout';
-import { densitySlotStyles, TableDensityContext, withDensityCell } from './density';
+import { densitySlotStyles, rowPaddingToCells, TableDensityContext, withDensityCell } from './density';
 import { TableDefaultsContext } from './TableDefaults';
 import { TableHeader } from './TableHeader';
 import { useRovingFocus } from './useRovingFocus';
@@ -288,7 +288,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
       {rows.map((row, i) => {
         const key = rowKeys[i] ?? keyExtractor(row);
         const bg = rowBg(row, i, key);
-        return renderRow(row, key, i, [s.row, dense?.row, { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]);
+        return renderRow(row, key, i, [s.row, dense?.row, rowPaddingToCells(dense), { borderTopColor: colors.border }, bg ? { backgroundColor: bg } : null, o?.row]);
       })}
       </TableDensityContext.Provider>
     </View>
