@@ -23,4 +23,4 @@ export {
   selectAllTestID,
 } from './constants';
 export { TableDefaultsProvider, TableDefaultsContext } from './TableDefaults';
-export type { TableDefaults, TableDefaultsProviderProps } from './TableDefaults';
+export type { TableDefaults, TableDefaultsProviderProps, PagerRowsVariant } from './TableDefaults';

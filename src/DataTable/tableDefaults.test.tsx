@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 import { UiProvider, type UiTheme, type UiValue } from '@dloizides/ui-feedback';
 
 import { DataTable } from './DataTable';
+import { Pager } from './Pager';
 import { TableDensityContext } from './density';
 import { TableDefaultsProvider } from './TableDefaults';
 import { TableDensity } from './TableDensity';
@@ -52,5 +53,15 @@ describe('TableDefaultsProvider', () => {
     renderUi(<TableDefaultsProvider density={TableDensity.Compact}>{table(TableDensity.Dense)}</TableDefaultsProvider>);
 
     expect(screen.getByTestId('density-probe').textContent).toBe(TableDensity.Dense);
+  });
+});
+
+describe('Pager rows variant default', () => {
+  it('with a dropdown provider and no prop, renders the dropdown rows control', () => {
+    const pager = <Pager page={1} pageSize={25} total={100} onPageChange={() => undefined} onPageSizeChange={() => undefined} />;
+
+    renderUi(<TableDefaultsProvider density={TableDensity.Compact} pagerRowsVariant="dropdown">{pager}</TableDefaultsProvider>);
+
+    expect(screen.queryByTestId('ui-pager-size-25')).toBeNull();
   });
 });

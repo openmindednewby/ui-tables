@@ -5,13 +5,14 @@
  * RN idiom: rows-per-page is a row of pressable pills (RN has no native `<select>`);
  * everything is themed from `useUi().theme` and labelled via the UiProvider `t`.
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, View, useWindowDimensions, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
 
 import { CARD_STACK_BREAKPOINT, DEFAULT_PAGE_SIZE_OPTIONS, TABLE_I18N, TABLE_TEST_IDS } from './constants';
 import { PagerNav } from './PagerNav';
+import { TableDefaultsContext } from './TableDefaults';
 import { chromeStyles as c } from './styles';
 
 const FIRST_PAGE = 1;
@@ -116,7 +117,7 @@ export function Pager({
   onPageChange,
   onPageSizeChange,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
-  rowsVariant = 'pills',
+  rowsVariant,
   unitLabel,
   unitLabelSingular,
   showFirstLast = false,
@@ -130,7 +131,8 @@ export function Pager({
   const { theme, t } = useUi();
   const { colors } = theme;
   const { width } = useWindowDimensions();
-  const isDropdown = rowsVariant === 'dropdown';
+  const defaults = useContext(TableDefaultsContext);
+  const isDropdown = (rowsVariant ?? defaults.pagerRowsVariant) === 'dropdown';
   // Below the breakpoint (opt-in) collapse to Prev/Next + count only — drop the rows-per-page
   // control and the First/Last jumps, mirroring the DataTable's card-stack behaviour.
   const isCompact = responsive && width < stackBreakpoint;
