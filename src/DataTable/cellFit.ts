@@ -2,6 +2,7 @@ import { Platform, type DimensionValue, type TextStyle } from 'react-native';
 
 const WEB = 'web';
 const INTRINSIC_MIN: DimensionValue = 'auto';
+const WHOLE_CONTENT_MIN = 'max-content' as DimensionValue;
 
 export const NO_WRAP_TEXT = { whiteSpace: 'nowrap' } as TextStyle;
 
@@ -9,7 +10,7 @@ export const NO_WRAP_TEXT = { whiteSpace: 'nowrap' } as TextStyle;
 export function cellMinWidth(minWidth: number | undefined, truncate: boolean | undefined, keepWords: boolean | undefined, noWrap?: boolean): DimensionValue | undefined {
   if (minWidth !== undefined) return minWidth;
   if ((keepWords !== true && noWrap !== true) || truncate === true || Platform.OS !== WEB) return undefined;
-  return INTRINSIC_MIN;
+  return noWrap === true ? WHOLE_CONTENT_MIN : INTRINSIC_MIN;
 }
 
 interface TitledNode {
