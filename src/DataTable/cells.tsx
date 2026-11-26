@@ -5,9 +5,11 @@
  * beats the base StyleSheet AND the inline theme colour (colours are never in the
  * StyleSheet in this kit — they are applied inline at render time).
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
 
+import { cellMinWidth, titleRef } from './cellFit';
+import { TableDefaultsContext } from './TableDefaults';
 import { tableStyles as s } from './styles';
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
 
@@ -30,8 +32,11 @@ export function cellContent<T>(
 ): React.ReactNode {
   const content = column.render(row);
   if (typeof content === 'string' || typeof content === 'number') {
+    const truncate = column.truncate === true;
     return (
       <Text
+        ref={truncate ? titleRef(String(content)) : undefined}
+        numberOfLines={truncate ? 1 : undefined}
         style={[
           s.cell,
           column.numeric ? s.numCell : null,
@@ -78,10 +83,12 @@ interface DesktopCellProps<T> {
  * link, an action menu), which is what a consumer needs for true pixel-parity.
  */
 export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides, inGrid }: DesktopCellProps<T>): React.ReactElement {
+  const { keepWords } = useContext(TableDefaultsContext);
+  const minWidth = cellMinWidth(column.minWidth, column.truncate, keepWords);
   return (
     <View
       style={[
-        { flex: column.weight ?? 1, minWidth: column.minWidth, alignItems: column.numeric ? 'flex-end' : 'flex-start' },
+        { flex: column.weight ?? 1, minWidth, alignItems: column.numeric ? 'flex-end' : 'flex-start' },
         styleOverrides?.cellWrap,
       ]}
       testID={testID}

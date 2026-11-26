@@ -71,6 +71,8 @@ export interface DataTableColumn<T> {
   weight?: number;
   /** Desktop width floor (px): the column never shrinks below it, so a button or pill in it is not clipped. */
   minWidth?: number;
+  /** Keep a string cell to one line with an ellipsis; on web the full text shows as the cell's title. */
+  truncate?: boolean;
   render: (row: T) => React.ReactNode;
 }
 
@@ -186,6 +188,8 @@ export interface DataTableBaseProps<T> {
    * grid renders at every width. Use it when your surface never had a card-stack.
    */
   stackBreakpoint?: number;
+  /** Set `false` when the caller pages the rows itself, so the `TableDefaults` auto pager never adds a second one. */
+  autoPage?: boolean;
   /** Card-stack line layout; `CardLineLayout.Inline` puts the label left and the value right. Default stacked. */
   cardLineLayout?: CardLineLayout;
   /** Desktop row density; `TableDensity.Dense` gives 36 px rows and a 34 px header band. Default: the nearest `TableDefaultsProvider` density, else comfortable. */

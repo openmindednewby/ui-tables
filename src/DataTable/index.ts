@@ -1,4 +1,5 @@
-export { DataTable, default } from './DataTable';
+export { AutoPagedDataTable as DataTable, AutoPagedDataTable as default } from './AutoPagedDataTable';
+export { autoPageSizeOptions, resolveAutoPageSize } from './autoPage';
 export { FilterBar } from './FilterBar';
 export { Pager } from './Pager';
 export { PagedTableLayout } from './PagedTableLayout';

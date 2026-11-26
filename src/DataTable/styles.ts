@@ -117,6 +117,7 @@ export const tableStyles = StyleSheet.create({
   cardLabel: { fontSize: HEAD_FONT, fontWeight: '600', textTransform: 'uppercase', letterSpacing: LABEL_LETTER_SPACING },
   cardValue: { alignItems: 'flex-start' },
   cardLineInline: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: CARD_LINE_PAD_V, gap: COLUMN_GAP },
+  cardLineWrap: { flexWrap: 'wrap' },
   cardLabelInline: { flexShrink: 0, fontWeight: '400', letterSpacing: 0, textTransform: 'none' },
   cardValueInline: { alignItems: 'flex-end', flexShrink: 1, minWidth: 0 },
   /**

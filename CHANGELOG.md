@@ -4,6 +4,8 @@
 
 ### Added
 
+- `TableDefaultsProvider` `autoPageSize`: every `DataTable` with more rows than this pages itself under the shared `Pager` (footer, `1–10 of 128 · Rows · Previous · Next`). A table that pages itself passes `autoPage={false}`; a table inside `PagedTableLayout` never auto-pages. Omit for no change (MODC-1 residuals-1 A).
+- `TableDefaultsProvider` `keepWords`: on web a cell never breaks a word in the middle; an inline card line moves a long value under its label. Column `truncate`: one line, ellipsis, full text in the web `title` (MODC-1 residuals-1 S24L-D, S32-D, DASH-M).
 - `StatusLedger` `searchSpan`: grid columns the search filter spans in the `CardGrid` placement (default 2, unchanged). `FiltersVariant.Grid` now honours an explicit `gridSpan` on a field (MODC-1 /jobs search label clip).
 - `TableDensity.Compact`: 34 px rows, 28 px header band, 13 px cells, 11 px header tracked 0.06em, 10 px cell gutters (20 px between cells). `withDensityCell` places the density's cell font under the caller's `cell` override (MODC-1 D-MC-756 F4).
 - `FiltersVariant.Grid` + `FilterBarLayout.Rows`: fields in one even row of up to four columns, then the actions (left, 36 px on desktop, 44 px when stacked) and the results count (right) on the line below.

@@ -10,6 +10,7 @@ import { Text, View } from 'react-native';
 
 import { CardLineLayout, CardLineLayoutContext } from './CardLineLayout';
 import { DesktopCell, cellContent } from './cells';
+import { TableDefaultsContext } from './TableDefaults';
 import { tableStyles as s } from './styles';
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
 
@@ -38,6 +39,8 @@ export function RowCells<T>({
   styleOverrides: o,
 }: RowCellsProps<T>): React.ReactElement {
   const inline = useContext(CardLineLayoutContext) === CardLineLayout.Inline;
+  const { keepWords } = useContext(TableDefaultsContext);
+  const wrapLongValue = inline && keepWords === true;
   if (stacked) {
     return (
       <>
@@ -45,7 +48,7 @@ export function RowCells<T>({
           // The SAME per-cell test id the desktop cell carries (`${rowTestID}-${col.key}`),
           // so an E2E selector like `${rowTestID}-${col.key}` resolves in BOTH layouts — the
           // card-stack must not silently drop the hooks a wide-viewport test relies on.
-          <View key={col.key} style={[inline ? s.cardLineInline : s.cardLine, o?.cardLine]} testID={`${rowTestID}-${col.key}`}>
+          <View key={col.key} style={[inline ? s.cardLineInline : s.cardLine, wrapLongValue ? s.cardLineWrap : null, o?.cardLine]} testID={`${rowTestID}-${col.key}`}>
             <Text style={[s.cardLabel, inline ? s.cardLabelInline : null, { color: labelColor }, o?.cardLabel]}>{col.header}</Text>
             <View style={[inline ? s.cardValueInline : s.cardValue, o?.cardValue]}>{cellContent(col, row, textColor, o)}</View>
           </View>

@@ -8,6 +8,8 @@ export type PagerRowsVariant = 'pills' | 'dropdown';
 export interface TableDefaults {
   density: TableDensity;
   pagerRowsVariant?: PagerRowsVariant;
+  autoPageSize?: number;
+  keepWords?: boolean;
 }
 
 const COMFORTABLE_DEFAULTS: TableDefaults = { density: TableDensity.Comfortable };
@@ -18,11 +20,18 @@ export interface TableDefaultsProviderProps {
   /** The density every DataTable and StatusLedger below uses unless it passes its own `density`. */
   density: TableDensity;
   pagerRowsVariant?: PagerRowsVariant;
+  /** Every DataTable with more rows than this shows a pager under it. Omit for no auto pager. */
+  autoPageSize?: number;
+  /** Cells never break a word: a column keeps its longest word, a card line moves a long value under its label. */
+  keepWords?: boolean;
   children: React.ReactNode;
 }
 
 /** Sets one table look for a whole app or section, so each table does not repeat the preset. */
-export function TableDefaultsProvider({ density, pagerRowsVariant, children }: TableDefaultsProviderProps): React.ReactElement {
-  const value = useMemo(() => ({ density, pagerRowsVariant }), [density, pagerRowsVariant]);
+export function TableDefaultsProvider({ density, pagerRowsVariant, autoPageSize, keepWords, children }: TableDefaultsProviderProps): React.ReactElement {
+  const value = useMemo(
+    () => ({ density, pagerRowsVariant, autoPageSize, keepWords }),
+    [density, pagerRowsVariant, autoPageSize, keepWords],
+  );
   return <TableDefaultsContext.Provider value={value}>{children}</TableDefaultsContext.Provider>;
 }
