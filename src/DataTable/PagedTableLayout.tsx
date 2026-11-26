@@ -5,6 +5,7 @@ import { useUi } from '@dloizides/ui-feedback';
 
 import { TABLE_TEST_IDS } from './constants';
 import { JOINED_FRAME_STYLES, JoinedFrameContext } from './joinedFrameContext';
+import { PagedLayoutContext } from './pagedLayoutContext';
 import { PagedTableLayoutKind } from './PagedTableLayoutKind';
 import { BORDER_RADIUS, BORDER_WIDTH, ROW_PAD_H } from './styles';
 
@@ -54,6 +55,7 @@ export function PagedTableLayout({
   const pagerAndTable = layout === PagedTableLayoutKind.Footer ? <>{tableSlot}{pagerSlot}</> : <>{pagerSlot}{tableSlot}</>;
 
   return (
+    <PagedLayoutContext.Provider value>
     <JoinedFrameContext.Provider value={JOINED_FRAME_STYLES[layout]}>
       <View testID={testID}>
         {filtersInFrame ? null : filtersSlot}
@@ -65,6 +67,7 @@ export function PagedTableLayout({
         ) : pagerAndTable}
       </View>
     </JoinedFrameContext.Provider>
+    </PagedLayoutContext.Provider>
   );
 }
 

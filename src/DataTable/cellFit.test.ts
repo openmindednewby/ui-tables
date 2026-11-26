@@ -26,6 +26,20 @@ describe('cellMinWidth', () => {
   });
 });
 
+describe('cellMinWidth with noWrap', () => {
+  it('with noWrap on web and no keepWords, returns auto so the column grows to its text', () => {
+    const minWidth = cellMinWidth(undefined, false, undefined, true);
+
+    expect(minWidth).toBe('auto');
+  });
+
+  it('with noWrap and a truncated column, returns undefined so the ellipsis can cut', () => {
+    const minWidth = cellMinWidth(undefined, true, true, true);
+
+    expect(minWidth).toBeUndefined();
+  });
+});
+
 describe('titleRef', () => {
   it('with a DOM node, sets the full text as its title', () => {
     const node = document.createElement('div');

@@ -8,7 +8,7 @@
 import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
 
-import { cellMinWidth, titleRef } from './cellFit';
+import { cellMinWidth, NO_WRAP_TEXT, titleRef } from './cellFit';
 import { TableDefaultsContext } from './TableDefaults';
 import { tableStyles as s } from './styles';
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
@@ -40,6 +40,7 @@ export function cellContent<T>(
         style={[
           s.cell,
           column.numeric ? s.numCell : null,
+          column.noWrap === true ? NO_WRAP_TEXT : null,
           { color: textColor },
           overrides?.cell,
           column.numeric ? overrides?.numCell : null,
@@ -84,7 +85,7 @@ interface DesktopCellProps<T> {
  */
 export function DesktopCell<T>({ column, row, textColor, testID, styleOverrides, inGrid }: DesktopCellProps<T>): React.ReactElement {
   const { keepWords } = useContext(TableDefaultsContext);
-  const minWidth = cellMinWidth(column.minWidth, column.truncate, keepWords);
+  const minWidth = cellMinWidth(column.minWidth, column.truncate, keepWords, column.noWrap);
   return (
     <View
       style={[
