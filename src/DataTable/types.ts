@@ -73,6 +73,8 @@ export interface DataTableColumn<T> {
   minWidth?: number;
   /** Keep a string cell to one line with an ellipsis; on web the full text shows as the cell's title. */
   truncate?: boolean;
+  /** Keep the cell on one line without a cut: on web the column grows to its text, so a date, an email or a name never wraps. */
+  noWrap?: boolean;
   /** Plain text of the cell for the `CardLineLayout.Compact` card; the first column is its bold title, the rest join its summary line. */
   summaryText?: (row: T) => string;
   render: (row: T) => React.ReactNode;

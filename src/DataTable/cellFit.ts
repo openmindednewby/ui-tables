@@ -1,12 +1,14 @@
-import { Platform, type DimensionValue } from 'react-native';
+import { Platform, type DimensionValue, type TextStyle } from 'react-native';
 
 const WEB = 'web';
 const INTRINSIC_MIN: DimensionValue = 'auto';
 
+export const NO_WRAP_TEXT = { whiteSpace: 'nowrap' } as TextStyle;
+
 /** A desktop cell's width floor: the column's own, else on web with `keepWords` its longest word, so no word breaks in the middle. */
-export function cellMinWidth(minWidth: number | undefined, truncate: boolean | undefined, keepWords: boolean | undefined): DimensionValue | undefined {
+export function cellMinWidth(minWidth: number | undefined, truncate: boolean | undefined, keepWords: boolean | undefined, noWrap?: boolean): DimensionValue | undefined {
   if (minWidth !== undefined) return minWidth;
-  if (keepWords !== true || truncate === true || Platform.OS !== WEB) return undefined;
+  if ((keepWords !== true && noWrap !== true) || truncate === true || Platform.OS !== WEB) return undefined;
   return INTRINSIC_MIN;
 }
 

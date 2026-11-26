@@ -4,7 +4,7 @@ import { usePagedRows } from '../Pagination/usePagedRows';
 import { autoPageSizeOptions, NO_AUTO_PAGE, resolveAutoPageSize } from './autoPage';
 import { TABLE_TEST_IDS } from './constants';
 import { DataTable as DataTableGrid } from './DataTable';
-import { JoinedFrameContext } from './joinedFrameContext';
+import { PagedLayoutContext } from './pagedLayoutContext';
 import { PagedTableLayout } from './PagedTableLayout';
 import { PagedTableLayoutKind } from './PagedTableLayoutKind';
 import { Pager } from './Pager';
@@ -17,7 +17,7 @@ const PAGE_NUMBER_OFFSET = 1;
 /** The DataTable as apps get it: with a `TableDefaults` `autoPageSize`, a table longer than one page pages itself under a shared Pager. */
 export function AutoPagedDataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const defaults = useContext(TableDefaultsContext);
-  const inPagedLayout = useContext(JoinedFrameContext) !== null;
+  const inPagedLayout = useContext(PagedLayoutContext);
   const firstSize = resolveAutoPageSize(props.autoPage, defaults.autoPageSize, inPagedLayout);
   const [pageSize, setPageSize] = useState(firstSize);
   const activeSize = pageSize > NO_AUTO_PAGE ? pageSize : firstSize;

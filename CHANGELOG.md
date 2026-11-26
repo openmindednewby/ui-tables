@@ -4,6 +4,8 @@
 
 ### Added
 
+- `DataTableColumn` `noWrap`: the cell keeps to one line with no cut; on web the column grows to its text, so a date, an email or a name never wraps (MODC-1 residuals-3 S24L-D, S32-D, HALL/HSUB, NEW-5). Console: set `noWrap` on those columns; a long free-text column keeps `truncate`.
+- Fixed: a `DataTable` inside any `PagedTableLayout` kind (`Spaced` included) no longer adds a second auto pager under the caller's `Pager`.
 - `TableDefaultsProvider` `autoPageSize`: every `DataTable` with more rows than this pages itself under the shared `Pager` (footer, `1–10 of 128 · Rows · Previous · Next`). A table that pages itself passes `autoPage={false}`; a table inside `PagedTableLayout` never auto-pages. Omit for no change (MODC-1 residuals-1 A).
 - `TableDefaultsProvider` `keepWords`: on web a cell never breaks a word in the middle; an inline card line moves a long value under its label. Column `truncate`: one line, ellipsis, full text in the web `title` (MODC-1 residuals-1 S24L-D, S32-D, DASH-M).
 - `StatusLedger` `searchSpan`: grid columns the search filter spans in the `CardGrid` placement (default 2, unchanged). `FiltersVariant.Grid` now honours an explicit `gridSpan` on a field (MODC-1 /jobs search label clip).
