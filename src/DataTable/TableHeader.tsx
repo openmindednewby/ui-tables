@@ -6,7 +6,7 @@
  * only thing keeping the header aligned with the body once a checkbox column exists, so it
  * must never be duplicated with a local copy.
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
@@ -18,6 +18,8 @@ import { STICKY_HEADER_STYLE, selectionStyles as sel, tableStyles as s } from '.
 import type { DataTableColumn, DataTableStyleOverrides } from './types';
 import { densitySlotStyles } from './density';
 import { TableDensity } from './TableDensity';
+import { TableDefaultsContext } from './TableDefaults';
+import { useTableLook } from './tableLook';
 
 /** The select-all wiring. Absent ⇒ the table is not selectable: no gutter, no node. */
 export interface HeaderSelection {
@@ -41,10 +43,11 @@ export function TableHeader<T>({ columns, stickyHeader, selection, inGrid, densi
   const { theme, t } = useUi();
   const { colors } = theme;
   const dense = densitySlotStyles(density);
+  const look = useTableLook(useContext(TableDefaultsContext).look);
 
   return (
     <View
-      style={[s.headRow, dense?.headRow, { backgroundColor: colors.background }, stickyHeader ? STICKY_HEADER_STYLE : null, o?.headRow]}
+      style={[s.headRow, dense?.headRow, { backgroundColor: colors.background }, look?.band, stickyHeader ? STICKY_HEADER_STYLE : null, o?.headRow]}
       testID={TABLE_TEST_IDS.head}
       {...(inGrid ? { role: 'row' as const } : null)}
     >
@@ -65,7 +68,7 @@ export function TableHeader<T>({ columns, stickyHeader, selection, inGrid, densi
       {columns.map((col) => (
         <Text
           key={col.key}
-          style={[s.headCell, dense?.headCell, { color: colors.textSecondary, flex: col.weight ?? 1, minWidth: col.minWidth, textAlign: col.numeric ? 'right' : 'left' }, o?.headCell]}
+          style={[s.headCell, dense?.headCell, { color: colors.textSecondary, flex: col.weight ?? 1, minWidth: col.minWidth, textAlign: col.numeric ? 'right' : 'left' }, look?.headCell, o?.headCell]}
           {...(inGrid ? { role: 'columnheader' as const } : null)}
         >
           {col.header}

@@ -128,4 +128,6 @@ export * from './ExportCsvAction';
 export * from './FacetFilters';
 export { TableDefaultsProvider, TableDefaultsContext } from './DataTable';
 export type { TableDefaults, TableDefaultsProviderProps, PagerRowsVariant } from './DataTable';
+export { TableLook, useTableLook, tableLookStyles, tableColumnStyle, BANDED_HEAD_HEIGHT, BANDED_ROW_HEIGHT } from './DataTable';
+export type { TableLookStyles } from './DataTable';
 export * from './RowActions';

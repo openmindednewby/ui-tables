@@ -28,6 +28,8 @@ import { Pressable, View, type StyleProp, type ViewProps, type ViewStyle } from 
 
 import { focusRingStyle, rowInteractionStyle, type RowInteractionTokens } from './rowInteraction';
 import { densitySlotStyles, TableDensityContext } from './density';
+import { TableDefaultsContext } from './TableDefaults';
+import { useTableLook } from './tableLook';
 import { selectionStyles as sel } from './styles';
 import { useFrameFocus, type FrameFocus } from './useFrameFocus';
 import type { RowKeyEvent } from './useRovingFocus';
@@ -125,12 +127,14 @@ export function TableRow({
   const hover = interactive ? { onHoverIn, onHoverOut } : null;
   const frame = useFrameFocus();
   const density = useContext(TableDensityContext);
-  const frameStyle = [style, focusRingStyle(frame.focused, interaction)];
+  const look = useTableLook(useContext(TableDefaultsContext).look);
+  const lookRow = stacked === true ? null : look?.rowHeight;
+  const frameStyle = [style, lookRow, focusRingStyle(frame.focused, interaction)];
 
   // --- shapes 1 + 2: unchanged from 1.9.2 (plus the optional roving tabindex) ---
   if (selectionSlot === undefined) {
     return interactive ? (
-      <Pressable style={(state) => [style, rowInteractionStyle(state, interaction)]} testID={testID} onPress={onPress} {...hover} {...a11y} {...focusProps(keyboard)}>
+      <Pressable style={(state) => [style, lookRow, rowInteractionStyle(state, interaction)]} testID={testID} onPress={onPress} {...hover} {...a11y} {...focusProps(keyboard)}>
         {children}
       </Pressable>
     ) : (
