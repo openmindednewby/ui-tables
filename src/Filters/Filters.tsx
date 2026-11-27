@@ -109,6 +109,7 @@ export function Filters({
   const stacked = isStackedVariant(variant, width, stackBreakpoint);
   const laidOut = useMemo(() => variantFields(fields, stacked, variant), [fields, stacked, variant]);
   const gridRows = variant === FiltersVariant.Grid && !stacked;
+  const compactActions = width >= stackBreakpoint;
 
   const setField = useCallback(
     (key: string, value: FilterValue) => {
@@ -161,7 +162,7 @@ export function Filters({
   const hasActions = actions !== undefined || onClear !== undefined || onApply !== undefined;
 
   return (
-    <FiltersCompactActionsContext.Provider value={gridRows}>
+    <FiltersCompactActionsContext.Provider value={compactActions}>
     <FiltersStretchActionsContext.Provider value={stacked}>
     <FilterBar
       layout={gridRows ? FilterBarLayout.Rows : FilterBarLayout.Flow}

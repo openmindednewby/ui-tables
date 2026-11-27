@@ -23,7 +23,7 @@ const ACTION_PAD_V = 8;
 const ACTION_RADIUS = 8;
 const ACTION_FONT = 13;
 const ACTION_BORDER = 1;
-/** Desktop-only `Grid` actions: a 36 px box (pointer input), the stacked phone layout keeps the 44 px floor. */
+/** Desktop actions of every variant: a 36 px box (pointer input); below the stack breakpoint they keep the 44 px floor. */
 const ACTION_COMPACT_HEIGHT = 36;
 const ACTION_COMPACT_PAD_H = 12;
 const ACTION_COMPACT_PAD_V = 0;
