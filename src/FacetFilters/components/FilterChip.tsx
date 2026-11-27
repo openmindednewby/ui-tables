@@ -4,8 +4,12 @@ import { Pressable, Text, View } from 'react-native';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { facetTestIds } from '../testIds';
+import { ChipSize } from '../ChipSize';
 import { activeDataSet } from './activeDataSet';
+import { ChipBackdrop } from './ChipBackdrop';
 import { ChipChevron } from './ChipChevron';
+import { useChipLook } from './ChipLook';
+import { chipSizeStyles as c } from './chipSizeStyles';
 import { chipTone } from './chipTone';
 import { facetStyles as s } from './styles';
 
@@ -32,8 +36,11 @@ export function FilterChip({ facetKey, label, summary, open, onPress, onRemove, 
   const { theme } = useUi();
   const ids = facetTestIds(testIDPrefix);
   const text = `${label}${LABEL_SEPARATOR}${summary}`;
+  const compact = useChipLook().size === ChipSize.Compact;
+  const tone = chipTone(theme, active);
   return (
-    <View style={[s.chip, chipTone(theme, active)]}>
+    <View style={compact ? c.shell : [s.chip, tone]}>
+      {compact && <ChipBackdrop testID={`${ids.chip(facetKey)}-pill`} tone={tone} />}
       <Pressable
         accessibilityHint={editHint}
         accessibilityLabel={text}
@@ -41,10 +48,10 @@ export function FilterChip({ facetKey, label, summary, open, onPress, onRemove, 
         accessibilityState={{ expanded: open }}
         {...activeDataSet(active)}
         onPress={onPress}
-        style={s.chipBody}
+        style={compact ? c.body : s.chipBody}
         testID={ids.chip(facetKey)}
       >
-        <Text numberOfLines={1} style={[s.chipText, { color: theme.colors.text }]}>
+        <Text numberOfLines={1} style={[s.chipText, compact && c.text, { color: theme.colors.text }]}>
           <Text style={s.chipLabel}>{`${label}${LABEL_SEPARATOR}`}</Text>
           {summary}
           {chevron && <ChipChevron color={theme.colors.textSecondary} />}
@@ -59,7 +66,7 @@ export function FilterChip({ facetKey, label, summary, open, onPress, onRemove, 
         style={s.iconButton}
         testID={ids.chipRemove(facetKey)}
       >
-        <Text aria-hidden style={[s.chipText, { color: theme.colors.textSecondary }]}>
+        <Text aria-hidden style={[s.chipText, compact && c.text, { color: theme.colors.textSecondary }]}>
           {REMOVE_GLYPH}
         </Text>
       </Pressable>
