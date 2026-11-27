@@ -8,6 +8,7 @@ import React, { useContext } from 'react';
 import { Pressable, Text } from 'react-native';
 
 import { resolveOnBrand } from '@dloizides/design-tokens';
+import { useSelectLookMetrics } from '@dloizides/ui-forms';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { FiltersCompactActionsContext, FiltersStretchActionsContext } from '../actionSize';
@@ -33,6 +34,8 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
   const brand = palette.primary['500'];
   const compact = useContext(FiltersCompactActionsContext);
   const stretch = useContext(FiltersStretchActionsContext);
+  const look = useSelectLookMetrics();
+  const lookBox = look === undefined ? null : { height: look.height, minHeight: look.height, paddingVertical: 0 };
 
   return (
     <Pressable
@@ -46,6 +49,7 @@ export function ActionButton({ label, hint, tone, disabled = false, onPress, tes
         s.action,
         compact ? s.actionCompact : null,
         stretch ? s.actionStretch : null,
+        lookBox,
         {
           borderColor: isPrimary ? brand : colors.border,
           backgroundColor: isPrimary ? brand : TRANSPARENT,
