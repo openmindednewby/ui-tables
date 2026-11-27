@@ -1,6 +1,7 @@
 import React, { createContext, useMemo } from 'react';
 
 import { TableDensity } from './TableDensity';
+import type { TableLook } from './TableLook';
 
 /** App-wide defaults a DataTable falls back to when its own prop is not set. */
 export type PagerRowsVariant = 'pills' | 'dropdown';
@@ -10,6 +11,7 @@ export interface TableDefaults {
   pagerRowsVariant?: PagerRowsVariant;
   autoPageSize?: number;
   keepWords?: boolean;
+  look?: TableLook;
 }
 
 const COMFORTABLE_DEFAULTS: TableDefaults = { density: TableDensity.Comfortable };
@@ -24,14 +26,16 @@ export interface TableDefaultsProviderProps {
   autoPageSize?: number;
   /** Cells never break a word: a column keeps its longest word, a card line moves a long value under its label. */
   keepWords?: boolean;
+  /** The header and row look every DataTable below uses; omit for the density's own look. */
+  look?: TableLook;
   children: React.ReactNode;
 }
 
 /** Sets one table look for a whole app or section, so each table does not repeat the preset. */
-export function TableDefaultsProvider({ density, pagerRowsVariant, autoPageSize, keepWords, children }: TableDefaultsProviderProps): React.ReactElement {
+export function TableDefaultsProvider({ density, pagerRowsVariant, autoPageSize, keepWords, look, children }: TableDefaultsProviderProps): React.ReactElement {
   const value = useMemo(
-    () => ({ density, pagerRowsVariant, autoPageSize, keepWords }),
-    [density, pagerRowsVariant, autoPageSize, keepWords],
+    () => ({ density, pagerRowsVariant, autoPageSize, keepWords, look }),
+    [density, pagerRowsVariant, autoPageSize, keepWords, look],
   );
   return <TableDefaultsContext.Provider value={value}>{children}</TableDefaultsContext.Provider>;
 }
