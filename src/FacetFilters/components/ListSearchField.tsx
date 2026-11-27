@@ -43,7 +43,7 @@ export function ListSearchField({ value, onChangeText, onSubmit, label, hint, pl
       accessibilityLabel={label}
       placeholder={placeholder}
       placeholderTextColor={colors.textSecondary}
-      style={framed ? [s.input, INNER_OUTLINE_OFF as TextStyle, { color: colors.text }] : [s.plain, { borderColor: colors.border, color: colors.text }]}
+      style={framed ? [s.input, INNER_OUTLINE_OFF as unknown as TextStyle, { color: colors.text }] : [s.plain, { borderColor: colors.border, color: colors.text }]}
       testID={testID}
       value={value}
       onBlur={() => setFocused(false)}
