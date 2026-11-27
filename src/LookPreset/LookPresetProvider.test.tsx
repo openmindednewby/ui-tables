@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import { useFieldLook } from '@dloizides/ui-forms';
 import React from 'react';
 
 import { useTableLook } from '../DataTable/tableLook';
@@ -45,5 +46,17 @@ describe('LookPresetProvider', () => {
     const { result } = renderHook(() => useLookSet(), { wrapper: wrapperFor(LookPreset.Dense, { searchField: SearchFieldLook.Plain }) });
 
     expect(result.current.searchField).toBe(SearchFieldLook.Plain);
+  });
+
+  it('with the Dense preset, gives fields below it the caption label and compact size', () => {
+    const { result } = renderHook(() => useFieldLook(), { wrapper: wrapperFor(LookPreset.Dense) });
+
+    expect(result.current).toEqual({ size: 'compact', labelVariant: 'caption' });
+  });
+
+  it('with the Standard preset, leaves fields on the kit defaults', () => {
+    const { result } = renderHook(() => useFieldLook(), { wrapper: wrapperFor(LookPreset.Standard) });
+
+    expect(result.current).toEqual({});
   });
 });

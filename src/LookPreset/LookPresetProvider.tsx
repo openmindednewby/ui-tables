@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useMemo } from 'react';
 
+import { FieldLookProvider } from '@dloizides/ui-forms';
+
 import { ChipLookProvider } from '../FacetFilters/components/ChipLook';
 import { LookPreset } from './LookPreset';
-import { resolveLookSet, type LookSet, type LookSetOverrides } from './lookSet';
+import { definedField, hasFieldLook, resolveLookSet, type LookSet, type LookSetOverrides } from './lookSet';
 
 const LookSetContext = createContext<LookSet>(resolveLookSet(LookPreset.Standard));
 
@@ -20,13 +22,16 @@ export function LookPresetProvider({ preset, overrides, children }: LookPresetPr
   const searchField = overrides?.searchField;
   const chipSize = overrides?.chips?.size;
   const addFilter = overrides?.chips?.addFilter;
+  const fieldSize = overrides?.field?.size;
+  const labelVariant = overrides?.field?.labelVariant;
   const value = useMemo(
-    () => resolveLookSet(preset, { table, searchField, chips: { size: chipSize, addFilter } }),
-    [preset, table, searchField, chipSize, addFilter],
+    () => resolveLookSet(preset, { table, searchField, chips: { size: chipSize, addFilter }, field: definedField(fieldSize, labelVariant) }),
+    [preset, table, searchField, chipSize, addFilter, fieldSize, labelVariant],
   );
+  const chips = <ChipLookProvider look={value.chips}>{children}</ChipLookProvider>;
   return (
     <LookSetContext.Provider value={value}>
-      <ChipLookProvider look={value.chips}>{children}</ChipLookProvider>
+      {hasFieldLook(value.field) ? <FieldLookProvider labelVariant={value.field.labelVariant} size={value.field.size}>{chips}</FieldLookProvider> : chips}
     </LookSetContext.Provider>
   );
 }
