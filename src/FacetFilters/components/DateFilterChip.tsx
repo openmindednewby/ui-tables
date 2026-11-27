@@ -5,8 +5,12 @@ import { useUi } from '@dloizides/ui-feedback';
 
 import { facetTestIds } from '../testIds';
 import type { DateFilterChipLabels, DateFilterValue, FacetOption } from '../types';
+import { ChipSize } from '../ChipSize';
 import { activeDataSet } from './activeDataSet';
+import { ChipBackdrop } from './ChipBackdrop';
 import { ChipChevron } from './ChipChevron';
+import { useChipLook } from './ChipLook';
+import { chipSizeStyles as c } from './chipSizeStyles';
 import { chipTone } from './chipTone';
 import { facetStyles as s } from './styles';
 
@@ -36,6 +40,9 @@ export function DateFilterChip({ fields, ranges, value, open, onPress, labels, t
   const { theme } = useUi();
   const active = value !== null;
   const summary = summaryOf(value, fields, ranges, labels.anyDate);
+  const compact = useChipLook().size === ChipSize.Compact;
+  const tone = chipTone(theme, active);
+  const testID = facetTestIds(testIDPrefix).dateTrigger;
   return (
     <Pressable
       accessibilityHint={labels.editHint}
@@ -44,10 +51,11 @@ export function DateFilterChip({ fields, ranges, value, open, onPress, labels, t
       accessibilityState={{ expanded: open }}
       {...activeDataSet(active)}
       onPress={onPress}
-      style={[s.chip, s.chipBody, chipTone(theme, active)]}
-      testID={facetTestIds(testIDPrefix).dateTrigger}
+      style={compact ? [c.shell, c.body] : [s.chip, s.chipBody, tone]}
+      testID={testID}
     >
-      <Text numberOfLines={1} style={[s.chipText, { color: theme.colors.text }]}>
+      {compact && <ChipBackdrop testID={`${testID}-pill`} tone={tone} />}
+      <Text numberOfLines={1} style={[s.chipText, compact && c.text, { color: theme.colors.text }]}>
         <Text style={s.chipLabel}>{`${labels.title}${LABEL_SEPARATOR}`}</Text>
         {summary}
         {chevron && <ChipChevron color={theme.colors.textSecondary} />}

@@ -8,6 +8,7 @@ import { facetTestIds } from '../testIds';
 import type { FacetDefinition, FacetValues, FilterChipBarLabels } from '../types';
 import { facetSummary, isSameFacets, removeFacet, toggleFacetValue } from '../utils/facetState';
 import { AddFilterMenu } from './AddFilterMenu';
+import { useChipLook } from './ChipLook';
 import { FacetChipEditor } from './FacetChipEditor';
 import { FilterChip } from './FilterChip';
 import { TextButton } from './TextButton';
@@ -35,6 +36,7 @@ const NO_VALUES: FacetValues = {};
 export function FilterChipBar({ facets, values, onChange, defaultValues = NO_VALUES, labels, leading, trailing, testID, testIDPrefix, pinnedKeys = NO_KEYS, layout = ChipBarLayout.Wrap, chevron = false }: FilterChipBarProps): React.ReactElement {
   const ids = facetTestIds(testIDPrefix);
   const bar = useChipBarState(facets, values, pinnedKeys);
+  const addFilterVariant = useChipLook().addFilter;
   const open = bar.openFacet;
   const closeAndChange = (next: FacetValues): void => {
     bar.closeEditor();
@@ -62,7 +64,7 @@ export function FilterChipBar({ facets, values, onChange, defaultValues = NO_VAL
           testIDPrefix={testIDPrefix}
         />
       ))}
-      {bar.addable.length > 0 && <TextButton expanded={bar.adding} hint={labels.addFilterHint} label={labels.addFilter} onPress={bar.toggleAdding} testID={ids.addFilter} />}
+      {bar.addable.length > 0 && <TextButton expanded={bar.adding} hint={labels.addFilterHint} label={labels.addFilter} onPress={bar.toggleAdding} testID={ids.addFilter} variant={addFilterVariant} />}
       {showReset && <TextButton hint={labels.resetHint} label={labels.reset} onPress={() => closeAndChange(defaultValues)} testID={ids.reset} />}
       {trailing}
     </>
