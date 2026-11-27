@@ -9,7 +9,7 @@ export type { FilterBarProps, FilterBarStyleOverrides } from './FilterBar';
 export type { PagerProps, PagerServerPage, PagerStyleOverrides } from './Pager';
 export { PagedTableLayoutKind } from './PagedTableLayoutKind';
 export { TableDensity } from './TableDensity';
-export { TableLook } from './TableLook';
+export { TableLook } from './TableLookName';
 export { useTableLook, tableLookStyles, tableColumnStyle, BANDED_HEAD_HEIGHT, BANDED_ROW_HEIGHT } from './tableLook';
 export type { TableLookStyles } from './tableLook';
 export { FilterBarLayout } from './FilterBarLayout';

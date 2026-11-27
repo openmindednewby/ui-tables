@@ -1,7 +1,7 @@
 import React, { createContext, useMemo } from 'react';
 
 import { TableDensity } from './TableDensity';
-import type { TableLook } from './TableLook';
+import type { TableLook } from './TableLookName';
 
 /** App-wide defaults a DataTable falls back to when its own prop is not set. */
 export type PagerRowsVariant = 'pills' | 'dropdown';

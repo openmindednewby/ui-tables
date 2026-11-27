@@ -1,4 +1,4 @@
-import { TableLook } from './TableLook';
+import { TableLook } from './TableLookName';
 import { BANDED_HEAD_HEIGHT, BANDED_ROW_HEIGHT, tableColumnStyle, tableLookStyles } from './tableLook';
 
 const COLORS = { background: 'page-token', border: 'border-token', textSecondary: 'muted-token' };

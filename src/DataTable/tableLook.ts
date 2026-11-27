@@ -3,7 +3,7 @@ import { StyleSheet, type TextStyle, type ViewStyle } from 'react-native';
 
 import { useUi, type UiThemeColors } from '@dloizides/ui-feedback';
 
-import { TableLook } from './TableLook';
+import { TableLook } from './TableLookName';
 
 export const BANDED_HEAD_HEIGHT = 36;
 export const BANDED_ROW_HEIGHT = 52;
