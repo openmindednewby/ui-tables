@@ -34,3 +34,6 @@ export { toggleFacetValue, removeFacet, activeFacetKeys, isSameFacets, facetSumm
 export { toggleColumn, resolveVisibleColumns } from './utils/columns';
 export * from './constants';
 export type { FacetOption, FacetDefinition, FacetValues, DateFilterValue, ListFilterState, FilterChipBarLabels, DateFieldChipLabels, ColumnOption, ColumnPickerLabels, DateFilterChipLabels, CursorFooterLabels } from './types';
+export { ListSearchField } from './components/ListSearchField';
+export type { ListSearchFieldProps } from './components/ListSearchField';
+export { SearchFieldLook } from './SearchFieldLook';
