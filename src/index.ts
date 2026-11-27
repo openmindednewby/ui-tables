@@ -124,6 +124,7 @@ export type { MonthStatusGridProps, MonthStatusCell } from './MonthStatusGrid';
 
 export * from './ReportFilters';
 export * from './ExportCsvAction';
+export * from './ListHeader';
 
 export * from './FacetFilters';
 export { TableDefaultsProvider, TableDefaultsContext } from './DataTable';
