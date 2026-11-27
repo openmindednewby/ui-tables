@@ -6,16 +6,16 @@
  * ui-forms), keeping this reusable across every grid rather than coverage-specific.
  */
 import React, { useContext } from 'react';
-import { Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 
 import { useUi } from '@dloizides/ui-feedback';
+
+import { ResultSummary } from '../ListHeader/ResultSummary';
 
 import { TABLE_I18N, TABLE_TEST_IDS } from './constants';
 import { FilterBarLayout } from './FilterBarLayout';
 import { JoinedFrameContext } from './joinedFrameContext';
 import { chromeStyles as c, filterRowsStyles as r } from './styles';
-
-const RESULTS_COUNT_WEIGHT = '700' as const;
 
 /**
  * Per-slot style overrides for the FilterBar, merged **LAST** into each slot's style
@@ -68,16 +68,12 @@ export function FilterBar({
 
   const count =
     typeof resultsCount === 'number' ? (
-      // Live region: announce the new count when filters change the result set (WCAG 4.1.3).
-      <Text
-        accessibilityLiveRegion="polite"
-        role="status"
-        style={[c.results, { color: colors.textSecondary }, layout === FilterBarLayout.Rows ? r.results : null, o?.results]}
+      <ResultSummary
+        count={resultsCount}
+        label={word}
+        style={[c.results, layout === FilterBarLayout.Rows ? r.results : null, o?.results]}
         testID={TABLE_TEST_IDS.results}
-      >
-        <Text style={{ color: colors.text, fontWeight: RESULTS_COUNT_WEIGHT }}>{resultsCount.toLocaleString()}</Text>
-        {` ${word}`}
-      </Text>
+      />
     ) : null;
   const shell = [c.filters, { backgroundColor: colors.surface, borderColor: colors.border }, joined?.filters, layout === FilterBarLayout.Rows ? r.shell : null, o?.filters];
   const actionsCluster = actions ? <View style={[c.filtersActions, o?.filtersActions]}>{actions}</View> : null;
