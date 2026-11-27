@@ -131,3 +131,5 @@ export type { TableDefaults, TableDefaultsProviderProps, PagerRowsVariant } from
 export { TableLook, useTableLook, tableLookStyles, tableColumnStyle, BANDED_HEAD_HEIGHT, BANDED_ROW_HEIGHT } from './DataTable';
 export type { TableLookStyles } from './DataTable';
 export * from './RowActions';
+export { LookPreset, LookPresetProvider, useLookSet, resolveLookSet } from './LookPreset';
+export type { LookPresetProviderProps, LookSet, LookSetOverrides } from './LookPreset';

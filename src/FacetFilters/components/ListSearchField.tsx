@@ -4,6 +4,7 @@ import { Text, TextInput, View, type TextStyle } from 'react-native';
 import { useUi } from '@dloizides/ui-feedback';
 
 import { useShortcutFocus } from '../hooks/useShortcutFocus';
+import { useLookSet } from '../../LookPreset/LookPresetProvider';
 import { SearchFieldLook } from '../SearchFieldLook';
 import { INNER_OUTLINE_OFF, searchFieldStyles as s } from './searchFieldStyles';
 
@@ -29,13 +30,14 @@ function SearchGlyph({ color }: { color: string }): React.ReactElement {
 }
 
 /** The search input of a filtered list; Enter runs onSubmit. */
-export function ListSearchField({ value, onChangeText, onSubmit, label, hint, placeholder, testID, look = SearchFieldLook.Plain, shortcutKey }: ListSearchFieldProps): React.ReactElement {
+export function ListSearchField({ value, onChangeText, onSubmit, label, hint, placeholder, testID, look, shortcutKey }: ListSearchFieldProps): React.ReactElement {
   const { theme } = useUi();
   const { colors } = theme;
   const inputRef = useRef<TextInput>(null);
   const [focused, setFocused] = useState(false);
   useShortcutFocus(inputRef, shortcutKey);
-  const framed = look === SearchFieldLook.Framed;
+  const presetLook = useLookSet().searchField;
+  const framed = (look ?? presetLook) === SearchFieldLook.Framed;
   const input = (
     <TextInput
       ref={inputRef}

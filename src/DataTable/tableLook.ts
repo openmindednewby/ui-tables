@@ -3,6 +3,7 @@ import { StyleSheet, type TextStyle, type ViewStyle } from 'react-native';
 
 import { useUi, type UiThemeColors } from '@dloizides/ui-feedback';
 
+import { useLookSet } from '../LookPreset/LookPresetProvider';
 import { TableLook } from './TableLookName';
 
 export const BANDED_HEAD_HEIGHT = 36;
@@ -54,10 +55,12 @@ export function tableLookStyles(look: TableLook | undefined, colors: LookColors)
   };
 }
 
-/** The look's slot styles from the current UI theme, for hand-built tables that share the DataTable look. */
-export function useTableLook(look: TableLook | undefined): TableLookStyles | null {
+/** The look's slot styles from the current UI theme; with no `look`, the LookPreset table look in effect. */
+export function useTableLook(look?: TableLook): TableLookStyles | null {
   const { colors } = useUi().theme;
-  return useMemo(() => tableLookStyles(look, colors), [look, colors]);
+  const presetLook = useLookSet().table;
+  const resolved = look ?? presetLook;
+  return useMemo(() => tableLookStyles(resolved, colors), [resolved, colors]);
 }
 
 /** One column's share of the row width: the header cell and the row cell of a column take the same style, so they line up. */
