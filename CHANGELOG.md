@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.28.0
+
+- `DataTable` loading state: skeleton rows at the table's real columns and row heights (`TableSkeletonRows`), one shared table loading state for every list.
+
 ## 3.27.0
 
 ### Added
