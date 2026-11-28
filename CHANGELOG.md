@@ -1,5 +1,23 @@
 # Changelog
 
+## 3.27.0
+
+### Added
+
+- `TableLook.Banded`: a swappable 36 px tinted header band over 52 px rows (MODC-1 P2 D3-D5).
+- `ListSearchField` with Plain (default) and Framed looks and shortcut-key focus (MODC-1 P2 D1/M2).
+- `ChipLookProvider` with `ChipSize.Compact` (30 px pill, 44 px tap box) and `TextButtonVariant.DashedChip` for Add filter (MODC-1 P2 D2/D8).
+- `LookPresetProvider`: one density preset (Standard, Dense) sets the table, chip, search field and form field looks; component props still override (MODC-1 D-MC-826, D-MC-827).
+- `ResultSummary` (bold count, muted noun) and `RefreshAction` (15 px label + glyph); `FilterBar` reuses `ResultSummary` (MODC-1 P5 D2/D7).
+
+### Changed
+
+- Peer `@dloizides/ui-forms` is now `>=1.68.0` (needed by the preset's form field look).
+
+### Fixed
+
+- Filters: Apply/Reset are 36 px on desktop for every variant, with a 44 px floor on phones (S24P).
+
 ## 3.26.0
 
 ### Added
