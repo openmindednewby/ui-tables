@@ -12,6 +12,7 @@ export interface TableDefaults {
   autoPageSize?: number;
   keepWords?: boolean;
   look?: TableLook;
+  loadingSkeletonRows?: number;
 }
 
 const COMFORTABLE_DEFAULTS: TableDefaults = { density: TableDensity.Comfortable };
@@ -28,14 +29,16 @@ export interface TableDefaultsProviderProps {
   keepWords?: boolean;
   /** The header and row look every DataTable below uses; omit for the density's own look. */
   look?: TableLook;
+  /** Placeholder rows every DataTable below draws on its first load; omit to keep the loading text. */
+  loadingSkeletonRows?: number;
   children: React.ReactNode;
 }
 
 /** Sets one table look for a whole app or section, so each table does not repeat the preset. */
-export function TableDefaultsProvider({ density, pagerRowsVariant, autoPageSize, keepWords, look, children }: TableDefaultsProviderProps): React.ReactElement {
+export function TableDefaultsProvider({ density, pagerRowsVariant, autoPageSize, keepWords, look, loadingSkeletonRows, children }: TableDefaultsProviderProps): React.ReactElement {
   const value = useMemo(
-    () => ({ density, pagerRowsVariant, autoPageSize, keepWords, look }),
-    [density, pagerRowsVariant, autoPageSize, keepWords, look],
+    () => ({ density, pagerRowsVariant, autoPageSize, keepWords, look, loadingSkeletonRows }),
+    [density, pagerRowsVariant, autoPageSize, keepWords, look, loadingSkeletonRows],
   );
   return <TableDefaultsContext.Provider value={value}>{children}</TableDefaultsContext.Provider>;
 }

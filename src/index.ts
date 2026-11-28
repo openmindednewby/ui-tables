@@ -5,6 +5,8 @@ export { StatTone, resolveStatToneColor } from './StatCard/StatTone';
 
 // DataTable family — the shared, tokenized RN-web grid (GRID.md contract) promoted
 // from the /coverage POC. Its 2nd consumer is the AML v2 parallel-run portal.
+export { TableSkeletonRows, SKELETON_TEST_ID, skeletonRowTestID } from './DataTable';
+export type { SkeletonColumn, TableSkeletonRowsProps } from './DataTable';
 export { DataTable, FilterBar, FilterBarLayout, PagedTableLayout, PagedTableLayoutKind, Pager, TableDensity, CardLineLayout, CellText } from './DataTable';
 export type { DataTableBaseProps, DataTableColumn, DataTableProps, DataTableRowAction, CellTextProps, FilterBarProps, PagedTableLayoutProps, PagerProps, RowActionNone } from './DataTable';
 // Per-slot style overrides — the defaults are opinionated but never mandatory: these

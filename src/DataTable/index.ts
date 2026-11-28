@@ -15,6 +15,9 @@ export type { TableLookStyles } from './tableLook';
 export { FilterBarLayout } from './FilterBarLayout';
 export { CardLineLayout } from './CardLineLayout';
 export { CellText } from './CellText';
+export { TableSkeletonRows } from './TableSkeletonRows';
+export type { SkeletonColumn, TableSkeletonRowsProps } from './TableSkeletonRows';
+export { SKELETON_TEST_ID, skeletonRowTestID } from './skeletonBars';
 export type { CellTextProps } from './CellText';
 export type { PagedTableLayoutProps } from './PagedTableLayout';
 export {

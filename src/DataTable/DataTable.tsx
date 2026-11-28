@@ -46,6 +46,7 @@ import {
 } from './constants';
 import { DataTableRow } from './DataTableRow';
 import { JoinedFrameContext } from './joinedFrameContext';
+import { LoadingTable } from './LoadingTable';
 import { SelectAllBanner } from './SelectAllBanner';
 import { selectionStyles as sel, softBrandTint, tableStyles as s } from './styles';
 import { CardLineLayout, CardLineLayoutContext } from './CardLineLayout';
@@ -63,7 +64,7 @@ const ZEBRA_MODULUS = 2;
 export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
   const {
     columns, rows, keyExtractor, rowTint, zebra, stickyHeader, onRowPress,
-    getRowAccessibilityLabel, loading, loadingLabel, emptyLabel,
+    getRowAccessibilityLabel, loading, loadingLabel, emptyLabel, loadingSkeletonRows,
     renderRowDetail, getRowDetailAccessibilityLabel, expandedRowKeys, styleOverrides: callerOverrides,
     selectedRowKeys, onSelectionChange, matchingCount, allMatchingSelected, onSelectAllMatchingChange,
     keyboardNavigation = false, animateRows = true, density: densityProp,
@@ -154,10 +155,7 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
    * This used to be an unconditional `if (loading) return stateView(...)`, which threw away the
    * rows the user was already looking at for the duration of every re-fetch. On a server-paged
    * grid that is not a cosmetic flicker — it is the paging bug: clicking "Next" replaced the table
-   * with "Loading…", so the grid visibly EMPTIED and only later refilled. To an observer (and to a
-   * Playwright assertion that samples the rows after the click) the page appeared to render no
-   * rows at all, which reads as "Next paged to nothing" rather than "the next page is on its way".
-   * The same applied to re-filtering and to any `reload()`.
+   * with "Loading…", so the grid visibly EMPTIED and only later refilled..
    *
    * So the full-bleed state view is now reserved for when there is genuinely NOTHING to show:
    * the first load (loading, no rows yet) and a resolved empty result (not loading, no rows).
@@ -165,6 +163,10 @@ export function DataTable<T>(props: DataTableProps<T>): React.ReactElement {
    * resolves. `aria-busy` below carries the in-flight fetch to assistive tech, which
    * the discarded-rows approach communicated only by destroying the content.
    */
+  const skeletonRows = loadingSkeletonRows ?? defaults.loadingSkeletonRows ?? 0;
+  if (rows.length === 0 && loading === true && skeletonRows > 0) {
+    return <LoadingTable columns={columns} density={density} frameStyle={[s.wrap, frame, joined?.wrap, o?.wrap]} label={loadingLabel ?? t(TABLE_I18N.loading)} rows={skeletonRows} stacked={stacked} stickyHeader={stickyHeader} styleOverrides={o} testID={testID} />;
+  }
   if (rows.length === 0) {
     return stateView(loading ? loadingLabel ?? t(TABLE_I18N.loading) : emptyLabel ?? t(TABLE_I18N.empty));
   }

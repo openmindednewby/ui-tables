@@ -184,6 +184,8 @@ export interface DataTableBaseProps<T> {
   loading?: boolean;
   /** Loading text (already translated). Falls back to the kit's `loading` translation. */
   loadingLabel?: string;
+  /** While loading with no rows yet, draw this many placeholder rows under the real header. Falls back to TableDefaults; 0 keeps the loading text. */
+  loadingSkeletonRows?: number;
   /** Empty text (already translated). Falls back to the kit's `empty` translation. */
   emptyLabel?: string;
   /**
