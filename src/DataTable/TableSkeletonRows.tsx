@@ -36,18 +36,18 @@ export interface TableSkeletonRowsProps {
   stacked?: boolean;
   rowStyle?: StyleProp<ViewStyle>;
   trailingGutter?: number;
-  accessibilityLabel?: string;
+  loadingLabel?: string;
   testID?: string;
 }
 
 /** Placeholder rows at a table's real columns and row height, shown while its first page loads. */
-export function TableSkeletonRows({ columns, rows = DEFAULT_ROWS, stacked = false, rowStyle, trailingGutter, accessibilityLabel, testID = SKELETON_TEST_ID }: TableSkeletonRowsProps): React.ReactElement {
+export function TableSkeletonRows({ columns, rows = DEFAULT_ROWS, stacked = false, rowStyle, trailingGutter, loadingLabel, testID = SKELETON_TEST_ID }: TableSkeletonRowsProps): React.ReactElement {
   const { theme, t } = useUi();
   const { colors } = theme;
   const bar = (width: string): React.ReactElement => <Skeleton backgroundColor={colors.border} height={BAR_HEIGHT} highlightColor={colors.surface} testID={`${testID}-bar`} width={width} />;
   const cellStyle = (col: SkeletonColumn): StyleProp<ViewStyle> => col.style ?? { flex: col.weight ?? 1, minWidth: col.minWidth };
   return (
-    <View accessibilityLabel={accessibilityLabel ?? t(TABLE_I18N.loading)} accessibilityLiveRegion="polite" accessibilityRole="progressbar" aria-busy testID={testID}>
+    <View accessibilityLabel={loadingLabel ?? t(TABLE_I18N.loading)} accessibilityLiveRegion="polite" accessibilityRole="progressbar" aria-busy testID={testID}>
       {skeletonRowIndexes(rows).map((r) => (
         <View key={r} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[stacked ? s.card : s.row, { borderColor: colors.border }, rowStyle]} testID={skeletonRowTestID(testID, r)}>
           {columns.map((col, c) => stacked ? (

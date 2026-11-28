@@ -68,7 +68,7 @@ describe('DataTable loadingSkeletonRows', () => {
 
 describe('TableSkeletonRows', () => {
   it('with a loading label, names the busy region for assistive tech', () => {
-    const rows = <TableSkeletonRows accessibilityLabel="Loading people" columns={columns} rows={1} testID="sk" />;
+    const rows = <TableSkeletonRows columns={columns} loadingLabel="Loading people" rows={1} testID="sk" />;
 
     renderInKit(rows);
 
