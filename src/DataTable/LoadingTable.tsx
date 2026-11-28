@@ -31,7 +31,7 @@ export function LoadingTable<T>({ columns, rows, stacked, label, frameStyle, den
   return (
     <View aria-busy style={frameStyle} testID={testID}>
       {stacked ? null : <TableHeader columns={columns} density={density} inGrid={false} stickyHeader={stickyHeader} styleOverrides={o} />}
-      <TableSkeletonRows accessibilityLabel={label} columns={columns} rowStyle={rowStyle} rows={rows} stacked={stacked} testID={`${testID}-skeleton`} />
+      <TableSkeletonRows columns={columns} loadingLabel={label} rows={rows} rowStyle={rowStyle} stacked={stacked} testID={`${testID}-skeleton`} />
     </View>
   );
 }
